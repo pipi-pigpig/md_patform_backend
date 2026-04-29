@@ -11,19 +11,16 @@ import java.util.List;
 @Repository
 public interface SimulationRepository extends JpaRepository<SimulationJob, Long> {
 
-    List<SimulationJob> findAllByOrderByCreatedAtDesc();
+    List<SimulationJob> findAllByOrderByCreateTimeDesc();
 
-    List<SimulationJob> findByStatus(SimulationJob.JobStatus status);
+    List<SimulationJob> findByUserId(Long userId);
 
-    List<SimulationJob> findBySoftware(SimulationJob.Software software);
+    List<SimulationJob> findBySystemId(Long systemId);
+
+    List<SimulationJob> findByStatus(String status);
+
+    List<SimulationJob> findBySoftwareName(String softwareName);
 
     @Query("SELECT COUNT(s) FROM SimulationJob s WHERE s.status = :status")
-    Long countByStatus(@Param("status") SimulationJob.JobStatus status);
-
-    // 🔧 修复这里的查询：使用 systemId 而不是 system.id
-    @Query("SELECT s FROM SimulationJob s WHERE s.systemId = :systemId ORDER BY s.createdAt DESC")
-    List<SimulationJob> findBySystemId(@Param("systemId") Long systemId);
-
-    @Query("SELECT s FROM SimulationJob s WHERE s.hardwareUsed = :hardware ORDER BY s.createdAt DESC")
-    List<SimulationJob> findByHardware(@Param("hardware") SimulationJob.HardwareType hardware);
+    Long countByStatus(@Param("status") String status);
 }

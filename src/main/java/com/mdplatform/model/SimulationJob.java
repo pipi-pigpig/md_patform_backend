@@ -6,81 +6,83 @@ import java.time.LocalDateTime;
 
 @Data
 @Entity
-@Table(name = "simulation_jobs")
+@Table(name = "simulation_jobs_table")
 public class SimulationJob {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
-    // 添加 userId 字段（如果你需要用户关联）
-    @Column(name = "user_id")
-    private Long userId;
-
-    @Column(name = "system_id")
-    private Long systemId;
+    @Column(name = "job_id")
+    private Long jobId;
 
     @Column(name = "job_name", nullable = false)
     private String jobName;
 
-    @Column(name = "description", columnDefinition = "TEXT")
-    private String description;
+    @Column(name = "user_id", nullable = false)
+    private Long userId;
 
-    @Column(name = "computing_unit", length = 200)
-    private String computingUnit;
+    @Column(name = "system_id", nullable = false)
+    private Long systemId;
 
-    @Enumerated(EnumType.STRING)
+    @Column(name = "software_name", nullable = false)
+    private String softwareName;
+
+    @Column(name = "software_version", nullable = false)
+    private String softwareVersion;
+
     @Column(nullable = false)
-    private Software software;
+    private String status = "PENDING";
 
-    @Enumerated(EnumType.STRING)
-    private JobStatus status = JobStatus.PENDING;
+    @Column(name = "target_properties", columnDefinition = "JSON", nullable = false)
+    private String targetProperties;
 
-    @Column(name = "input_file_path", length = 500)
-    private String inputFilePath;
+    @Column(name = "hardware_used", nullable = false)
+    private String hardwareUsed = "CPU";
 
-    @Column(name = "output_file_path", length = 500)
-    private String outputFilePath;
+    @Column(name = "cpu_cores", nullable = false)
+    private String cpuCores = "8";
 
-    @Column(columnDefinition = "JSON")
-    private String parameters;
+    @Column(name = "gpu_info")
+    private String gpuInfo;
 
-    @Enumerated(EnumType.STRING)
-    @Column(name = "hardware_used")
-    private HardwareType hardwareUsed = HardwareType.CPU;
+    @Column(name = "job_root_path", nullable = false)
+    private String jobRootPath;
 
+    @Column(name = "start_time")
     private LocalDateTime startTime;
+
+    @Column(name = "end_time")
     private LocalDateTime endTime;
-    private Long executionTime;
+
+    @Column(name = "execution_time_s")
+    private Long executionTimeS;
 
     @Column(name = "result_summary", columnDefinition = "JSON")
     private String resultSummary;
 
-    @Column(name = "created_at")
-    private LocalDateTime createdAt = LocalDateTime.now();
+    @Column(name = "error_message")
+    private String errorMessage;
 
-    @Column(name = "updated_at")
-    private LocalDateTime updatedAt = LocalDateTime.now();
+    @Column(name = "random_seed", nullable = false)
+    private Integer randomSeed;
+
+    @Column(name = "create_time", nullable = false)
+    private LocalDateTime createTime;
+
+    @Column(name = "update_time", nullable = false)
+    private LocalDateTime updateTime;
+
+    @PrePersist
+    protected void onCreate() {
+        if (createTime == null) {
+            createTime = LocalDateTime.now();
+        }
+        if (updateTime == null) {
+            updateTime = LocalDateTime.now();
+        }
+    }
 
     @PreUpdate
     protected void onUpdate() {
-        updatedAt = LocalDateTime.now();
-    }
-
-    // 如果需要，可以添加关联关系
-    // @ManyToOne(fetch = FetchType.LAZY)
-    // @JoinColumn(name = "system_id", insertable = false, updatable = false)
-    // private ElectrolyteSystem system;
-
-    public enum Software {
-        LAMMPS, GROMACS
-    }
-
-    public enum JobStatus {
-        PENDING, RUNNING, COMPLETED, FAILED, CANCELLED
-    }
-
-    public enum HardwareType {
-        CPU, GPU, BOTH
+        updateTime = LocalDateTime.now();
     }
 }

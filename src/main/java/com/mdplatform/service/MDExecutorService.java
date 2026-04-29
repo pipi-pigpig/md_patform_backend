@@ -31,8 +31,8 @@ public class MDExecutorService {
 
     // 在 executeSimulation() 开头添加
     private void prepareInputFiles(SimulationJob job) throws IOException {
-        String jobId = job.getId().toString();
-        Path srcFile = Paths.get(job.getInputFilePath());
+        String jobId = job.getJobId().toString();
+        Path srcFile = Paths.get(job.getJobRootPath());
         Path destDir = Paths.get("data/inputs", jobId);
         Files.createDirectories(destDir);
         Files.copy(srcFile, destDir.resolve(srcFile.getFileName()), REPLACE_EXISTING);
@@ -49,15 +49,15 @@ public class MDExecutorService {
                     return executeFallbackSimulation(job);
                 }
 
-                String jobId = job.getId().toString();
-                String inputFilename = getInputFilename(job.getInputFilePath());
+                String jobId = job.getJobId().toString();
+                String inputFilename = getInputFilename(job.getJobRootPath());
 
                 log.info("Starting {} simulation for job {} with input: {}",
-                        job.getSoftware(), jobId, inputFilename);
+                        job.getSoftwareName(), jobId, inputFilename);
 
                 // 执行MD模拟
                 String output;
-                if (job.getSoftware() == SimulationJob.Software.LAMMPS) {
+                if ("LAMMPS".equals(job.getSoftwareName())) {
                     output = dockerService.runLAMMPS(inputFilename, jobId);
                 } else {
                     output = dockerService.runGROMACS(inputFilename, jobId);
@@ -73,7 +73,7 @@ public class MDExecutorService {
                 return resultSummary;
 
             } catch (Exception e) {
-                log.error("Failed to execute simulation for job {}", job.getId(), e);
+                log.error("Failed to execute simulation for job {}", job.getJobId(), e);
                 throw new RuntimeException("Simulation execution failed: " + e.getMessage(), e);
             }
         }, executorService);
@@ -108,18 +108,18 @@ public class MDExecutorService {
      */
     private void copyResultFiles(SimulationJob job) {
 
-        String jobId = job.getId().toString();
+        String jobId = job.getJobId().toString();
         Path srcLog = Paths.get("data/results", jobId, "log.lammps");
         Path destLog = Paths.get("results", jobId, "simulation.log");
 
 
         try {
             // 复制日志文件
-            String logFile = (job.getSoftware() == SimulationJob.Software.LAMMPS) ? "log.lammps" : "md.log";
+            String logFile = ("LAMMPS".equals(job.getSoftwareName())) ? "log.lammps" : "md.log";
             dockerService.copyResultsFromContainer(jobId, logFile, "simulation.log");
 
             // 复制轨迹文件
-            if (job.getSoftware() == SimulationJob.Software.LAMMPS) {
+            if ("LAMMPS".equals(job.getSoftwareName())) {
                 dockerService.copyResultsFromContainer(jobId, "traj.dump", "trajectory.dump");
             } else {
                 dockerService.copyResultsFromContainer(jobId, "md.xtc", "trajectory.xtc");
@@ -145,11 +145,11 @@ public class MDExecutorService {
             StringBuilder result = new StringBuilder();
             result.append("{\n");
             result.append("  \"status\": \"COMPLETED\",\n");
-            result.append("  \"software\": \"").append(job.getSoftware()).append("\",\n");
+            result.append("  \"software\": \"").append(job.getSoftwareName()).append("\",\n");
             result.append("  \"output_lines\": ").append(output.split("\n").length).append(",\n");
 
             // 从输出中提取能量信息（示例）
-            if (job.getSoftware() == SimulationJob.Software.LAMMPS) {
+            if ("LAMMPS".equals(job.getSoftwareName())) {
                 // 查找LAMMPS的最终能量
                 String[] lines = output.split("\n");
                 for (int i = lines.length - 1; i >= 0; i--) {
@@ -187,7 +187,7 @@ public class MDExecutorService {
      * 备用执行方案（当Docker不可用时）
      */
     private String executeFallbackSimulation(SimulationJob job) {
-        log.info("Using fallback execution for job {}", job.getId());
+        log.info("Using fallback execution for job {}", job.getJobId());
 
         try {
             // 模拟执行延迟
@@ -196,7 +196,7 @@ public class MDExecutorService {
             // 生成模拟结果
             return String.format(
                     "{\"status\":\"COMPLETED\",\"warning\":\"DOCKER_UNAVAILABLE\",\"mode\":\"FALLBACK\",\"software\":\"%s\"}",
-                    job.getSoftware()
+                    job.getSoftwareName()
             );
 
         } catch (InterruptedException e) {
@@ -236,16 +236,16 @@ public class MDExecutorService {
     /**
      * 生成输入文件模板
      */
-    public String generateInputTemplate(SimulationJob.Software software) {
+    public String generateInputTemplate(String software) {
         try {
-            Path templatePath = Paths.get("templates", software.name().toLowerCase() + "_template.in");
+            Path templatePath = Paths.get("templates", software.toLowerCase() + "_template.in");
 
             if (Files.exists(templatePath)) {
                 return new String(Files.readAllBytes(templatePath), java.nio.charset.StandardCharsets.UTF_8);
             }
 
             // 返回默认模板
-            if (software == SimulationJob.Software.LAMMPS) {
+            if ("LAMMPS".equals(software)) {
                 return getLAMMPSTemplate();
             } else {
                 return getGROMACSTemplate();

@@ -11,13 +11,12 @@ import java.util.List;
 @Repository
 public interface SystemRepository extends JpaRepository<ElectrolyteSystem, Long> {
 
-    List<ElectrolyteSystem> findAllByOrderByCreatedAtDesc();
+    List<ElectrolyteSystem> findAllByOrderByCreateTimeDesc();
 
-    List<ElectrolyteSystem> findBySolventType(ElectrolyteSystem.SolventType solventType);
+    List<ElectrolyteSystem> findByUserId(Long userId);
 
-    @Query("SELECT e FROM ElectrolyteSystem e WHERE e.saltFormula LIKE %:keyword% OR e.name LIKE %:keyword% OR e.description LIKE %:keyword%")
+    List<ElectrolyteSystem> findByIsPublicTemplateTrue();
+
+    @Query("SELECT e FROM ElectrolyteSystem e WHERE e.systemName LIKE %:keyword% OR e.taskDescription LIKE %:keyword%")
     List<ElectrolyteSystem> searchByKeyword(@Param("keyword") String keyword);
-
-    @Query("SELECT DISTINCT e.saltFormula FROM ElectrolyteSystem e WHERE e.saltFormula IS NOT NULL")
-    List<String> findAllSaltFormulas();
 }

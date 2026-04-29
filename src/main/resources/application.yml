@@ -16,9 +16,9 @@ spring:
 
   # MySQL??
   datasource:
-    url: jdbc:mysql://localhost:3306/md_database?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true&characterEncoding=UTF-8
-    username: root
-    password: 123456
+    url: jdbc:mysql://gateway01.ap-southeast-1.prod.aws.tidbcloud.com:4000/md_database?useSSL=true&requireSSL=true&serverTimezone=UTC&allowPublicKeyRetrieval=true&characterEncoding=UTF-8&enabledTLSProtocols=TLSv1.2,TLSv1.3
+    username: 2Z2dkBWwpS3FSfM.root
+    password: rrlKa4WDsqsSi5Iv
     driver-class-name: com.mysql.cj.jdbc.Driver
     hikari:
       maximum-pool-size: 20
@@ -29,7 +29,7 @@ spring:
 
   jpa:
     hibernate:
-      ddl-auto: update  # ???????validate
+      ddl-auto: none
     show-sql: true
     properties:
       hibernate:

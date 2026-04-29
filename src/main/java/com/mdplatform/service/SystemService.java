@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -17,7 +18,7 @@ public class SystemService {
     private final SystemRepository systemRepository;
 
     public List<ElectrolyteSystem> getAllSystems() {
-        return systemRepository.findAllByOrderByCreatedAtDesc();
+        return systemRepository.findAllByOrderByCreateTimeDesc();
     }
 
     public Optional<ElectrolyteSystem> getSystemById(Long id) {
@@ -25,21 +26,29 @@ public class SystemService {
     }
 
     public ElectrolyteSystem createSystem(ElectrolyteSystem system) {
-        system.setId(null); // 确保是新建
+        system.setSystemId(null);
+        system.setCreateTime(LocalDateTime.now());
+        system.setUpdateTime(LocalDateTime.now());
         ElectrolyteSystem saved = systemRepository.save(system);
-        log.info("Created system: {} with id: {}", saved.getName(), saved.getId());
+        log.info("Created system: {} with id: {}", saved.getSystemName(), saved.getSystemId());
         return saved;
     }
 
     public Optional<ElectrolyteSystem> updateSystem(Long id, ElectrolyteSystem system) {
         return systemRepository.findById(id).map(existing -> {
-            if (system.getName() != null) existing.setName(system.getName());
-            if (system.getDescription() != null) existing.setDescription(system.getDescription());
-            if (system.getSolventType() != null) existing.setSolventType(system.getSolventType());
-            if (system.getSaltFormula() != null) existing.setSaltFormula(system.getSaltFormula());
-            if (system.getConcentration() != null) existing.setConcentration(system.getConcentration());
+            if (system.getSystemName() != null) existing.setSystemName(system.getSystemName());
+            if (system.getUserId() != null) existing.setUserId(system.getUserId());
+            if (system.getTaskDescription() != null) existing.setTaskDescription(system.getTaskDescription());
+            if (system.getSolventInfo() != null) existing.setSolventInfo(system.getSolventInfo());
+            if (system.getSaltInfo() != null) existing.setSaltInfo(system.getSaltInfo());
+            if (system.getAdditiveInfo() != null) existing.setAdditiveInfo(system.getAdditiveInfo());
             if (system.getTemperature() != null) existing.setTemperature(system.getTemperature());
             if (system.getPressure() != null) existing.setPressure(system.getPressure());
+            if (system.getBoxSize() != null) existing.setBoxSize(system.getBoxSize());
+            if (system.getBoundaryConditions() != null) existing.setBoundaryConditions(system.getBoundaryConditions());
+            if (system.getTotalAtomCount() != null) existing.setTotalAtomCount(system.getTotalAtomCount());
+            if (system.getIsPublicTemplate() != null) existing.setIsPublicTemplate(system.getIsPublicTemplate());
+            existing.setUpdateTime(LocalDateTime.now());
 
             ElectrolyteSystem updated = systemRepository.save(existing);
             log.info("Updated system with id: {}", id);
@@ -60,11 +69,11 @@ public class SystemService {
         return systemRepository.searchByKeyword(keyword);
     }
 
-    public List<String> getAllSaltFormulas() {
-        return systemRepository.findAllSaltFormulas();
+    public List<ElectrolyteSystem> getSystemsByUserId(Long userId) {
+        return systemRepository.findByUserId(userId);
     }
 
-    public List<ElectrolyteSystem> getSystemsBySolvent(ElectrolyteSystem.SolventType solventType) {
-        return systemRepository.findBySolventType(solventType);
+    public List<ElectrolyteSystem> getPublicTemplates() {
+        return systemRepository.findByIsPublicTemplateTrue();
     }
 }

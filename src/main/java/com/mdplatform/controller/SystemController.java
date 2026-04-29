@@ -1,5 +1,6 @@
 package com.mdplatform.controller;
 
+import com.mdplatform.dto.SystemDto;
 import com.mdplatform.model.ElectrolyteSystem;
 import com.mdplatform.service.SystemService;
 import lombok.RequiredArgsConstructor;
@@ -9,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/systems")
@@ -20,14 +22,18 @@ public class SystemController {
     private final SystemService systemService;
 
     @GetMapping
-    public ResponseEntity<List<ElectrolyteSystem>> getAllSystems() {
+    public ResponseEntity<List<SystemDto>> getAllSystems() {
         List<ElectrolyteSystem> systems = systemService.getAllSystems();
-        return ResponseEntity.ok(systems);
+        List<SystemDto> dtoList = systems.stream()
+                .map(SystemDto::fromEntity)
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(dtoList);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ElectrolyteSystem> getSystem(@PathVariable Long id) {
+    public ResponseEntity<SystemDto> getSystemById(@PathVariable Long id) {
         return systemService.getSystemById(id)
+                .map(SystemDto::fromEntity)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
@@ -39,8 +45,7 @@ public class SystemController {
             return ResponseEntity.status(HttpStatus.CREATED).body(created);
         } catch (Exception e) {
             log.error("Failed to create system", e);
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(null);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
 
@@ -60,8 +65,29 @@ public class SystemController {
     }
 
     @GetMapping("/search")
-    public ResponseEntity<List<ElectrolyteSystem>> searchSystems(@RequestParam String keyword) {
+    public ResponseEntity<List<SystemDto>> searchSystems(@RequestParam String keyword) {
         List<ElectrolyteSystem> systems = systemService.searchSystems(keyword);
-        return ResponseEntity.ok(systems);
+        List<SystemDto> dtoList = systems.stream()
+                .map(SystemDto::fromEntity)
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(dtoList);
+    }
+
+    @GetMapping("/user/{userId}")
+    public ResponseEntity<List<SystemDto>> getSystemsByUserId(@PathVariable Long userId) {
+        List<ElectrolyteSystem> systems = systemService.getSystemsByUserId(userId);
+        List<SystemDto> dtoList = systems.stream()
+                .map(SystemDto::fromEntity)
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(dtoList);
+    }
+
+    @GetMapping("/public")
+    public ResponseEntity<List<SystemDto>> getPublicTemplates() {
+        List<ElectrolyteSystem> systems = systemService.getPublicTemplates();
+        List<SystemDto> dtoList = systems.stream()
+                .map(SystemDto::fromEntity)
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(dtoList);
     }
 }

@@ -2,59 +2,57 @@ package com.mdplatform.model;
 
 import javax.persistence.*;
 import lombok.Data;
-
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Data
 @Entity
-@Table(name = "electrolyte_systems")
+@Table(name = "electrolyte_systems_table")
 public class ElectrolyteSystem {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @Column(name = "system_id")
+    private Long systemId;
 
-    @Column(nullable = false, length = 200)
-    private String name;
+    @Column(name = "system_name", nullable = false)
+    private String systemName;
 
-    @Column(columnDefinition = "TEXT")
-    private String description;
+    @Column(name = "user_id", nullable = false)
+    private Long userId;
 
-    @Enumerated(EnumType.STRING)
-    @Column(name = "solvent_type", nullable = false)
-    private SolventType solventType;
+    @Column(name = "task_description")
+    private String taskDescription;
 
-    @Column(name = "salt_formula", length = 100)
-    private String saltFormula;
+    @Column(name = "solvent_info", nullable = false, columnDefinition = "JSON")
+    private String solventInfo;
 
-    @Column(precision = 10, scale = 4)
-    private BigDecimal concentration;  // mol/L
+    @Column(name = "salt_info", columnDefinition = "JSON")
+    private String saltInfo;
 
-    @Column(precision = 10, scale = 2)
-    private BigDecimal temperature;    // K
+    @Column(name = "additive_info", columnDefinition = "JSON")
+    private String additiveInfo;
 
-    @Column(precision = 10, scale = 2)
-    private BigDecimal pressure;       // bar
+    @Column(name = "temperature", nullable = false)
+    private Double temperature;
 
-    @Column(name = "ec_ratio", precision = 5, scale = 2)
-    private BigDecimal ecRatio;        // EC percentage
+    @Column(name = "pressure", nullable = false)
+    private Double pressure;
 
-    @Column(name = "dmc_ratio", precision = 5, scale = 2)
-    private BigDecimal dmcRatio;       // DMC percentage
+    @Column(name = "box_size", nullable = false, columnDefinition = "JSON")
+    private String boxSize;
 
-    @Column(name = "created_at")
-    private LocalDateTime createdAt = LocalDateTime.now();
+    @Column(name = "boundary_conditions", nullable = false)
+    private String boundaryConditions = "p p p";
 
-    public enum SolventType {
-        WATER,
-        ACETONITRILE,
-        DMSO,
-        ETHANOL,
-        EC_DMC,
-        EC,
-        DMC,
-        EC_EMC,
-        OTHER
-    }
+    @Column(name = "total_atom_count")
+    private Integer totalAtomCount;
+
+    @Column(name = "is_public_template", nullable = false)
+    private Boolean isPublicTemplate = false;
+
+    @Column(name = "create_time", nullable = false)
+    private LocalDateTime createTime;
+
+    @Column(name = "update_time", nullable = false)
+    private LocalDateTime updateTime;
 }
