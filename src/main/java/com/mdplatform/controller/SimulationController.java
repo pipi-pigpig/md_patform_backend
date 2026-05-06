@@ -1,6 +1,7 @@
 package com.mdplatform.controller;
 
 import com.mdplatform.dto.SimulationDto;
+import com.mdplatform.dto.SimulationStatsDto;
 import com.mdplatform.model.SimulationJob;
 import com.mdplatform.service.SimulationService;
 import com.mdplatform.service.SystemService;
@@ -107,8 +108,8 @@ public class SimulationController {
     }
 
     @GetMapping("/stats")
-    public ResponseEntity<String> getSystemStatistics() {
-        String stats = simulationService.getSystemStatistics();
+    public ResponseEntity<SimulationStatsDto> getSystemStatistics() {
+        SimulationStatsDto stats = simulationService.getSystemStatistics();
         return ResponseEntity.ok(stats);
     }
 

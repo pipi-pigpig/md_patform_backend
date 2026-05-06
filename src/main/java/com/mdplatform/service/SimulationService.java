@@ -1,5 +1,6 @@
 package com.mdplatform.service;
 
+import com.mdplatform.dto.SimulationStatsDto;
 import com.mdplatform.model.SimulationJob;
 import com.mdplatform.repository.SimulationRepository;
 import lombok.RequiredArgsConstructor;
@@ -98,23 +99,14 @@ public class SimulationService {
         });
     }
 
-    public String getSystemStatistics() {
-        StringBuilder stats = new StringBuilder();
+    public SimulationStatsDto getSystemStatistics() {
         long totalJobs = simulationRepository.count();
-        stats.append("Total Jobs: ").append(totalJobs).append("\n");
-
         long pendingCount = simulationRepository.countByStatus("PENDING");
         long runningCount = simulationRepository.countByStatus("RUNNING");
         long completedCount = simulationRepository.countByStatus("COMPLETED");
         long failedCount = simulationRepository.countByStatus("FAILED");
         long cancelledCount = simulationRepository.countByStatus("CANCELLED");
 
-        stats.append("PENDING: ").append(pendingCount).append("\n");
-        stats.append("RUNNING: ").append(runningCount).append("\n");
-        stats.append("COMPLETED: ").append(completedCount).append("\n");
-        stats.append("FAILED: ").append(failedCount).append("\n");
-        stats.append("CANCELLED: ").append(cancelledCount).append("\n");
-
-        return stats.toString();
+        return new SimulationStatsDto(totalJobs, pendingCount, runningCount, completedCount, failedCount, cancelledCount);
     }
 }
