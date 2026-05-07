@@ -77,8 +77,39 @@ public class SimulationService {
         return simulationRepository.findByUserId(userId);
     }
 
+    /**
+     * 获取用户的任务及其描述（优化版：使用 JOIN 避免N+1查询）
+     * 返回 Object[] 数组，每个元素包含 [SimulationJob, taskDescription]
+     */
+    public List<Object[]> getSimulationsByUserIdWithDescription(Long userId) {
+        return simulationRepository.findByUserIdWithTaskDescription(userId);
+    }
+
     public List<SimulationJob> getSimulationsBySystemId(Long systemId) {
         return simulationRepository.findBySystemId(systemId);
+    }
+
+    // ===== 用户相关查询 =====
+
+    /**
+     * 按用户和状态查询
+     */
+    public List<SimulationJob> getSimulationsByUserIdAndStatus(Long userId, String status) {
+        return simulationRepository.findByUserIdAndStatus(userId, status);
+    }
+
+    /**
+     * 按用户和软件查询
+     */
+    public List<SimulationJob> getSimulationsByUserIdAndSoftware(Long userId, String softwareName) {
+        return simulationRepository.findByUserIdAndSoftwareName(userId, softwareName);
+    }
+
+    /**
+     * 按用户和系统查询
+     */
+    public List<SimulationJob> getSimulationsByUserIdAndSystemId(Long userId, Long systemId) {
+        return simulationRepository.findByUserIdAndSystemId(userId, systemId);
     }
 
     @Transactional
@@ -99,6 +130,9 @@ public class SimulationService {
         });
     }
 
+    /**
+     * 全局统计（管理员用）
+     */
     public SimulationStatsDto getSystemStatistics() {
         long totalJobs = simulationRepository.count();
         long pendingCount = simulationRepository.countByStatus("PENDING");
@@ -108,5 +142,35 @@ public class SimulationService {
         long cancelledCount = simulationRepository.countByStatus("CANCELLED");
 
         return new SimulationStatsDto(totalJobs, pendingCount, runningCount, completedCount, failedCount, cancelledCount);
+    }
+
+    /**
+     * 按用户统计（优化版：使用单次查询）
+     */
+    public SimulationStatsDto getStatsByUserId(Long userId) {
+        List<Object[]> statusCounts = simulationRepository.getStatusCountsByUserId(userId);
+
+        long total = 0;
+        long pending = 0;
+        long running = 0;
+        long completed = 0;
+        long failed = 0;
+        long cancelled = 0;
+
+        for (Object[] row : statusCounts) {
+            String status = (String) row[0];
+            long count = ((Number) row[1]).longValue();
+            total += count;
+
+            switch (status) {
+                case "PENDING": pending = count; break;
+                case "RUNNING": running = count; break;
+                case "COMPLETED": completed = count; break;
+                case "FAILED": failed = count; break;
+                case "CANCELLED": cancelled = count; break;
+            }
+        }
+
+        return new SimulationStatsDto(total, pending, running, completed, failed, cancelled);
     }
 }

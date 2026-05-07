@@ -513,3 +513,112 @@ Caused by: java.sql.SQLIntegrityConstraintViolationException: Column 'system_nam
 2026-05-06 20:29:54 [http-nio-8080-exec-1] INFO  o.s.web.servlet.DispatcherServlet - Completed initialization in 0 ms
 2026-05-06 20:41:53 [http-nio-8080-exec-1] WARN  com.zaxxer.hikari.pool.PoolBase - HikariPool-1 - Failed to validate connection com.mysql.cj.jdbc.ConnectionImpl@f5a03d0 (No operations allowed after connection closed.). Possibly consider using a shorter maxLifetime value.
 2026-05-06 20:59:47 [http-nio-8080-exec-8] WARN  com.zaxxer.hikari.pool.PoolBase - HikariPool-1 - Failed to validate connection com.mysql.cj.jdbc.ConnectionImpl@30eeb31 (No operations allowed after connection closed.). Possibly consider using a shorter maxLifetime value.
+2026-05-07 10:05:57 [main] INFO  c.mdplatform.ElectrolyteApplication - Starting ElectrolyteApplication using Java 21.0.10 on WIN-S2TE6QDS2J3 with PID 26372 (D:\data\code\project\md_patform\md_patform_backend\target\classes started by Administrator in D:\data\code\project\md_patform\md_patform_backend)
+2026-05-07 10:05:57 [main] DEBUG c.mdplatform.ElectrolyteApplication - Running with Spring Boot v2.7.17, Spring v5.3.30
+2026-05-07 10:05:57 [main] INFO  c.mdplatform.ElectrolyteApplication - No active profile set, falling back to 1 default profile: "default"
+2026-05-07 10:05:58 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-05-07 10:05:58 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 112 ms. Found 10 JPA repository interfaces.
+2026-05-07 10:05:58 [main] INFO  o.s.i.c.DefaultConfiguringBeanFactoryPostProcessor - No bean named 'errorChannel' has been explicitly defined. Therefore, a default PublishSubscribeChannel will be created.
+2026-05-07 10:05:58 [main] INFO  o.s.i.c.DefaultConfiguringBeanFactoryPostProcessor - No bean named 'integrationHeaderChannelRegistry' has been explicitly defined. Therefore, a default DefaultHeaderChannelRegistry will be created.
+2026-05-07 10:05:58 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat initialized with port(s): 8080 (http)
+2026-05-07 10:05:58 [main] INFO  o.a.catalina.core.StandardService - Starting service [Tomcat]
+2026-05-07 10:05:58 [main] INFO  o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/9.0.82]
+2026-05-07 10:05:58 [main] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+2026-05-07 10:05:58 [main] INFO  o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 1645 ms
+2026-05-07 10:05:59 [main] INFO  o.h.jpa.internal.util.LogHelper - HHH000204: Processing PersistenceUnitInfo [name: default]
+2026-05-07 10:05:59 [main] INFO  org.hibernate.Version - HHH000412: Hibernate ORM core version 5.6.15.Final
+2026-05-07 10:05:59 [main] INFO  o.h.annotations.common.Version - HCANN000001: Hibernate Commons Annotations {5.1.2.Final}
+2026-05-07 10:05:59 [main] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Starting...
+2026-05-07 10:06:02 [main] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Start completed.
+2026-05-07 10:06:02 [main] INFO  org.hibernate.dialect.Dialect - HHH000400: Using dialect: org.hibernate.dialect.MySQL8Dialect
+2026-05-07 10:06:02 [main] INFO  o.h.e.t.j.p.i.JtaPlatformInitiator - HHH000490: Using JtaPlatform implementation: [org.hibernate.engine.transaction.jta.platform.internal.NoJtaPlatform]
+2026-05-07 10:06:03 [main] INFO  o.s.o.j.LocalContainerEntityManagerFactoryBean - Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-05-07 10:06:03 [main] INFO  com.mdplatform.config.DockerConfig - ℹ️ Detected Windows, using named pipe: npipe:////./pipe/docker_engine
+2026-05-07 10:06:33 [main] WARN  com.mdplatform.config.DockerConfig - ⚠️ Failed to connect to Docker daemon: java.nio.file.NoSuchFileException: \\.\pipe\docker_engine
+2026-05-07 10:06:33 [main] WARN  com.mdplatform.config.DockerConfig - ℹ️ Application will start without Docker integration. MD simulation features will be disabled.
+2026-05-07 10:06:33 [main] WARN  com.mdplatform.service.DockerService - DockerClient is not available. Some features will be limited.
+2026-05-07 10:06:33 [main] WARN  o.s.b.a.o.j.JpaBaseConfiguration$JpaWebConfiguration - spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2026-05-07 10:06:34 [main] INFO  o.s.i.endpoint.EventDrivenConsumer - Adding {logging-channel-adapter:_org.springframework.integration.errorLogger} as a subscriber to the 'errorChannel' channel
+2026-05-07 10:06:34 [main] INFO  o.s.i.c.PublishSubscribeChannel - Channel 'electrolyte-md-platform.errorChannel' has 1 subscriber(s).
+2026-05-07 10:06:34 [main] INFO  o.s.i.endpoint.EventDrivenConsumer - started bean '_org.springframework.integration.errorLogger'
+2026-05-07 10:06:34 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat started on port(s): 8080 (http) with context path ''
+2026-05-07 10:06:34 [main] INFO  c.mdplatform.ElectrolyteApplication - Started ElectrolyteApplication in 37.388 seconds (JVM running for 37.91)
+2026-05-07 10:06:57 [http-nio-8080-exec-1] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring DispatcherServlet 'dispatcherServlet'
+2026-05-07 10:06:57 [http-nio-8080-exec-1] INFO  o.s.web.servlet.DispatcherServlet - Initializing Servlet 'dispatcherServlet'
+2026-05-07 10:06:57 [http-nio-8080-exec-1] INFO  o.s.web.servlet.DispatcherServlet - Completed initialization in 0 ms
+2026-05-07 13:58:42 [main] INFO  c.mdplatform.ElectrolyteApplication - Starting ElectrolyteApplication using Java 21.0.10 on WIN-S2TE6QDS2J3 with PID 12504 (D:\data\code\project\md_patform\md_patform_backend\target\classes started by Administrator in D:\data\code\project\md_patform\md_patform_backend)
+2026-05-07 13:58:42 [main] DEBUG c.mdplatform.ElectrolyteApplication - Running with Spring Boot v2.7.17, Spring v5.3.30
+2026-05-07 13:58:42 [main] INFO  c.mdplatform.ElectrolyteApplication - No active profile set, falling back to 1 default profile: "default"
+2026-05-07 13:58:43 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-05-07 13:58:43 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 131 ms. Found 10 JPA repository interfaces.
+2026-05-07 13:58:44 [main] INFO  o.s.i.c.DefaultConfiguringBeanFactoryPostProcessor - No bean named 'errorChannel' has been explicitly defined. Therefore, a default PublishSubscribeChannel will be created.
+2026-05-07 13:58:44 [main] INFO  o.s.i.c.DefaultConfiguringBeanFactoryPostProcessor - No bean named 'integrationHeaderChannelRegistry' has been explicitly defined. Therefore, a default DefaultHeaderChannelRegistry will be created.
+2026-05-07 13:58:44 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat initialized with port(s): 8080 (http)
+2026-05-07 13:58:44 [main] INFO  o.a.catalina.core.StandardService - Starting service [Tomcat]
+2026-05-07 13:58:44 [main] INFO  o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/9.0.82]
+2026-05-07 13:58:44 [main] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+2026-05-07 13:58:44 [main] INFO  o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 1909 ms
+2026-05-07 13:58:45 [main] INFO  o.h.jpa.internal.util.LogHelper - HHH000204: Processing PersistenceUnitInfo [name: default]
+2026-05-07 13:58:45 [main] INFO  org.hibernate.Version - HHH000412: Hibernate ORM core version 5.6.15.Final
+2026-05-07 13:58:45 [main] INFO  o.h.annotations.common.Version - HCANN000001: Hibernate Commons Annotations {5.1.2.Final}
+2026-05-07 13:58:45 [main] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Starting...
+2026-05-07 13:58:50 [main] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Start completed.
+2026-05-07 13:58:50 [main] INFO  org.hibernate.dialect.Dialect - HHH000400: Using dialect: org.hibernate.dialect.MySQL8Dialect
+2026-05-07 13:58:51 [main] INFO  o.h.e.t.j.p.i.JtaPlatformInitiator - HHH000490: Using JtaPlatform implementation: [org.hibernate.engine.transaction.jta.platform.internal.NoJtaPlatform]
+2026-05-07 13:58:51 [main] INFO  o.s.o.j.LocalContainerEntityManagerFactoryBean - Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-05-07 13:58:51 [main] DEBUG c.m.security.JwtAuthenticationFilter - Filter 'jwtAuthenticationFilter' configured for use
+2026-05-07 13:58:52 [main] INFO  com.mdplatform.config.DockerConfig - ℹ️ Detected Windows, using named pipe: npipe:////./pipe/docker_engine
+2026-05-07 13:59:22 [main] WARN  com.mdplatform.config.DockerConfig - ⚠️ Failed to connect to Docker daemon: java.nio.file.NoSuchFileException: \\.\pipe\docker_engine
+2026-05-07 13:59:22 [main] WARN  com.mdplatform.config.DockerConfig - ℹ️ Application will start without Docker integration. MD simulation features will be disabled.
+2026-05-07 13:59:22 [main] WARN  com.mdplatform.service.DockerService - DockerClient is not available. Some features will be limited.
+2026-05-07 13:59:22 [main] INFO  o.s.s.web.DefaultSecurityFilterChain - Will secure any request with [org.springframework.security.web.session.DisableEncodeUrlFilter@498cf1dc, org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter@b9c8678, org.springframework.security.web.context.SecurityContextPersistenceFilter@20c55658, org.springframework.security.web.header.HeaderWriterFilter@73f6ffb1, org.springframework.web.filter.CorsFilter@318beab4, org.springframework.security.web.authentication.logout.LogoutFilter@a486851, com.mdplatform.security.JwtAuthenticationFilter@531292ed, org.springframework.security.web.savedrequest.RequestCacheAwareFilter@e196238, org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter@6f45be6f, org.springframework.security.web.authentication.AnonymousAuthenticationFilter@79a88f45, org.springframework.security.web.session.SessionManagementFilter@472dc215, org.springframework.security.web.access.ExceptionTranslationFilter@7ecf4608, org.springframework.security.web.access.intercept.FilterSecurityInterceptor@6a495d88]
+2026-05-07 13:59:22 [main] WARN  o.s.b.a.o.j.JpaBaseConfiguration$JpaWebConfiguration - spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2026-05-07 13:59:22 [main] INFO  o.s.i.endpoint.EventDrivenConsumer - Adding {logging-channel-adapter:_org.springframework.integration.errorLogger} as a subscriber to the 'errorChannel' channel
+2026-05-07 13:59:22 [main] INFO  o.s.i.c.PublishSubscribeChannel - Channel 'electrolyte-md-platform.errorChannel' has 1 subscriber(s).
+2026-05-07 13:59:22 [main] INFO  o.s.i.endpoint.EventDrivenConsumer - started bean '_org.springframework.integration.errorLogger'
+2026-05-07 13:59:22 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat started on port(s): 8080 (http) with context path ''
+2026-05-07 13:59:22 [main] INFO  c.mdplatform.ElectrolyteApplication - Started ElectrolyteApplication in 40.439 seconds (JVM running for 41.016)
+2026-05-07 15:40:48 [http-nio-8080-exec-1] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring DispatcherServlet 'dispatcherServlet'
+2026-05-07 15:40:48 [http-nio-8080-exec-1] INFO  o.s.web.servlet.DispatcherServlet - Initializing Servlet 'dispatcherServlet'
+2026-05-07 15:40:48 [http-nio-8080-exec-1] INFO  o.s.web.servlet.DispatcherServlet - Completed initialization in 27 ms
+2026-05-07 15:40:49 [http-nio-8080-exec-1] ERROR c.m.security.JwtAuthenticationFilter - 无法设置用户认证: JWT signature does not match locally computed signature. JWT validity cannot be asserted and should not be trusted.
+2026-05-07 15:43:22 [http-nio-8080-exec-2] ERROR c.m.security.JwtAuthenticationFilter - 无法设置用户认证: JWT signature does not match locally computed signature. JWT validity cannot be asserted and should not be trusted.
+2026-05-07 15:57:26 [http-nio-8080-exec-3] ERROR c.m.security.JwtAuthenticationFilter - 无法设置用户认证: JWT signature does not match locally computed signature. JWT validity cannot be asserted and should not be trusted.
+2026-05-07 16:09:34 [http-nio-8080-exec-4] ERROR c.m.security.JwtAuthenticationFilter - 无法设置用户认证: JWT signature does not match locally computed signature. JWT validity cannot be asserted and should not be trusted.
+2026-05-07 16:09:42 [http-nio-8080-exec-6] ERROR c.m.security.JwtAuthenticationFilter - 无法设置用户认证: JWT signature does not match locally computed signature. JWT validity cannot be asserted and should not be trusted.
+2026-05-07 16:09:47 [http-nio-8080-exec-7] ERROR c.m.security.JwtAuthenticationFilter - 无法设置用户认证: JWT signature does not match locally computed signature. JWT validity cannot be asserted and should not be trusted.
+2026-05-07 16:10:14 [http-nio-8080-exec-5] ERROR c.m.security.JwtAuthenticationFilter - 无法设置用户认证: JWT signature does not match locally computed signature. JWT validity cannot be asserted and should not be trusted.
+2026-05-07 16:10:30 [http-nio-8080-exec-9] ERROR c.m.security.JwtAuthenticationFilter - 无法设置用户认证: JWT signature does not match locally computed signature. JWT validity cannot be asserted and should not be trusted.
+2026-05-07 16:11:27 [http-nio-8080-exec-10] ERROR c.m.security.JwtAuthenticationFilter - 无法设置用户认证: JWT signature does not match locally computed signature. JWT validity cannot be asserted and should not be trusted.
+2026-05-07 16:22:47 [http-nio-8080-exec-8] WARN  com.zaxxer.hikari.pool.PoolBase - HikariPool-1 - Failed to validate connection com.mysql.cj.jdbc.ConnectionImpl@79ace0df (No operations allowed after connection closed.). Possibly consider using a shorter maxLifetime value.
+2026-05-07 16:22:47 [http-nio-8080-exec-8] WARN  com.zaxxer.hikari.pool.PoolBase - HikariPool-1 - Failed to validate connection com.mysql.cj.jdbc.ConnectionImpl@61e539c6 (No operations allowed after connection closed.). Possibly consider using a shorter maxLifetime value.
+2026-05-07 16:22:47 [http-nio-8080-exec-8] WARN  com.zaxxer.hikari.pool.PoolBase - HikariPool-1 - Failed to validate connection com.mysql.cj.jdbc.ConnectionImpl@71eaa1fc (No operations allowed after connection closed.). Possibly consider using a shorter maxLifetime value.
+2026-05-07 16:22:47 [http-nio-8080-exec-8] WARN  com.zaxxer.hikari.pool.PoolBase - HikariPool-1 - Failed to validate connection com.mysql.cj.jdbc.ConnectionImpl@6f5e1d06 (No operations allowed after connection closed.). Possibly consider using a shorter maxLifetime value.
+2026-05-07 16:22:47 [http-nio-8080-exec-8] WARN  com.zaxxer.hikari.pool.PoolBase - HikariPool-1 - Failed to validate connection com.mysql.cj.jdbc.ConnectionImpl@742f9c14 (No operations allowed after connection closed.). Possibly consider using a shorter maxLifetime value.
+2026-05-07 16:37:04 [http-nio-8080-exec-1] WARN  com.zaxxer.hikari.pool.PoolBase - HikariPool-1 - Failed to validate connection com.mysql.cj.jdbc.ConnectionImpl@2830451c (No operations allowed after connection closed.). Possibly consider using a shorter maxLifetime value.
+2026-05-07 16:37:04 [http-nio-8080-exec-1] WARN  com.zaxxer.hikari.pool.PoolBase - HikariPool-1 - Failed to validate connection com.mysql.cj.jdbc.ConnectionImpl@4de54518 (No operations allowed after connection closed.). Possibly consider using a shorter maxLifetime value.
+2026-05-07 16:37:04 [http-nio-8080-exec-1] WARN  com.zaxxer.hikari.pool.PoolBase - HikariPool-1 - Failed to validate connection com.mysql.cj.jdbc.ConnectionImpl@7f147619 (No operations allowed after connection closed.). Possibly consider using a shorter maxLifetime value.
+2026-05-07 16:37:04 [http-nio-8080-exec-1] WARN  com.zaxxer.hikari.pool.PoolBase - HikariPool-1 - Failed to validate connection com.mysql.cj.jdbc.ConnectionImpl@5526d442 (No operations allowed after connection closed.). Possibly consider using a shorter maxLifetime value.
+2026-05-07 16:37:04 [http-nio-8080-exec-1] WARN  com.zaxxer.hikari.pool.PoolBase - HikariPool-1 - Failed to validate connection com.mysql.cj.jdbc.ConnectionImpl@72d73e6b (No operations allowed after connection closed.). Possibly consider using a shorter maxLifetime value.
+2026-05-07 16:50:00 [http-nio-8080-exec-2] WARN  com.zaxxer.hikari.pool.PoolBase - HikariPool-1 - Failed to validate connection com.mysql.cj.jdbc.ConnectionImpl@52ea75c8 (No operations allowed after connection closed.). Possibly consider using a shorter maxLifetime value.
+2026-05-07 16:50:00 [http-nio-8080-exec-2] WARN  com.zaxxer.hikari.pool.PoolBase - HikariPool-1 - Failed to validate connection com.mysql.cj.jdbc.ConnectionImpl@1a58bbba (No operations allowed after connection closed.). Possibly consider using a shorter maxLifetime value.
+2026-05-07 16:50:00 [http-nio-8080-exec-2] WARN  com.zaxxer.hikari.pool.PoolBase - HikariPool-1 - Failed to validate connection com.mysql.cj.jdbc.ConnectionImpl@6c59e9ee (No operations allowed after connection closed.). Possibly consider using a shorter maxLifetime value.
+2026-05-07 16:50:00 [http-nio-8080-exec-2] WARN  com.zaxxer.hikari.pool.PoolBase - HikariPool-1 - Failed to validate connection com.mysql.cj.jdbc.ConnectionImpl@6d1c9598 (No operations allowed after connection closed.). Possibly consider using a shorter maxLifetime value.
+2026-05-07 16:50:00 [http-nio-8080-exec-2] WARN  com.zaxxer.hikari.pool.PoolBase - HikariPool-1 - Failed to validate connection com.mysql.cj.jdbc.ConnectionImpl@7a1aad29 (No operations allowed after connection closed.). Possibly consider using a shorter maxLifetime value.
+2026-05-07 16:58:16 [http-nio-8080-exec-6] WARN  com.zaxxer.hikari.pool.PoolBase - HikariPool-1 - Failed to validate connection com.mysql.cj.jdbc.ConnectionImpl@26657911 (No operations allowed after connection closed.). Possibly consider using a shorter maxLifetime value.
+2026-05-07 16:58:16 [http-nio-8080-exec-6] WARN  com.zaxxer.hikari.pool.PoolBase - HikariPool-1 - Failed to validate connection com.mysql.cj.jdbc.ConnectionImpl@47541394 (No operations allowed after connection closed.). Possibly consider using a shorter maxLifetime value.
+2026-05-07 16:58:16 [http-nio-8080-exec-6] WARN  com.zaxxer.hikari.pool.PoolBase - HikariPool-1 - Failed to validate connection com.mysql.cj.jdbc.ConnectionImpl@744cfdaa (No operations allowed after connection closed.). Possibly consider using a shorter maxLifetime value.
+2026-05-07 16:58:16 [http-nio-8080-exec-6] WARN  com.zaxxer.hikari.pool.PoolBase - HikariPool-1 - Failed to validate connection com.mysql.cj.jdbc.ConnectionImpl@796cbfc3 (No operations allowed after connection closed.). Possibly consider using a shorter maxLifetime value.
+2026-05-07 16:58:16 [http-nio-8080-exec-6] WARN  com.zaxxer.hikari.pool.PoolBase - HikariPool-1 - Failed to validate connection com.mysql.cj.jdbc.ConnectionImpl@1bf0402a (No operations allowed after connection closed.). Possibly consider using a shorter maxLifetime value.
+2026-05-07 16:58:17 [http-nio-8080-exec-6] INFO  c.m.controller.AuthController - User logged in: admin
+2026-05-07 17:01:47 [http-nio-8080-exec-5] INFO  c.m.controller.AuthController - User logged in: admin
+2026-05-07 17:04:17 [http-nio-8080-exec-6] INFO  c.m.service.SimulationService - Created simulation job: aaa with id: 90001
+2026-05-07 17:04:41 [http-nio-8080-exec-6] INFO  c.m.controller.AuthController - User logged in: admin
+2026-05-07 17:06:17 [http-nio-8080-exec-5] WARN  com.zaxxer.hikari.pool.PoolBase - HikariPool-1 - Failed to validate connection com.mysql.cj.jdbc.ConnectionImpl@7dec079 (No operations allowed after connection closed.). Possibly consider using a shorter maxLifetime value.
+2026-05-07 17:06:17 [http-nio-8080-exec-5] WARN  com.zaxxer.hikari.pool.PoolBase - HikariPool-1 - Failed to validate connection com.mysql.cj.jdbc.ConnectionImpl@55792d03 (No operations allowed after connection closed.). Possibly consider using a shorter maxLifetime value.
+2026-05-07 17:06:17 [http-nio-8080-exec-5] WARN  com.zaxxer.hikari.pool.PoolBase - HikariPool-1 - Failed to validate connection com.mysql.cj.jdbc.ConnectionImpl@36de06f5 (No operations allowed after connection closed.). Possibly consider using a shorter maxLifetime value.
+2026-05-07 17:19:52 [http-nio-8080-exec-3] INFO  c.m.controller.AuthController - User logged in: admin
+2026-05-07 17:20:26 [http-nio-8080-exec-3] INFO  c.m.controller.AuthController - User logged in: admin
+2026-05-07 17:27:15 [http-nio-8080-exec-9] INFO  c.m.controller.AuthController - User logged in: admin
+2026-05-07 17:28:19 [http-nio-8080-exec-9] WARN  com.zaxxer.hikari.pool.PoolBase - HikariPool-1 - Failed to validate connection com.mysql.cj.jdbc.ConnectionImpl@67e65c7f (No operations allowed after connection closed.). Possibly consider using a shorter maxLifetime value.
+2026-05-07 17:28:19 [http-nio-8080-exec-9] WARN  com.zaxxer.hikari.pool.PoolBase - HikariPool-1 - Failed to validate connection com.mysql.cj.jdbc.ConnectionImpl@49e1f103 (No operations allowed after connection closed.). Possibly consider using a shorter maxLifetime value.

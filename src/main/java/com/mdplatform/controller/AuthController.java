@@ -1,11 +1,13 @@
 package com.mdplatform.controller;
 
 import com.mdplatform.model.SysUser;
+import com.mdplatform.security.JwtTokenProvider;
 import com.mdplatform.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
@@ -21,6 +23,8 @@ import java.util.Optional;
 public class AuthController {
 
     private final UserService userService;
+    private final PasswordEncoder passwordEncoder;
+    private final JwtTokenProvider jwtTokenProvider;
 
     @PostMapping("/login")
     public ResponseEntity<Map<String, Object>> login(@RequestBody Map<String, Object> request) {
@@ -37,9 +41,14 @@ public class AuthController {
         Optional<SysUser> userOptional = userService.getUserByUsername(username);
         if (userOptional.isPresent()) {
             SysUser user = userOptional.get();
-            if (password.equals(user.getPassword())) {
+            // 使用 BCrypt 验证密码
+            if (passwordEncoder.matches(password, user.getPassword())) {
+                // 生成 JWT Token
+                String token = jwtTokenProvider.generateToken(user.getUserId(), user.getUsername());
+
                 response.put("success", true);
                 response.put("message", "登录成功");
+                response.put("token", token);
                 response.put("user", buildUserResponse(user));
                 log.info("User logged in: {}", username);
                 return ResponseEntity.ok(response);
@@ -80,7 +89,8 @@ public class AuthController {
 
         SysUser user = new SysUser();
         user.setUsername(username);
-        user.setPassword(password);
+        // 使用 BCrypt 加密密码
+        user.setPassword(passwordEncoder.encode(password));
         user.setEmail(email);
         user.setRealName(realName);
         user.setOrganization(organization);
@@ -89,8 +99,12 @@ public class AuthController {
 
         SysUser createdUser = userService.createUser(user);
 
+        // 注册成功后自动生成 Token
+        String token = jwtTokenProvider.generateToken(createdUser.getUserId(), createdUser.getUsername());
+
         response.put("success", true);
         response.put("message", "注册成功");
+        response.put("token", token);
         response.put("user", buildUserResponse(createdUser));
         log.info("User registered: {}", username);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);

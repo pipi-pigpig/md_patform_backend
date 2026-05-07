@@ -60,3 +60,25 @@ VALUES
 -- CREATE USER 'mduser'@'%' IDENTIFIED BY 'mdpassword123';
 -- GRANT ALL PRIVILEGES ON md_database.* TO 'mduser'@'%';
 -- FLUSH PRIVILEGES;
+
+-- 系统用户表
+CREATE TABLE IF NOT EXISTS sys_users (
+    user_id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    username VARCHAR(50) NOT NULL UNIQUE,
+    password VARCHAR(255) NOT NULL,
+    email VARCHAR(100),
+    real_name VARCHAR(50),
+    organization VARCHAR(100),
+    phone VARCHAR(20),
+    role_id INT DEFAULT 1,
+    status INT DEFAULT 1,
+    create_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    update_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    INDEX idx_username (username),
+    INDEX idx_email (email)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- 插入默认管理员用户 (密码: admin123, BCrypt加密)
+INSERT INTO sys_users (username, password, email, real_name, organization, role_id, status)
+VALUES ('admin', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZRGdjGj/n3.F5T/T/r0F5WvZhVZaG', 'admin@example.com', '系统管理员', '系统管理', 1, 1)
+ON DUPLICATE KEY UPDATE username = username;
