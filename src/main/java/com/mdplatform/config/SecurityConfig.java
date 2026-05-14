@@ -59,6 +59,7 @@ public class SecurityConfig {
                     "/api/auth/login",
                     "/api/auth/register",
                     "/api/health/**",
+                    "/api/systems/**",
                     "/error"
                 ).permitAll()
                 // 其他所有请求需要认证

@@ -1,5 +1,6 @@
 package com.mdplatform.controller;
 
+import com.mdplatform.dto.SystemCreateRequest;
 import com.mdplatform.dto.SystemDto;
 import com.mdplatform.model.ElectrolyteSystem;
 import com.mdplatform.service.SystemService;
@@ -39,10 +40,11 @@ public class SystemController {
     }
 
     @PostMapping
-    public ResponseEntity<ElectrolyteSystem> createSystem(@RequestBody ElectrolyteSystem system) {
+    public ResponseEntity<SystemDto> createSystem(@RequestBody SystemCreateRequest request) {
         try {
+            ElectrolyteSystem system = request.toEntity();
             ElectrolyteSystem created = systemService.createSystem(system);
-            return ResponseEntity.status(HttpStatus.CREATED).body(created);
+            return ResponseEntity.status(HttpStatus.CREATED).body(SystemDto.fromEntity(created));
         } catch (Exception e) {
             log.error("Failed to create system", e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
@@ -50,11 +52,12 @@ public class SystemController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ElectrolyteSystem> updateSystem(
+    public ResponseEntity<SystemDto> updateSystem(
             @PathVariable Long id,
-            @RequestBody ElectrolyteSystem system) {
+            @RequestBody SystemCreateRequest request) {
+        ElectrolyteSystem system = request.toEntity();
         return systemService.updateSystem(id, system)
-                .map(ResponseEntity::ok)
+                .map(s -> ResponseEntity.ok(SystemDto.fromEntity(s)))
                 .orElse(ResponseEntity.notFound().build());
     }
 

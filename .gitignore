@@ -35,3 +35,9 @@ build/
 package-lock.json
 package.json
 node_modules/
+logs/
+.trae/
+test/
+
+
+计算平台软件设计方案.md
