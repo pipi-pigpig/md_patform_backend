@@ -1,0 +1,77 @@
+server:
+  port: 0  # 使用随机端口避免端口冲突
+
+spring:
+  task:
+    execution:
+      pool:
+        core-size: 5
+        max-size: 10
+        queue-capacity: 50
+      thread-name-prefix: Test-Async-
+  application:
+    name: electrolyte-md-platform-test
+
+  # 使用H2内存数据库进行测试
+  datasource:
+    url: jdbc:h2:mem:testdb;MODE=MySQL;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
+    username: sa
+    password:
+    driver-class-name: org.h2.Driver
+
+  h2:
+    console:
+      enabled: false
+
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    show-sql: false
+    properties:
+      hibernate:
+        format_sql: true
+        dialect: org.hibernate.dialect.H2Dialect
+        jdbc:
+          batch_size: 20
+        order_inserts: true
+        order_updates: true
+
+  servlet:
+    multipart:
+      max-file-size: 100MB
+      max-request-size: 100MB
+
+  # 禁用安全配置用于测试
+  autoconfigure:
+    exclude:
+      - org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration
+
+app:
+  upload-dir: ./test-uploads
+  results-dir: ./test-results
+  scripts-dir: ./test-scripts
+
+  docker:
+    enabled: true
+    md-container-name: md-engine
+    md-input-path: /workspace/inputs
+    md-output-path: /workspace/results
+    lammps-command: mpirun -np 4 lmp -in
+    gromacs-command: gmx mdrun -deffnm
+    timeout-seconds: 300
+
+logging:
+  level:
+    com.mdplatform: DEBUG
+    com.github.dockerjava: DEBUG
+    org.hibernate.SQL: WARN
+    org.hibernate.type.descriptor.sql: WARN
+  pattern:
+    console: "%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n"
+
+md-platform:
+  file-storage:
+    root-path: ./test-data/md_platform_data
+    temp-retention-hours: 1
+    system-templates-path: system_templates
+    user-uploads-path: user_uploads

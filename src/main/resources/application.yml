@@ -1,0 +1,80 @@
+server:
+  port: 8080
+#  servlet:
+#    context-path: /api
+
+spring:
+  task:
+    execution:
+      pool:
+        core-size: 10
+        max-size: 50
+        queue-capacity: 100
+      thread-name-prefix: Async-
+  application:
+    name: electrolyte-md-platform
+
+  # MySQL??
+  datasource:
+    url: jdbc:mysql://gateway01.ap-southeast-1.prod.aws.tidbcloud.com:4000/md_database?useSSL=true&requireSSL=true&serverTimezone=UTC&allowPublicKeyRetrieval=true&characterEncoding=UTF-8&enabledTLSProtocols=TLSv1.2,TLSv1.3
+    username: 2Z2dkBWwpS3FSfM.root
+    password: rrlKa4WDsqsSi5Iv
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    hikari:
+      maximum-pool-size: 20
+      minimum-idle: 5
+      connection-timeout: 30000
+      idle-timeout: 600000
+      max-lifetime: 1800000
+
+  jpa:
+    hibernate:
+      ddl-auto: none
+    show-sql: false
+    properties:
+      hibernate:
+        format_sql: true
+        dialect: org.hibernate.dialect.MySQL8Dialect
+        jdbc:
+          batch_size: 20
+        order_inserts: true
+        order_updates: true
+
+  servlet:
+    multipart:
+      max-file-size: 500MB
+      max-request-size: 500MB
+
+app:
+  # 文件存储目录
+  upload-dir: ./uploads
+  results-dir: ./results
+  scripts-dir: ./scripts
+
+  # Docker配置
+  docker:
+    enabled: true  # 设置为false禁用Docker集成（仅平台基础功能可用）
+    md-container-name: md-engine
+    md-input-path: /workspace/inputs
+    md-output-path: /workspace/results
+    lammps-command: mpirun -np 4 lmp -in
+    gromacs-command: gmx mdrun -deffnm
+    timeout-seconds: 3600  # 1小时超时
+
+logging:
+  level:
+    com.mdplatform: DEBUG
+    com.github.dockerjava: INFO
+    org.hibernate.SQL: WARN
+    org.hibernate.type.descriptor.sql: WARN
+  file:
+    name: logs/app.log
+  pattern:
+    file: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n"
+
+md-platform:
+  file-storage:
+    root-path: ./data/md_platform_data
+    temp-retention-hours: 24
+    system-templates-path: system_templates
+    user-uploads-path: user_uploads
