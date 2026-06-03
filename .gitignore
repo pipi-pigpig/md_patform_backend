@@ -32,12 +32,73 @@ build/
 ### VS Code ###
 .vscode/
 
-package-lock.json
-package.json
-node_modules/
+### Logs ###
 logs/
+*.log
+*.log.*
+
+### Application ###
+application-local.yml
+application-dev.yml
+application-prod.yml
+application.yml.bak
+
+### Credentials ###
+*.pem
+*.key
+*.crt
+settings.xml
+
+### OS ###
+.DS_Store
+Thumbs.db
+
+### Temp ###
+*.tmp
+*.temp
+
+### Trae ###
 .trae/
-test/
 
+### Database ###
+data/
+mysql/
+redis/
 
-计算平台软件设计方案.md
+### Uploads ###
+uploads/
+
+### Java ###
+*.class
+*.jar
+*.war
+*.ear
+*.nar
+
+### Maven ###
+dependency-reduced-pom.xml
+.mvn/timing.properties
+.mvn/wrapper/maven-wrapper.jar
+
+### Spring Boot ###
+.springBeans
+
+### Test Coverage ###
+jacoco.exec
+*.exec
+coverage/
+
+### Backup ###
+*.bak
+*.backup
+*.old
+
+### Package Files ###
+*.zip
+*.tar.gz
+*.rar
+
+### Sensitive Data ###
+*.secret
+*.credentials
+secrets.yml

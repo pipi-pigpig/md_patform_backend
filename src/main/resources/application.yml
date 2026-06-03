@@ -71,3 +71,10 @@ logging:
     name: logs/app.log
   pattern:
     file: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n"
+
+md-platform:
+  file-storage:
+    root-path: ./data/md_platform_data
+    temp-retention-hours: 24
+    system-templates-path: system_templates
+    user-uploads-path: user_uploads
