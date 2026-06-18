@@ -44,8 +44,8 @@ public class SecurityConfig {
                 .antMatchers(
                     "/api/auth/login",
                     "/api/auth/register",
+                    "/api/auth/password-reset/**",
                     "/api/health/**",
-                    "/api/systems/**",
                     "/error"
                 ).permitAll()
                 .anyRequest().authenticated()

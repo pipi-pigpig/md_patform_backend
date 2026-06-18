@@ -102,3 +102,10 @@ coverage/
 *.secret
 *.credentials
 secrets.yml
+
+node_modules/
+logs/
+test/
+tests/
+package-lock.json
+package.json

@@ -8,6 +8,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -31,6 +32,10 @@ public class UserService {
         return userRepository.findByUsername(username);
     }
 
+    public Optional<SysUser> getUserByEmail(String email) {
+        return userRepository.findByEmail(email);
+    }
+
     @Transactional
     public SysUser createUser(SysUser user) {
         log.info("Creating user: {}", user.getUsername());
@@ -40,18 +45,36 @@ public class UserService {
     @Transactional
     public Optional<SysUser> updateUser(Long id, SysUser user) {
         return userRepository.findById(id).map(existingUser -> {
-            existingUser.setUsername(user.getUsername());
-            existingUser.setEmail(user.getEmail());
-            existingUser.setRealName(user.getRealName());
-            existingUser.setOrganization(user.getOrganization());
-            if (user.getPassword() != null && !user.getPassword().isEmpty()) {
-                existingUser.setPassword(user.getPassword());
+            if (user.getRealName() != null) {
+                existingUser.setRealName(user.getRealName());
             }
-            if (user.getRoleId() != null) {
-                existingUser.setRoleId(user.getRoleId());
+            if (user.getOrganization() != null) {
+                existingUser.setOrganization(user.getOrganization());
+            }
+            if (user.getPhone() != null) {
+                existingUser.setPhone(user.getPhone());
+            }
+            if (user.getEmail() != null) {
+                existingUser.setEmail(user.getEmail());
             }
             log.info("Updated user with id: {}", id);
             return userRepository.save(existingUser);
+        });
+    }
+
+    @Transactional
+    public void updateLastLoginTime(Long userId) {
+        userRepository.findById(userId).ifPresent(user -> {
+            user.setLastLoginTime(LocalDateTime.now());
+            userRepository.save(user);
+        });
+    }
+
+    @Transactional
+    public void updatePassword(Long userId, String newPassword) {
+        userRepository.findById(userId).ifPresent(user -> {
+            user.setPassword(newPassword);
+            userRepository.save(user);
         });
     }
 

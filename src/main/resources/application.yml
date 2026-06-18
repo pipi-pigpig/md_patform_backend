@@ -4,6 +4,10 @@ server:
 #    context-path: /api
 
 spring:
+  # 可选导入本地私有配置（application-local.yml），存在则覆盖同名键，不存在则跳过
+  # 该文件不入 git，用于本地开发环境覆盖（如 spring.profiles.active: mock）
+  config:
+    import: "optional:classpath:application-local.yml"
   task:
     execution:
       pool:

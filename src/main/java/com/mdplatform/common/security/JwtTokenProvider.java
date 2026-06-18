@@ -22,6 +22,9 @@ public class JwtTokenProvider {
     @Value("${jwt.expiration:86400000}")
     private long jwtExpiration;
 
+    @Value("${jwt.refresh-expiration:604800000}")
+    private long jwtRefreshExpiration;
+
     private Key key;
 
     @PostConstruct
@@ -30,8 +33,16 @@ public class JwtTokenProvider {
     }
 
     public String generateToken(Long userId, String username) {
+        return buildToken(userId, username, jwtExpiration);
+    }
+
+    public String generateRefreshToken(Long userId, String username) {
+        return buildToken(userId, username, jwtRefreshExpiration);
+    }
+
+    private String buildToken(Long userId, String username, long expiration) {
         Date now = new Date();
-        Date expiryDate = new Date(now.getTime() + jwtExpiration);
+        Date expiryDate = new Date(now.getTime() + expiration);
 
         Map<String, Object> claims = new HashMap<>();
         claims.put("userId", userId);
