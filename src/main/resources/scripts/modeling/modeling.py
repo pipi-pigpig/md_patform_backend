@@ -66,8 +66,70 @@ def calculate_molecule_counts(formula_data: dict) -> dict:
     salt_info = formula_data.get("salt_info", {})
     box_size = formula_data.get("box_size", {})
     
+    # 提前获取密度参数，用于盒子尺寸估算和后续计算
+    density = formula_data.get("density", config.DEFAULT_SOLVENT_DENSITY)
+    
     if not box_size:
-        raise ValueError("缺少盒子尺寸参数")
+        # 循环依赖修复：当未提供盒子尺寸时，基于配方组成和密度估算
+        # 在建模流程中，分子数量计算（步骤1）应在盒子尺寸计算（步骤2）之前，
+        # 因此不能要求box_size作为输入。此处通过配方组成和密度估算盒子尺寸，
+        # 打破"分子数量需要box_size，box_size需要分子数量"的循环依赖。
+        logger.warning("未提供盒子尺寸参数，将基于配方组成和默认溶剂密度估算盒子尺寸")
+        
+        # 1. 计算溶剂混合物的平均分子量
+        avg_solvent_mw = _calculate_average_solvent_mw(solvent_info)
+        
+        if avg_solvent_mw <= 0:
+            raise ValueError("无法估算盒子尺寸：溶剂信息中缺少有效的分子量数据")
+        
+        # 2. 基于目标溶剂分子数估算总质量（分子量 × 摩尔数）
+        target_solvent_count = config.DEFAULT_TARGET_MOLECULE_COUNT
+        target_solvent_moles = target_solvent_count / config.AVOGADRO_NUMBER
+        solvent_mass = target_solvent_moles * avg_solvent_mw
+        
+        # 3. 估算盐的质量贡献（如果存在盐信息）
+        salt_mass = 0.0
+        if salt_info:
+            concentration = salt_info.get("concentration", 0)
+            if concentration > 0:
+                # 先用溶剂质量估算体积，再从浓度推算盐的摩尔数
+                estimated_volume_cm3 = solvent_mass / density
+                salt_moles = concentration * estimated_volume_cm3 / 1000
+                
+                cation_info = salt_info.get("cation", {})
+                anion_info = salt_info.get("anion", {})
+                cation_mw = cation_info.get("molecular_weight", 0)
+                anion_mw = anion_info.get("molecular_weight", 0)
+                
+                # 如果分子量缺失，从配置模板中获取默认值
+                if cation_mw <= 0:
+                    cation_name = cation_info.get("name", "Li")
+                    mol_info = config.get_molecule_info(cation_name)
+                    cation_mw = mol_info.get("molecular_weight", 6.94)
+                if anion_mw <= 0:
+                    anion_name = anion_info.get("name", "PF6")
+                    mol_info = config.get_molecule_info(anion_name)
+                    anion_mw = mol_info.get("molecular_weight", 144.96)
+                
+                salt_mass = salt_moles * (cation_mw + anion_mw)
+        
+        # 4. 估算总体积：体积 = 总质量 / 密度
+        total_mass_estimated = solvent_mass + salt_mass
+        volume_cm3 = total_mass_estimated / density
+        volume_angstrom3 = volume_cm3 * config.CM3_TO_ANGSTROM3
+        
+        # 5. 计算盒子边长（立方盒子），并应用放大系数
+        edge = volume_angstrom3 ** (1/3)
+        scaled_edge = edge * config.BOX_SCALE_FACTOR
+        
+        x = y = z = round(scaled_edge, 2)
+        box_size = {"x": x, "y": y, "z": z}
+        
+        logger.warning(
+            f"估算盒子尺寸: {x} x {y} x {z} Å "
+            f"(基于密度={density} g/cm³, 目标溶剂分子数={target_solvent_count}, "
+            f"估算总质量={total_mass_estimated:.6e} g)"
+        )
     
     x = box_size.get("x", 0)
     y = box_size.get("y", 0)
@@ -80,8 +142,6 @@ def calculate_molecule_counts(formula_data: dict) -> dict:
     volume_cm3 = volume_angstrom3 / config.CM3_TO_ANGSTROM3
     
     logger.debug(f"盒子体积: {volume_angstrom3:.2f} Å³ = {volume_cm3:.6e} cm³")
-    
-    density = formula_data.get("density", config.DEFAULT_DENSITY)
     
     total_mass = density * volume_cm3
     logger.debug(f"总质量: {total_mass:.6f} g (密度: {density} g/cm³)")

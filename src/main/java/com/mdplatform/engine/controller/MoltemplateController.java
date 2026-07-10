@@ -3,6 +3,8 @@ package com.mdplatform.engine.controller;
 import com.mdplatform.common.security.SecurityUtils;
 import com.mdplatform.engine.dto.FormulaRequest;
 import com.mdplatform.engine.service.MoltemplateService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -15,16 +17,31 @@ import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Moltemplate建模控制器，提供Moltemplate分子建模和力场生成接口
+ *
+ * @author 电解液MD平台
+ * @version 1.0.0
+ */
 @RestController
 @RequestMapping("/api/moltemplate")
 @RequiredArgsConstructor
 @Slf4j
-@CrossOrigin(origins = "*")
+@Tag(name = "Moltemplate建模", description = "Moltemplate分子建模和力场生成接口")
 public class MoltemplateController {
 
     private final MoltemplateService moltemplateService;
 
+    /**
+     * 创建建模任务，序列化配方配置到JSON文件
+     *
+     * @param request 配方请求参数
+     * @param userId  用户ID（可选，默认使用当前登录用户）
+     * @param jobId   任务ID（可选，默认使用时间戳生成）
+     * @return 建模任务创建结果
+     */
     @PostMapping("/calculate")
+    @Operation(summary = "创建建模任务")
     public ResponseEntity<Map<String, Object>> createModelingTask(
             @Valid @RequestBody FormulaRequest request,
             @RequestParam(required = false) Long userId,
@@ -61,7 +78,14 @@ public class MoltemplateController {
         }
     }
 
+    /**
+     * 查询建模任务状态
+     *
+     * @param jobId 任务ID
+     * @return 建模任务状态信息
+     */
     @GetMapping("/status/{jobId}")
+    @Operation(summary = "查询建模任务状态")
     public ResponseEntity<Map<String, Object>> getModelingTaskStatus(@PathVariable Long jobId) {
         Long currentUserId = SecurityUtils.getCurrentUserId();
         if (currentUserId == null) {
@@ -79,15 +103,15 @@ public class MoltemplateController {
 
             if (configExists) {
                 String formulaContent = moltemplateService.readFormulaJSON(currentUserId, jobId);
-                response.put("configPreview", formulaContent.length() > 200 
-                        ? formulaContent.substring(0, 200) + "..." 
+                response.put("configPreview", formulaContent.length() > 200
+                        ? formulaContent.substring(0, 200) + "..."
                         : formulaContent);
             }
 
             return ResponseEntity.ok(response);
 
         } catch (IOException e) {
-            log.error("查询建模任务状态失败: userId={}, jobId={}, error={}", 
+            log.error("查询建模任务状态失败: userId={}, jobId={}, error={}",
                     currentUserId, jobId, e.getMessage(), e);
             Map<String, Object> errorResponse = new HashMap<>();
             errorResponse.put("success", false);
@@ -97,7 +121,14 @@ public class MoltemplateController {
         }
     }
 
+    /**
+     * 执行Python建模脚本
+     *
+     * @param jobId 任务ID
+     * @return 执行结果
+     */
     @PostMapping("/execute/{jobId}")
+    @Operation(summary = "执行Python建模脚本")
     public ResponseEntity<Map<String, Object>> executeModeling(@PathVariable Long jobId) {
         Long currentUserId = SecurityUtils.getCurrentUserId();
         if (currentUserId == null) {
@@ -114,12 +145,12 @@ public class MoltemplateController {
             response.put("message", "Python建模脚本已启动");
             response.put("processId", process.pid());
 
-            log.info("Python建模脚本已启动: userId={}, jobId={}, pid={}", 
+            log.info("Python建模脚本已启动: userId={}, jobId={}, pid={}",
                     currentUserId, jobId, process.pid());
             return ResponseEntity.ok(response);
 
         } catch (IOException e) {
-            log.error("执行Python建模脚本失败: userId={}, jobId={}, error={}", 
+            log.error("执行Python建模脚本失败: userId={}, jobId={}, error={}",
                     currentUserId, jobId, e.getMessage(), e);
             Map<String, Object> errorResponse = new HashMap<>();
             errorResponse.put("success", false);

@@ -582,4 +582,188 @@ public class PathUtil {
             throw new RuntimeException("创建目录失败: " + path, e);
         }
     }
+
+    /**
+     * 获取系统预置分子模板目录路径
+     * 
+     * <p>路径格式：{root_path}/system_templates/molecule_templates/{moleculeName}/</p>
+     * 
+     * <p>用于获取系统预置的分子模板文件目录，包含.lt、.pdb、.json等模板文件。</p>
+     * 
+     * <p>示例：</p>
+     * <pre>
+     * Path ecTemplatePath = pathUtil.getMoleculeTemplatePath("EC");
+     * // 返回: {root_path}/system_templates/molecule_templates/EC/
+     * </pre>
+     * 
+     * @param moleculeName 分子名称，如"EC"、"DMC"、"Li"、"PF6"等
+     * @return 分子模板目录的绝对路径
+     * @throws NullPointerException 当moleculeName为null时抛出
+     * @throws IllegalArgumentException 当moleculeName为空字符串时抛出
+     */
+    public Path getMoleculeTemplatePath(String moleculeName) {
+        // 校验分子名称参数
+        Objects.requireNonNull(moleculeName, "moleculeName不能为null");
+        if (moleculeName.trim().isEmpty()) {
+            throw new IllegalArgumentException("moleculeName不能为空字符串");
+        }
+        
+        // 规范化分子名称：移除特殊字符，保留字母数字和下划线
+        String safeName = moleculeName.trim().replaceAll("[^a-zA-Z0-9_-]", "");
+        
+        // 构建分子模板目录路径：根目录/system_templates/molecule_templates/{moleculeName}/
+        Path path = getRootPath()
+                .resolve(storageConfig.getSystemTemplatesPath())
+                .resolve("molecule_templates")
+                .resolve(safeName);
+        
+        logger.debug("生成分子模板目录路径: moleculeName={}, path={}", moleculeName, path);
+        return path;
+    }
+
+    /**
+     * 获取系统预置力场目录路径
+     * 
+     * <p>路径格式：{root_path}/system_templates/force_fields/{forcefieldName}/</p>
+     * 
+     * <p>用于获取系统预置的力场文件目录，包含力场参数文件。</p>
+     * 
+     * <p>示例：</p>
+     * <pre>
+     * Path oplsaaPath = pathUtil.getForcefieldPath("opls-aa");
+     * // 返回: {root_path}/system_templates/force_fields/opls-aa/
+     * </pre>
+     * 
+     * @param forcefieldName 力场名称，如"opls-aa"、"gaff"、"compass"等
+     * @return 力场目录的绝对路径
+     * @throws NullPointerException 当forcefieldName为null时抛出
+     * @throws IllegalArgumentException 当forcefieldName为空字符串时抛出
+     */
+    public Path getForcefieldPath(String forcefieldName) {
+        // 校验力场名称参数
+        Objects.requireNonNull(forcefieldName, "forcefieldName不能为null");
+        if (forcefieldName.trim().isEmpty()) {
+            throw new IllegalArgumentException("forcefieldName不能为空字符串");
+        }
+        
+        // 规范化力场名称：移除特殊字符，保留字母数字、下划线和连字符
+        String safeName = forcefieldName.trim().replaceAll("[^a-zA-Z0-9_-]", "");
+        
+        // 构建力场目录路径：根目录/system_templates/force_fields/{forcefieldName}/
+        Path path = getRootPath()
+                .resolve(storageConfig.getSystemTemplatesPath())
+                .resolve("force_fields")
+                .resolve(safeName);
+        
+        logger.debug("生成力场目录路径: forcefieldName={}, path={}", forcefieldName, path);
+        return path;
+    }
+
+    /**
+     * 获取系统预置LAMMPS模板目录路径
+     *
+     * <p>路径格式：{root_path}/system_templates/lammps_templates/</p>
+     *
+     * <p>用于获取系统预置的LAMMPS输入脚本Jinja2模板目录。</p>
+     *
+     * @return LAMMPS模板目录的绝对路径
+     */
+    public Path getLammpsTemplatesPath() {
+        Path path = getRootPath()
+                .resolve(storageConfig.getSystemTemplatesPath())
+                .resolve("lammps_templates");
+        
+        logger.debug("生成LAMMPS模板目录路径: path={}", path);
+        return path;
+    }
+
+    /**
+     * 获取用户上传文件目录路径
+     *
+     * <p>路径格式：{root_path}/user_{userId}/user_uploads/</p>
+     *
+     * <p>用于获取用户上传的分子结构文件、SMILES文件等上传文件的存储目录。</p>
+     *
+     * <p>示例：</p>
+     * <pre>
+     * Path uploadPath = pathUtil.getUserUploadPath(1L);
+     * // 返回: {root_path}/user_1/user_uploads/
+     * </pre>
+     *
+     * @param userId 用户ID
+     * @return 用户上传文件目录的绝对路径
+     * @throws NullPointerException 当userId为null时抛出
+     * @throws IllegalArgumentException 当userId无效时抛出
+     */
+    public Path getUserUploadPath(Long userId) {
+        Objects.requireNonNull(userId, "userId不能为null");
+        if (userId <= 0) {
+            throw new IllegalArgumentException("userId必须大于0");
+        }
+        Path path = getRootPath()
+                .resolve(String.format("user_%d", userId))
+                .resolve(storageConfig.getUserUploadsPath());
+        logger.debug("生成用户上传文件目录路径: userId={}, path={}", userId, path);
+        return path;
+    }
+
+    /**
+     * 将本地文件路径转换为Docker容器内路径
+     *
+     * <p>本地路径前缀（如 data/md_platform_data/）会被替换为 /workspace/data/。</p>
+     *
+     * <p>路径映射规则：</p>
+     * <pre>
+     * 本地: data/md_platform_data/user_1/jobs/job_1/inputs/
+     * Docker: /workspace/data/user_1/jobs/job_1/inputs/
+     * </pre>
+     *
+     * <p>该方法统一了原先分散在PackmolService、MoltemplateService、
+     * MoltemplateExecutionService中的重复实现，确保路径转换逻辑一致。</p>
+     *
+     * @param localPath 本地文件路径
+     * @return Docker容器内路径
+     */
+    public String convertToDockerPath(Path localPath) {
+        String pathStr = localPath.toString().replace('\\', '/');
+        String rootPrefix = getRootPath().toString().replace('\\', '/');
+        if (pathStr.startsWith(rootPrefix)) {
+            String relativePath = pathStr.substring(rootPrefix.length());
+            // 去除开头的 /，避免生成 /workspace/data//user_1/... 双斜杠路径
+            if (relativePath.startsWith("/")) {
+                relativePath = relativePath.substring(1);
+            }
+            return "/workspace/data/" + relativePath;
+        }
+        return pathStr;
+    }
+
+    /**
+     * 获取用户根目录路径
+     *
+     * <p>路径格式：{root_path}/user_{userId}/</p>
+     *
+     * <p>用于获取用户的根目录，包含用户上传文件、系统配方模板和任务目录等子目录。</p>
+     *
+     * <p>示例：</p>
+     * <pre>
+     * Path userRoot = pathUtil.getUserRootPath(1L);
+     * // 返回: {root_path}/user_1/
+     * </pre>
+     *
+     * @param userId 用户ID
+     * @return 用户根目录的绝对路径
+     * @throws NullPointerException 当userId为null时抛出
+     * @throws IllegalArgumentException 当userId无效时抛出
+     */
+    public Path getUserRootPath(Long userId) {
+        Objects.requireNonNull(userId, "userId不能为null");
+        if (userId <= 0) {
+            throw new IllegalArgumentException("userId必须大于0");
+        }
+        Path path = getRootPath()
+                .resolve(String.format("user_%d", userId));
+        logger.debug("生成用户根目录路径: userId={}, path={}", userId, path);
+        return path;
+    }
 }

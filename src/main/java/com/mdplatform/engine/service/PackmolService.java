@@ -54,8 +54,8 @@ import java.util.concurrent.TimeUnit;
  * Docker路径: /workspace/data/user_{userId}/jobs/job_{jobId}/inputs/
  * </pre>
  * 
- * @author MD Platform Team
- * @version 1.1
+ * @author 电解液MD平台
+ * @version 1.0.0
  * @since 2024-01-01
  */
 @Service
@@ -75,16 +75,9 @@ public class PackmolService {
     /** Packmol执行默认超时时间（秒） */
     private static final int DEFAULT_TIMEOUT_SECONDS = 3600;
     
-    /** Python脚本在Docker容器中的路径 */
-    private static final String DOCKER_SCRIPT_PATH = "/workspace/scripts/modeling/run_packmol.py";
-    
     /** md-engine容器名称 */
     @Value("${app.docker.md-container-name:md-engine}")
     private String mdContainerName;
-    
-    /** Docker容器中数据根目录 */
-    @Value("${app.docker.md-data-path:/workspace/data}")
-    private String dockerDataPath;
 
     /**
      * 执行Packmol分子堆积计算
@@ -137,13 +130,24 @@ public class PackmolService {
             // Packmol输入脚本存放在inputs目录
             Path inputScriptPath = inputPath.resolve("packmol.inp");
 
-            // 构建Docker容器内的路径
-            String dockerInputPath = convertToDockerPath(inputPath);
-            String dockerPdbOutputPath = convertToDockerPath(pdbOutputPath);
-            String dockerFormulaFilePath = convertToDockerPath(Path.of(formulaFilePath));
+            // 使用PathUtil统一方法将本地路径转换为Docker容器内路径（统一了原先分散在各Service中的重复实现）
+            String dockerFormulaFilePath = pathUtil.convertToDockerPath(Path.of(formulaFilePath));
+            // 任务根目录的Docker路径，用于传递--job-dir参数给Python脚本
+            // Python脚本会根据job-dir自动确定输出文件路径，无需单独传递--output参数
+            Path jobRootPath = pathUtil.getJobRootPath(userId, jobId);
+            String dockerJobDirPath = pathUtil.convertToDockerPath(jobRootPath);
+
+            // 计算分子模板库根目录的Docker路径（用于--template-dir参数）
+            // Python脚本默认使用相对路径system_templates/molecule_templates/，
+            // 在Docker CWD为/workspace/scripts时会解析为不存在的/workspace/scripts/system_templates/molecule_templates/，
+            // 实际模板在/workspace/data/system_templates/molecule_templates/，因此需要显式传递
+            Path moleculeTemplatesRoot = pathUtil.getMoleculeTemplatePath("EC").getParent();
+            String dockerTemplateDir = pathUtil.convertToDockerPath(moleculeTemplatesRoot);
+            log.info("Docker模板目录: {}", dockerTemplateDir);
 
             // 构建在Docker容器中执行的命令
-            List<String> command = buildDockerCommand(userId, jobId, dockerFormulaFilePath, dockerPdbOutputPath);
+            // 修复：移除不存在的--output参数，改用--job-dir参数（与MoltemplateExecutionService保持一致）
+            List<String> command = buildDockerCommand(userId, jobId, dockerFormulaFilePath, dockerJobDirPath, dockerTemplateDir);
             log.info("Docker执行命令: {}", String.join(" ", command));
 
             // 记录执行日志
@@ -156,9 +160,38 @@ public class PackmolService {
             executionLog.append(output).append("\n");
 
             // 检查输出是否包含错误信息
-            if (output.contains("failed") || output.contains("error") || output.contains("Error")) {
-                log.error("Packmol执行失败: {}", output);
-                return buildErrorResult("Packmol执行失败", executionLog.toString(), startTime);
+            // 注意：不能简单检查"error"字符串，因为Python日志和JSON结果中可能包含"error"字段
+            // 优先检查JSON标记中的success字段，其次检查明显的Docker命令执行失败标记
+            boolean hasError = false;
+            String errorMsg = null;
+
+            String jsonResult = com.mdplatform.engine.util.JsonOutputParser.extractJson(output);
+            if (jsonResult != null) {
+                try {
+                    com.fasterxml.jackson.databind.JsonNode jsonNode =
+                            new com.fasterxml.jackson.databind.ObjectMapper().readTree(jsonResult);
+                    if (jsonNode.has("success") && !jsonNode.get("success").asBoolean(true)) {
+                        hasError = true;
+                        errorMsg = jsonNode.has("error") ? jsonNode.get("error").asText() : "Packmol执行失败";
+                    }
+                } catch (Exception e) {
+                    // JSON解析失败，回退到检查明显的Docker命令执行失败标记
+                    if (output.contains("Command failed") || output.contains("Failed to execute")) {
+                        hasError = true;
+                        errorMsg = "Packmol命令执行失败";
+                    }
+                }
+            } else {
+                // 没有JSON标记，回退到检查明显的Docker命令执行失败标记
+                if (output.contains("Command failed") || output.contains("Failed to execute")) {
+                    hasError = true;
+                    errorMsg = "Packmol命令执行失败";
+                }
+            }
+
+            if (hasError) {
+                log.error("Packmol执行失败: {}", errorMsg);
+                return buildErrorResult(errorMsg, executionLog.toString(), startTime);
             }
 
             // 验证PDB文件是否成功生成（检查本地路径）
@@ -231,9 +264,9 @@ public class PackmolService {
                 return buildErrorResult("Packmol输入脚本不存在", "", startTime);
             }
 
-            // 转换为Docker路径
-            String dockerInputScriptPath = convertToDockerPath(inputScriptPath);
-            String dockerWorkDir = convertToDockerPath(inputPath);
+            // 使用PathUtil统一方法将本地路径转换为Docker容器内路径（统一了原先分散在各Service中的重复实现）
+            String dockerInputScriptPath = pathUtil.convertToDockerPath(inputScriptPath);
+            String dockerWorkDir = pathUtil.convertToDockerPath(inputPath);
 
             // 构建Packmol执行命令
             List<String> command = Arrays.asList(
@@ -272,55 +305,31 @@ public class PackmolService {
     }
 
     /**
-     * 将本地路径转换为Docker容器内路径
-     * 
-     * <p>路径映射规则：</p>
-     * <pre>
-     * 本地: data/md_platform_data/user_1/jobs/job_1/inputs/
-     * Docker: /workspace/data/user_1/jobs/job_1/inputs/
-     * </pre>
-     * 
-     * @param localPath 本地路径
-     * @return Docker容器内路径
-     */
-    private String convertToDockerPath(Path localPath) {
-        String pathStr = localPath.toString();
-        
-        // Windows路径处理：将反斜杠转换为正斜杠
-        pathStr = pathStr.replace("\\", "/");
-        
-        // 将data/md_platform_data映射到/workspace/data
-        if (pathStr.contains("data/md_platform_data")) {
-            pathStr = pathStr.replace("data/md_platform_data", dockerDataPath);
-        } else if (pathStr.startsWith("data/")) {
-            pathStr = dockerDataPath + "/" + pathStr.substring(5);
-        }
-        
-        return pathStr;
-    }
-
-    /**
      * 构建在Docker容器中执行的Python命令
-     * 
+     *
+     * <p>使用统一入口脚本 run_modeling.py，通过 --mode packmol 指定执行Packmol堆积模式。</p>
+     * <p>使用 bash -c "cd /workspace/scripts && python3 -m modeling.run_modeling ..." 方式执行，
+     * 与MoltemplateService保持一致，确保Python模块路径正确解析。</p>
+     *
      * @param userId 用户ID
      * @param jobId 任务ID
      * @param formulaFilePath 配方文件路径（Docker路径）
-     * @param pdbOutputPath PDB输出文件路径（Docker路径）
+     * @param jobDirPath 任务根目录路径（Docker路径），Python脚本据此确定输出路径
+     * @param templateDirPath 分子模板库根目录路径（Docker路径），用于--template-dir参数
      * @return 命令参数列表
      */
-    private List<String> buildDockerCommand(Long userId, Long jobId, 
-            String formulaFilePath, String pdbOutputPath) {
-        List<String> command = new ArrayList<>();
-        command.add("python3");
-        command.add(DOCKER_SCRIPT_PATH);
-        command.add("--user-id");
-        command.add(userId.toString());
-        command.add("--job-id");
-        command.add(jobId.toString());
-        command.add("--formula-file");
-        command.add(formulaFilePath);
-        command.add("--output");
-        command.add(pdbOutputPath);
+    private List<String> buildDockerCommand(Long userId, Long jobId,
+            String formulaFilePath, String jobDirPath, String templateDirPath) {
+        // 使用bash -c方式执行，先cd到/workspace/scripts目录，
+        // 确保python3 -m modeling.run_modeling能正确找到模块
+        String cmdStr = "cd /workspace/scripts && python3 -m modeling.run_modeling"
+                + " --mode packmol"
+                + " --user-id " + userId
+                + " --job-id " + jobId
+                + " --formula-file " + formulaFilePath
+                + " --job-dir " + jobDirPath
+                + " --template-dir " + templateDirPath;
+        List<String> command = Arrays.asList("bash", "-c", cmdStr);
         return command;
     }
 

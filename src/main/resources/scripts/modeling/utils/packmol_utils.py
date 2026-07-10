@@ -56,7 +56,7 @@ except ImportError:
 logger = logging.getLogger(__name__)
 
 PACKMOL_TOLERANCE_FIXED = 2.0
-PACKMOL_MAX_ITERATIONS_DEFAULT = 100
+PACKMOL_MAX_ITERATIONS_DEFAULT = 200
 PACKMOL_DEFAULT_TIMEOUT = 3600
 PACKMOL_MAX_RETRY_COUNT = 3
 PACKMOL_BOX_SCALE_FACTOR = 1.1
@@ -321,15 +321,20 @@ class PackmolRunner:
         self._execution_log.append(f"超时设置: {timeout}秒")
         
         try:
-            result = subprocess.run(
-                [self.packmol_path],
-                stdin=open(input_file, "r"),
-                shell=False,
-                cwd=working_dir,
-                capture_output=True,
-                text=True,
-                timeout=timeout,
-            )
+            # 使用try/finally确保文件句柄被正确关闭，避免资源泄漏
+            input_fh = open(input_file, "r")
+            try:
+                result = subprocess.run(
+                    [self.packmol_path],
+                    stdin=input_fh,
+                    shell=False,
+                    cwd=working_dir,
+                    capture_output=True,
+                    text=True,
+                    timeout=timeout,
+                )
+            finally:
+                input_fh.close()
             
             execution_time = time.time() - start_time
             success = result.returncode == 0
@@ -978,7 +983,8 @@ def run_packmol_packing(
     
     job_path = Path(job_dir)
     inputs_dir = job_path / "inputs"
-    temp_dir = Path("temp") / "packmol_temp"
+    # 使用基于job_dir的绝对路径，避免相对路径在不同CWD下解析错误
+    temp_dir = Path(job_dir) / "temp" / "packmol_temp"
     
     temp_dir.mkdir(parents=True, exist_ok=True)
     
@@ -994,6 +1000,16 @@ def run_packmol_packing(
     
     molecule_names = [mol.get("name") for mol in molecules]
     
+    # 确保template_dir是绝对路径
+    # job_dir格式为 /workspace/data/user_1/jobs/job_1，所以parent.parent = /workspace/data
+    if template_dir is None:
+        template_dir = str(Path(job_dir).parent.parent / "system_templates" / "molecule_templates")
+    else:
+        template_dir = str(Path(template_dir))
+        if not Path(template_dir).is_absolute():
+            # 如果是相对路径，基于job_dir的根目录解析
+            template_dir = str(Path(job_dir).parent.parent / template_dir)
+    
     template_result = fetch_molecule_templates(molecule_names, template_dir)
     
     if template_result["missing"]:
@@ -1003,7 +1019,7 @@ def run_packmol_packing(
     
     copy_result = copy_pdb_files_to_workdir(
         molecule_names,
-        template_dir or str(Path("system_templates") / "molecule_templates"),
+        template_dir,
         str(temp_dir),
     )
     
@@ -1015,8 +1031,8 @@ def run_packmol_packing(
     
     for mol in molecules:
         mol_name = mol.get("name")
-        pdb_in_temp = temp_dir / f"{mol_name}.pdb"
-        mol["pdb_file"] = str(pdb_in_temp)
+        # Packmol的CWD是temp_dir，所以structure路径只需文件名
+        mol["pdb_file"] = f"{mol_name}.pdb"
     
     runner = PackmolRunner(
         packmol_path=packmol_path,
@@ -1029,7 +1045,8 @@ def run_packmol_packing(
         return result
     
     current_box_size = box_size.copy()
-    output_pdb_path = str(temp_dir / "packed_system.pdb")
+    # Packmol的CWD是temp_dir，所以output路径只需文件名
+    output_pdb_path = "packed_system.pdb"
     
     for attempt in range(1, max_retries + 1):
         logger.info(f"Packmol执行尝试 {attempt}/{max_retries}")
@@ -1055,15 +1072,20 @@ def run_packmol_packing(
         attempt_result["execution"] = execution_result
         
         if execution_result["success"]:
-            validation_result = runner.validate_pdb_output(output_pdb_path)
+            # 验证PDB文件时使用绝对路径
+            absolute_pdb_path = str(temp_dir / "packed_system.pdb")
+            validation_result = runner.validate_pdb_output(absolute_pdb_path)
             attempt_result["validation"] = validation_result
             
             if validation_result["valid"]:
                 attempt_result["success"] = True
                 
+                # 移动文件时使用绝对路径
+                absolute_input_script = str(temp_dir / "packmol.inp")
+                absolute_output_pdb = str(temp_dir / "packed_system.pdb")
                 move_result = runner.move_outputs_to_inputs(
-                    input_script_path=input_script_path,
-                    output_pdb_path=output_pdb_path,
+                    input_script_path=absolute_input_script,
+                    output_pdb_path=absolute_output_pdb,
                     target_inputs_dir=str(inputs_dir),
                 )
                 

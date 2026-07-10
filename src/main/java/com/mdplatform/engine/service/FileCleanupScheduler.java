@@ -14,8 +14,19 @@ import java.nio.file.attribute.BasicFileAttributes;
 import java.nio.file.attribute.FileTime;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
+import java.util.List;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+/**
+ * 文件清理调度器
+ *
+ * <p>定时清理过期的临时文件，防止临时文件占用过多磁盘空间。
+ * 默认每天凌晨2点执行清理任务，清理超过保留时间的.tmp临时文件。</p>
+ *
+ * @author 电解液MD平台
+ * @version 1.0.0
+ */
 @Service
 public class FileCleanupScheduler {
 
@@ -23,10 +34,21 @@ public class FileCleanupScheduler {
 
     private final StorageConfig storageConfig;
 
+    /**
+     * 构造函数
+     *
+     * @param storageConfig 存储配置对象
+     */
     public FileCleanupScheduler(StorageConfig storageConfig) {
         this.storageConfig = storageConfig;
     }
 
+    /**
+     * 执行临时文件清理任务
+     *
+     * <p>遍历所有用户目录下的任务临时目录，删除超过保留时间的.tmp文件。
+     * 默认每天凌晨2点自动执行。</p>
+     */
     @Scheduled(cron = "0 0 2 * * ?")
     public void cleanupTempFiles() {
         logger.info("开始执行临时文件清理任务");
@@ -43,7 +65,7 @@ public class FileCleanupScheduler {
         long freedBytes = 0;
         
         try (Stream<Path> userDirs = Files.list(rootPath)) {
-            for (Path userDir : userDirs.toList()) {
+            for (Path userDir : userDirs.collect(Collectors.toList())) {
                 if (!Files.isDirectory(userDir) || !userDir.getFileName().toString().startsWith("user_")) {
                     continue;
                 }
@@ -54,7 +76,7 @@ public class FileCleanupScheduler {
                 }
                 
                 try (Stream<Path> jobDirs = Files.list(jobsDir)) {
-                    for (Path jobDir : jobDirs.toList()) {
+                    for (Path jobDir : jobDirs.collect(Collectors.toList())) {
                         if (!Files.isDirectory(jobDir) || !jobDir.getFileName().toString().startsWith("job_")) {
                             continue;
                         }
@@ -88,7 +110,7 @@ public class FileCleanupScheduler {
         Instant cutoffTime = Instant.now().minus(retentionHours, ChronoUnit.HOURS);
         
         try (Stream<Path> files = Files.list(tempDir)) {
-            for (Path file : files.toList()) {
+            for (Path file : files.collect(Collectors.toList())) {
                 if (!Files.isRegularFile(file) || !file.getFileName().toString().endsWith(".tmp")) {
                     continue;
                 }

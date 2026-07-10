@@ -141,6 +141,12 @@ CREATE TABLE simulation_raw_output_table (
     trajectory_file_path VARCHAR(500) NOT NULL COMMENT '原子轨迹dump文件路径',
     stress_tensor_file_path VARCHAR(500) NOT NULL COMMENT '【v17】应力张量分量文件 用于粘度计算',
     dipole_moment_file_path VARCHAR(500) COMMENT '偶极矩输出文件路径',
+    charge_trajectory_file_path VARCHAR(500) COMMENT '带电荷轨迹文件路径（dump.charge.lammpstrj），仅conductivity/dielectric时存在',
+    solvation_trajectory_file_path VARCHAR(500) COMMENT '溶剂化结构轨迹文件路径（dump.solvation.lammpstrj），仅solvation_structure时存在',
+    pressure_file_path VARCHAR(500) COMMENT '压力张量文件路径（pressure.dat），仅viscosity时存在',
+    dipole_file_path VARCHAR(500) COMMENT '偶极矩文件路径（dipole.dat），仅dielectric时存在',
+    msd_file_path VARCHAR(500) COMMENT '均方位移文件路径（msd.dat），仅conductivity时存在',
+    final_data_file_path VARCHAR(500) COMMENT '最终构型文件路径（final.data）',
     box_tilt_factor JSON NOT NULL COMMENT '【v17】盒子倾斜因子 xy/xz/yz 单位Å',
     total_frames BIGINT NOT NULL COMMENT '轨迹总帧数',
     total_simulation_time_ns DOUBLE NOT NULL COMMENT '【v17】总模拟时间 单位ns',
@@ -166,48 +172,88 @@ CREATE TABLE calculation_result_table (
     pressure_bar DOUBLE COMMENT '计算对应的压强，单位bar',
     sampling_time_ps DOUBLE NOT NULL COMMENT '【v17】采样时长 单位ps',
     convergence_status VARCHAR(20) NOT NULL COMMENT '收敛性状态：converged/unconverged',
-    property_detail JSON NOT NULL COMMENT '性质详细结果（如电导率张量、RDF特征峰等）',
+    property_detail JSON NOT NULL COMMENT '性质统计摘要结果（均值、标准差、标准误差等统计信息）',
     raw_data_path VARCHAR(500) COMMENT '原始计算数据文件路径',
     chart_data_path VARCHAR(500) COMMENT '可视化图表数据源文件路径',
-    
-    -- 【v17】密度专属字段
-    density_tensor JSON NULL COMMENT '【v17】密度张量 kg/m³',
-    component_density JSON NULL COMMENT '【v17】组分密度 溶剂/离子贡献',
-    
-    -- 【v17】粘度专属字段
-    viscosity_value DOUBLE NULL COMMENT '【v17】剪切粘度 单位Pa·s',
-    shear_rate DOUBLE NULL COMMENT '【v17】剪切速率 单位s⁻¹（NEMD方法）',
-    stress_response DOUBLE NULL COMMENT '【v17】应力响应 单位Pa（NEMD方法）',
-    kinematic_viscosity DOUBLE NULL COMMENT '【v17】运动粘度 单位mm²/s',
-    
-    -- 【v17】电导率专属字段
-    conductivity_tensor JSON NULL COMMENT '【v17】电导率张量 单位S/m',
-    ion_contribution JSON NULL COMMENT '【v17】各离子电导率贡献占比',
-    electric_field_strength DOUBLE NULL COMMENT '【v17】电场强度 单位V/Å',
-    resistivity DOUBLE NULL COMMENT '【v17】电阻率 单位Ω·cm',
-    
-    -- 【v17】介电常数专属字段
-    dielectric_constant_tensor JSON NULL COMMENT '【v17】介电常数张量',
-    static_dielectric_constant DOUBLE NULL COMMENT '【v17】静态介电常数',
-    dielectric_spectrum_data JSON NULL COMMENT '【v17】介电谱数据 频率相关',
-    dipole_moment_data JSON NULL COMMENT '【v17】偶极矩数据 单位Debye',
-    component_contribution JSON NULL COMMENT '【v17】组分介电贡献',
-    system_size JSON NULL COMMENT '【v17】体系尺寸 单位Å',
-    
-    -- 【v17】溶剂化结构专属字段
-    central_ion_type VARCHAR(50) NULL COMMENT '【v17】中心离子类型 Li+/Na+等',
-    solvation_shell_structure VARCHAR(255) NULL COMMENT '【v17】溶剂化壳层组成',
-    average_coordination_number DOUBLE NULL COMMENT '【v17】平均配位数',
-    coordination_distance DOUBLE NULL COMMENT '【v17】配位距离 单位Å',
-    rdf_characteristic_peak VARCHAR(255) NULL COMMENT '【v17】RDF特征峰位置&强度',
-    hydrogen_bond_feature VARCHAR(255) NULL COMMENT '【v17】氢键网络特征',
-    solvation_stability DOUBLE NULL COMMENT '【v17】溶剂化壳层寿命 单位ps',
-    ion_solvent_interaction_energy DOUBLE NULL COMMENT '【v17】离子-溶剂相互作用能 单位kJ/mol',
-    
+
     create_time DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '计算完成时间',
     FOREIGN KEY (job_id) REFERENCES simulation_jobs_table(job_id) ON DELETE CASCADE,
     INDEX idx_job_property (job_id, property_name)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='【v17】计算结果详情表：100%对齐6大类计算性质数据规范';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='【v18】计算结果主表：存储通用计算结果，专属字段拆分至子表';
+
+-- =====================================================
+-- 6.1 密度计算结果子表 density_result_table
+-- =====================================================
+CREATE TABLE IF NOT EXISTS density_result_table (
+    result_id BIGINT NOT NULL COMMENT '计算结果ID，主键同时为外键关联calculation_result_table',
+    density_tensor JSON COMMENT '密度张量（JSON格式，单位：kg/m³，包含xx/yy/zz分量）',
+    component_density JSON COMMENT '组分密度（JSON格式，各组分密度分布）',
+    PRIMARY KEY (result_id),
+    CONSTRAINT fk_density_result FOREIGN KEY (result_id)
+        REFERENCES calculation_result_table(result_id) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='密度计算结果子表';
+
+-- =====================================================
+-- 6.2 粘度计算结果子表 viscosity_result_table
+-- =====================================================
+CREATE TABLE IF NOT EXISTS viscosity_result_table (
+    result_id BIGINT NOT NULL COMMENT '计算结果ID，主键同时为外键关联calculation_result_table',
+    viscosity_value DOUBLE COMMENT '剪切粘度值（单位：Pa·s）',
+    shear_rate DOUBLE COMMENT '剪切速率（单位：s⁻¹）',
+    stress_response DOUBLE COMMENT '应力响应（单位：Pa）',
+    kinematic_viscosity DOUBLE COMMENT '运动粘度（单位：mm²/s）',
+    PRIMARY KEY (result_id),
+    CONSTRAINT fk_viscosity_result FOREIGN KEY (result_id)
+        REFERENCES calculation_result_table(result_id) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='粘度计算结果子表';
+
+-- =====================================================
+-- 6.3 电导率计算结果子表 conductivity_result_table
+-- =====================================================
+CREATE TABLE IF NOT EXISTS conductivity_result_table (
+    result_id BIGINT NOT NULL COMMENT '计算结果ID，主键同时为外键关联calculation_result_table',
+    conductivity_tensor JSON COMMENT '电导率张量（JSON格式，单位：S/m，包含xx/yy/zz分量）',
+    ion_contribution JSON COMMENT '各离子电导率贡献占比（JSON格式）',
+    electric_field_strength DOUBLE COMMENT '电场强度（单位：V/Å）',
+    resistivity DOUBLE COMMENT '电阻率（单位：Ω·cm）',
+    PRIMARY KEY (result_id),
+    CONSTRAINT fk_conductivity_result FOREIGN KEY (result_id)
+        REFERENCES calculation_result_table(result_id) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='电导率计算结果子表';
+
+-- =====================================================
+-- 6.4 介电常数计算结果子表 dielectric_result_table
+-- =====================================================
+CREATE TABLE IF NOT EXISTS dielectric_result_table (
+    result_id BIGINT NOT NULL COMMENT '计算结果ID，主键同时为外键关联calculation_result_table',
+    dielectric_constant_tensor JSON COMMENT '介电常数张量（JSON格式）',
+    static_dielectric_constant DOUBLE COMMENT '静态介电常数',
+    dielectric_spectrum_data JSON COMMENT '介电谱数据（JSON格式，频率-介电常数关系）',
+    dipole_moment_data JSON COMMENT '偶极矩数据（JSON格式，单位：Debye）',
+    component_contribution JSON COMMENT '组分介电贡献（JSON格式）',
+    system_size JSON COMMENT '体系尺寸（JSON格式，单位：Å）',
+    PRIMARY KEY (result_id),
+    CONSTRAINT fk_dielectric_result FOREIGN KEY (result_id)
+        REFERENCES calculation_result_table(result_id) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='介电常数计算结果子表';
+
+-- =====================================================
+-- 6.5 溶剂化结构计算结果子表 solvation_result_table
+-- =====================================================
+CREATE TABLE IF NOT EXISTS solvation_result_table (
+    result_id BIGINT NOT NULL COMMENT '计算结果ID，主键同时为外键关联calculation_result_table',
+    central_ion_type VARCHAR(50) COMMENT '中心离子类型（如Li⁺、Na⁺等）',
+    solvation_shell_structure VARCHAR(255) COMMENT '溶剂化壳层组成描述',
+    average_coordination_number DOUBLE COMMENT '平均配位数',
+    coordination_distance DOUBLE COMMENT '配位距离（单位：Å）',
+    rdf_characteristic_peak VARCHAR(255) COMMENT 'RDF特征峰位置及强度',
+    hydrogen_bond_feature VARCHAR(255) COMMENT '氢键网络特征描述',
+    solvation_stability DOUBLE COMMENT '溶剂化壳层寿命（单位：ps）',
+    ion_solvent_interaction_energy DOUBLE COMMENT '离子-溶剂相互作用能（单位：kJ/mol）',
+    PRIMARY KEY (result_id),
+    CONSTRAINT fk_solvation_result FOREIGN KEY (result_id)
+        REFERENCES calculation_result_table(result_id) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='溶剂化结构计算结果子表';
 
 -- =============================================
 -- 标准示例数据插入（v17规范）
@@ -266,5 +312,68 @@ VALUES
 'uri://cstmd/forcefields/opls-aa/2021/system.top',
 '{"exclude_12":true,"exclude_13":true,"vdw_scale_14":0.5,"coulomb_scale_14":0.5}',
 10.0, 150000, 0.01, 5.0, 5000.0, 50.0);
+
+-- =====================================================
+-- 【v18】数据迁移：将主表中的专属字段数据迁移到对应子表
+-- =====================================================
+
+-- 迁移密度数据
+INSERT INTO density_result_table (result_id, density_tensor, component_density)
+SELECT result_id, density_tensor, component_density
+FROM calculation_result_table
+WHERE property_name = 'density' AND density_tensor IS NOT NULL;
+
+-- 迁移粘度数据
+INSERT INTO viscosity_result_table (result_id, viscosity_value, shear_rate, stress_response, kinematic_viscosity)
+SELECT result_id, viscosity_value, shear_rate, stress_response, kinematic_viscosity
+FROM calculation_result_table
+WHERE property_name = 'viscosity' AND viscosity_value IS NOT NULL;
+
+-- 迁移电导率数据
+INSERT INTO conductivity_result_table (result_id, conductivity_tensor, ion_contribution, electric_field_strength, resistivity)
+SELECT result_id, conductivity_tensor, ion_contribution, electric_field_strength, resistivity
+FROM calculation_result_table
+WHERE property_name = 'conductivity' AND conductivity_tensor IS NOT NULL;
+
+-- 迁移介电常数数据
+INSERT INTO dielectric_result_table (result_id, dielectric_constant_tensor, static_dielectric_constant, dielectric_spectrum_data, dipole_moment_data, component_contribution, system_size)
+SELECT result_id, dielectric_constant_tensor, static_dielectric_constant, dielectric_spectrum_data, dipole_moment_data, component_contribution, system_size
+FROM calculation_result_table
+WHERE property_name = 'dielectric' AND dielectric_constant_tensor IS NOT NULL;
+
+-- 迁移溶剂化结构数据
+INSERT INTO solvation_result_table (result_id, central_ion_type, solvation_shell_structure, average_coordination_number, coordination_distance, rdf_characteristic_peak, hydrogen_bond_feature, solvation_stability, ion_solvent_interaction_energy)
+SELECT result_id, central_ion_type, solvation_shell_structure, average_coordination_number, coordination_distance, rdf_characteristic_peak, hydrogen_bond_feature, solvation_stability, ion_solvent_interaction_energy
+FROM calculation_result_table
+WHERE property_name = 'solvation' AND central_ion_type IS NOT NULL;
+
+-- =====================================================
+-- 【v18】删除主表中的专属字段列
+-- =====================================================
+ALTER TABLE calculation_result_table
+    DROP COLUMN density_tensor,
+    DROP COLUMN component_density,
+    DROP COLUMN viscosity_value,
+    DROP COLUMN shear_rate,
+    DROP COLUMN stress_response,
+    DROP COLUMN kinematic_viscosity,
+    DROP COLUMN conductivity_tensor,
+    DROP COLUMN ion_contribution,
+    DROP COLUMN electric_field_strength,
+    DROP COLUMN resistivity,
+    DROP COLUMN dielectric_constant_tensor,
+    DROP COLUMN static_dielectric_constant,
+    DROP COLUMN dielectric_spectrum_data,
+    DROP COLUMN dipole_moment_data,
+    DROP COLUMN component_contribution,
+    DROP COLUMN system_size,
+    DROP COLUMN central_ion_type,
+    DROP COLUMN solvation_shell_structure,
+    DROP COLUMN average_coordination_number,
+    DROP COLUMN coordination_distance,
+    DROP COLUMN rdf_characteristic_peak,
+    DROP COLUMN hydrogen_bond_feature,
+    DROP COLUMN solvation_stability,
+    DROP COLUMN ion_solvent_interaction_energy;
 ```
 
