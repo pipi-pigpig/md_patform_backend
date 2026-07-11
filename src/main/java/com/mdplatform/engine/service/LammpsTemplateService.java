@@ -345,6 +345,7 @@ public class LammpsTemplateService {
             context.put("thermostat_type", "Nose-Hoover");
             context.put("barostat_type", "Parrinello-Rahman");
         }
+        
 
         log.debug("[LAMMPS模板] 模板上下文参数构建完成: {}", context.keySet());
         return context;
