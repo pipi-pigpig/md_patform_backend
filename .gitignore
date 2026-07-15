@@ -1,0 +1,64 @@
+# Project Root - Data and Docker files
+data/
+docker/
+logs/
+scripts/
+*.log
+*.tmp
+*.temp
+
+# Docker
+docker-compose.override.yml
+.env.local
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Trae
+# .trae/  # 已注释：需要上传项目规则文件
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+*.py[cod]
+*$py.class
+*.so
+.Python
+venv/
+ENV/
+env/
+.venv/
+
+# Backup
+*.bak
+*.backup
+*.old
+
+# Sensitive
+*.secret
+*.credentials
+.env
+.env.*
+
+# Archives
+*.zip
+*.tar.gz
+*.rar
+*.7z
+
+# Misc
+*.swp
+*.swo
+*~

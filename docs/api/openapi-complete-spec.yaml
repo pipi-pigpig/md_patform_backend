@@ -1,0 +1,1056 @@
+openapi: 3.0.3
+info:
+  title: 电解液MD计算平台 - 完整API接口
+  description: |
+    电解液分子动力学计算平台完整API接口文档
+
+    ## 接口分类
+    - 模拟任务管理（8个接口）
+    - 计算结果与可视化（4个接口）
+    - 操作日志查询（1个接口）
+    - 文件下载（2个接口）
+
+    ## 认证说明
+    大部分接口需要JWT Token认证，请在Header中添加：
+    ```
+    Authorization: Bearer {token}
+    ```
+
+    ## 开发协作
+    - 此文档可通过MCP自动导入到Apifox
+    - 支持AI自动创建接口
+    - 团队实时协作
+  version: 1.0.0
+  contact:
+    name: MD Platform Team
+    email: support@mdplatform.com
+
+servers:
+  - url: http://localhost:8080
+    description: 本地开发环境
+  - url: http://production-server.com
+    description: 生产环境
+
+tags:
+  - name: simulation-jobs
+    description: 模拟任务管理接口
+  - name: results
+    description: 计算结果与可视化接口
+  - name: admin
+    description: 管理员操作接口
+  - name: files
+    description: 文件下载接口
+
+paths:
+  # ==================== 模拟任务管理 ====================
+  /simulation-jobs:
+    post:
+      tags:
+        - simulation-jobs
+      summary: 创建模拟任务（触发自动化建模流程）
+      description: |
+        后台自动执行：分子数量计算 → Packmol 构型生成 → Moltemplate 拓扑构建 → LAMMPS 脚本生成 → 提交到计算引擎队列。
+
+        任务创建后会依次进入 PENDING → RUNNING → COMPLETED/FAILED。
+      operationId: createSimulationJob
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - jobName
+                - systemId
+                - targetProperties
+              properties:
+                jobName:
+                  type: string
+                  description: 任务名称
+                  example: EC-DMC-LiPF6 高温测试
+                systemId:
+                  type: integer
+                  description: 系统ID
+                  example: 5001
+                targetProperties:
+                  type: array
+                  description: 目标计算性质
+                  items:
+                    type: string
+                  example: ["density", "conductivity", "viscosity", "solvation_structure"]
+                simulationConfig:
+                  type: object
+                  description: 模拟配置参数
+                  properties:
+                    ensembleType:
+                      type: string
+                      example: NPT
+                    thermostatType:
+                      type: string
+                      example: nose-hoover 100.0
+                    barostatType:
+                      type: string
+                      example: nose-hoover 1000.0
+                    timeStepFs:
+                      type: number
+                      example: 1.0
+                    integrationAlgorithm:
+                      type: string
+                      example: Velocity-Verlet
+                    cutoffDistanceAng:
+                      type: number
+                      example: 10.0
+                    longRangeElectrostatics:
+                      type: string
+                      example: PPPM 1.0e-4
+                    outputFrequencyStep:
+                      type: integer
+                      example: 1000
+                    minimizationParams:
+                      type: object
+                      properties:
+                        method:
+                          type: string
+                          example: cg
+                        energyTol:
+                          type: number
+                          example: 1e-4
+                        forceTol:
+                          type: number
+                          example: 1e-6
+                        maxIter:
+                          type: integer
+                          example: 10000
+                    equilibriumParams:
+                      type: object
+                      properties:
+                        nvtSteps:
+                          type: integer
+                          example: 200000
+                        nptSteps:
+                          type: integer
+                          example: 500000
+                        temperatureTarget:
+                          type: number
+                          example: 298.15
+                        pressureTarget:
+                          type: number
+                          example: 1.0
+                    productionParams:
+                      type: object
+                      properties:
+                        totalSteps:
+                          type: integer
+                          example: 5000000
+                        samplingMethod:
+                          type: string
+                          example: continuous
+                        dumpFrequency:
+                          type: integer
+                          example: 1000
+                        thermoFrequency:
+                          type: integer
+                          example: 100
+                hardwareConfig:
+                  type: object
+                  description: 硬件配置
+                  properties:
+                    hardwareUsed:
+                      type: string
+                      example: GPU
+                    cpuCores:
+                      type: integer
+                      example: 16
+                    gpuInfo:
+                      type: string
+                      example: NVIDIA A100 40GB
+                    hardwareEnvironment:
+                      type: string
+                      example: GPU 16核 + A100
+                randomSeed:
+                  type: integer
+                  description: 随机种子
+                  example: 12345
+                taskDescription:
+                  type: string
+                  description: 任务描述
+                  example: 测试不同温度下电导率
+      responses:
+        '202':
+          description: 任务已创建，正在自动化建模中
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    example: 202
+                  message:
+                    type: string
+                    example: 任务已创建，正在自动化建模中
+                  data:
+                    type: object
+                    properties:
+                      jobId:
+                        type: integer
+                        example: 10001
+                      status:
+                        type: string
+                        example: PENDING
+                      createTime:
+                        type: string
+                        format: date-time
+                        example: "2026-06-03T15:00:00"
+
+    get:
+      tags:
+        - simulation-jobs
+      summary: 查询我的任务列表
+      description: 获取当前用户的所有模拟任务列表，支持分页和筛选
+      operationId: getSimulationJobs
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: page
+          in: query
+          schema:
+            type: integer
+            default: 1
+          description: 页码
+        - name: size
+          in: query
+          schema:
+            type: integer
+            default: 20
+          description: 每页数量
+        - name: status
+          in: query
+          schema:
+            type: string
+            enum:
+              - PENDING
+              - RUNNING
+              - COMPLETED
+              - FAILED
+              - CANCELLED
+              - TIMEOUT
+          description: 任务状态筛选
+        - name: keyword
+          in: query
+          schema:
+            type: string
+          description: 任务名称模糊搜索
+        - name: fromDate
+          in: query
+          schema:
+            type: string
+            format: date
+          description: 开始日期
+      responses:
+        '200':
+          description: 成功获取任务列表
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    example: 200
+                  data:
+                    type: object
+                    properties:
+                      total:
+                        type: integer
+                        example: 35
+                      records:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            jobId:
+                              type: integer
+                              example: 10001
+                            jobName:
+                              type: string
+                              example: EC-DMC-LiPF6 高温测试
+                            systemId:
+                              type: integer
+                              example: 5001
+                            systemName:
+                              type: string
+                              example: 1M LiPF6 in EC/DMC 1:1
+                            status:
+                              type: string
+                              example: COMPLETED
+                            targetProperties:
+                              type: array
+                              items:
+                                type: string
+                              example: ["density", "conductivity"]
+                            startTime:
+                              type: string
+                              format: date-time
+                            endTime:
+                              type: string
+                              format: date-time
+                            executionTimeS:
+                              type: integer
+                              example: 44100
+                            progressPercent:
+                              type: integer
+                              example: 100
+                            createTime:
+                              type: string
+                              format: date-time
+
+  /simulation-jobs/{jobId}:
+    get:
+      tags:
+        - simulation-jobs
+      summary: 获取任务详情（含建模中间文件信息）
+      description: 获取指定任务的详细信息，包括建模中间文件信息
+      operationId: getSimulationJobDetail
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: jobId
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: 任务ID
+      responses:
+        '200':
+          description: 成功获取任务详情
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    example: 200
+                  data:
+                    type: object
+                    properties:
+                      jobId:
+                        type: integer
+                        example: 10001
+                      jobName:
+                        type: string
+                        example: EC-DMC-LiPF6 高温测试
+                      userId:
+                        type: integer
+                        example: 1001
+                      systemId:
+                        type: integer
+                        example: 5001
+                      status:
+                        type: string
+                        example: COMPLETED
+                      targetProperties:
+                        type: array
+                        items:
+                          type: string
+                      softwareName:
+                        type: string
+                        example: LAMMPS
+                      softwareVersion:
+                        type: string
+                        example: 23Jun2022
+                      hardwareUsed:
+                        type: string
+                        example: GPU
+                      cpuCores:
+                        type: integer
+                        example: 16
+                      gpuInfo:
+                        type: string
+                        example: NVIDIA A100
+                      hardwareEnvironment:
+                        type: string
+                        example: GPU 16核 + A100
+                      jobRootPath:
+                        type: string
+                        example: md_platform_data/user_1001/jobs/job_10001/
+                      startTime:
+                        type: string
+                        format: date-time
+                      endTime:
+                        type: string
+                        format: date-time
+                      executionTimeS:
+                        type: integer
+                        example: 44100
+                      resultSummary:
+                        type: object
+                        properties:
+                          density_g_cm3:
+                            type: number
+                            example: 1.205
+                          conductivity_S_m:
+                            type: number
+                            example: 8.52
+                          viscosity_mPa_s:
+                            type: number
+                            example: 0.87
+                      errorMessage:
+                        type: string
+                        nullable: true
+                      randomSeed:
+                        type: integer
+                        example: 12345
+                      createTime:
+                        type: string
+                        format: date-time
+
+  /simulation-jobs/{jobId}/input-files:
+    get:
+      tags:
+        - simulation-jobs
+      summary: 获取任务自动化建模生成的文件列表
+      description: 返回inputs目录下所有文件，可用于预览或下载
+      operationId: getInputFiles
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: jobId
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: 任务ID
+      responses:
+        '200':
+          description: 成功获取文件列表
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    example: 200
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        name:
+                          type: string
+                          example: system.lt
+                        sizeBytes:
+                          type: integer
+                          example: 1250
+                        url:
+                          type: string
+                          example: /api/v1/files/download?path=...
+
+  /simulation-jobs/{jobId}/logs:
+    get:
+      tags:
+        - simulation-jobs
+      summary: 获取任务执行日志（实时/历史）
+      description: 获取任务的执行日志，支持按级别和时间筛选
+      operationId: getJobLogs
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: jobId
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: 任务ID
+        - name: level
+          in: query
+          schema:
+            type: string
+            enum:
+              - INFO
+              - WARN
+              - ERROR
+              - DEBUG
+          description: 日志级别
+        - name: start
+          in: query
+          schema:
+            type: integer
+          description: 日志ID起始
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            default: 100
+          description: 返回数量限制
+      responses:
+        '200':
+          description: 成功获取日志
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    example: 200
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        logId:
+                          type: integer
+                          example: 1001
+                        logLevel:
+                          type: string
+                          example: INFO
+                        logContent:
+                          type: string
+                          example: Packmol 执行成功，生成 packed_system.pdb
+                        logTime:
+                          type: string
+                          format: date-time
+
+  /simulation-jobs/{jobId}/cancel:
+    post:
+      tags:
+        - simulation-jobs
+      summary: 取消任务
+      description: 取消正在运行的模拟任务
+      operationId: cancelJob
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: jobId
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: 任务ID
+      responses:
+        '200':
+          description: 任务已取消
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    example: 200
+                  message:
+                    type: string
+                    example: 任务已取消，正在终止容器
+
+  /simulation-jobs/{jobId}/retry:
+    post:
+      tags:
+        - simulation-jobs
+      summary: 重试失败任务
+      description: 重新执行失败的任务
+      operationId: retryJob
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: jobId
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: 任务ID
+      responses:
+        '202':
+          description: 任务已重新提交
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    example: 202
+                  message:
+                    type: string
+                    example: 任务已重新提交
+
+  /simulation-jobs/{jobId}/progress:
+    get:
+      tags:
+        - simulation-jobs
+      summary: 获取任务执行阶段的进度（用于轮询）
+      description: 获取任务当前的执行进度信息
+      operationId: getJobProgress
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: jobId
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: 任务ID
+      responses:
+        '200':
+          description: 成功获取进度
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    example: 200
+                  data:
+                    type: object
+                    properties:
+                      status:
+                        type: string
+                        example: RUNNING
+                      currentPhase:
+                        type: string
+                        example: production
+                      phaseProgressPercent:
+                        type: integer
+                        example: 65
+                      overallPercent:
+                        type: integer
+                        example: 82
+                      estimatedRemainingSeconds:
+                        type: integer
+                        example: 5400
+                      currentStep:
+                        type: integer
+                        example: 3250000
+                      totalSteps:
+                        type: integer
+                        example: 5000000
+                      temperatureK:
+                        type: number
+                        example: 298.3
+                      density_g_cm3:
+                        type: number
+                        example: 1.204
+
+  # ==================== 计算结果与可视化 ====================
+  /simulation-jobs/{jobId}/results:
+    get:
+      tags:
+        - results
+      summary: 获取任务所有计算结果摘要
+      description: 获取指定任务的所有计算结果摘要列表
+      operationId: getJobResults
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: jobId
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: 任务ID
+      responses:
+        '200':
+          description: 成功获取结果摘要
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    example: 200
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        propertyName:
+                          type: string
+                          example: density
+                        propertyValue:
+                          type: number
+                          example: 1.205
+                        propertyUnit:
+                          type: string
+                          example: g/cm³
+                        convergenceStatus:
+                          type: string
+                          example: converged
+                        createTime:
+                          type: string
+                          format: date-time
+
+  /simulation-jobs/{jobId}/results/{propertyName}:
+    get:
+      tags:
+        - results
+      summary: 获取特定性质的详细结果（含 JSON detail）
+      description: 获取指定计算性质的详细结果信息
+      operationId: getPropertyResult
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: jobId
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: 任务ID
+        - name: propertyName
+          in: path
+          required: true
+          schema:
+            type: string
+          description: 性质名称（如density, conductivity等）
+      responses:
+        '200':
+          description: 成功获取详细结果
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    example: 200
+                  data:
+                    type: object
+                    properties:
+                      resultId:
+                        type: integer
+                        example: 500
+                      propertyName:
+                        type: string
+                        example: conductivity
+                      propertyValue:
+                        type: number
+                        example: 8.52
+                      propertyUnit:
+                        type: string
+                        example: S/m
+                      calculationMethod:
+                        type: string
+                        example: Green-Kubo
+                      temperatureK:
+                        type: number
+                        example: 298.15
+                      pressureBar:
+                        type: number
+                        example: 1.0
+                      samplingTimePs:
+                        type: number
+                        example: 5000.0
+                      convergenceStatus:
+                        type: string
+                        example: converged
+                      propertyDetail:
+                        type: object
+                        description: 详细计算结果
+                      rawDataPath:
+                        type: string
+                        example: /jobs/job_10001/post_processing/conductivity_result.json
+                      chartDataPath:
+                        type: string
+                        example: /jobs/job_10001/visualization/charts/conductivity_curve.json
+                      createTime:
+                        type: string
+                        format: date-time
+
+  /simulation-jobs/{jobId}/charts/{chartType}:
+    get:
+      tags:
+        - results
+      summary: 获取图表数据（用于前端 ECharts）
+      description: 获取指定类型的图表数据，用于前端可视化展示
+      operationId: getChartData
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: jobId
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: 任务ID
+        - name: chartType
+          in: path
+          required: true
+          schema:
+            type: string
+            enum:
+              - thermo_curve
+              - rdf_curve
+              - msd_curve
+              - conductivity_curve
+          description: 图表类型
+      responses:
+        '200':
+          description: 成功获取图表数据
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    example: 200
+                  data:
+                    type: object
+                    properties:
+                      chartType:
+                        type: string
+                        example: line
+                      title:
+                        type: string
+                        example: 模拟过程监控
+                      xAxis:
+                        type: object
+                        properties:
+                          label:
+                            type: string
+                            example: 时间 (ps)
+                          data:
+                            type: array
+                            items:
+                              type: number
+                      series:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            name:
+                              type: string
+                            unit:
+                              type: string
+                            data:
+                              type: array
+                              items:
+                                type: number
+
+  /simulation-jobs/{jobId}/report:
+    post:
+      tags:
+        - results
+      summary: 生成并下载计算报告（PDF/Markdown）
+      description: 生成指定任务的计算报告
+      operationId: generateReport
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: jobId
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: 任务ID
+        - name: format
+          in: query
+          schema:
+            type: string
+            enum:
+              - pdf
+              - md
+            default: pdf
+          description: 报告格式
+      responses:
+        '200':
+          description: 成功生成报告
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    example: 200
+                  data:
+                    type: object
+                    properties:
+                      reportUrl:
+                        type: string
+                        example: /api/v1/files/download?path=/jobs/job_10001/report/calculation_report.pdf
+
+  # ==================== 操作日志查询 ====================
+  /admin/operation-logs:
+    get:
+      tags:
+        - admin
+      summary: 查询用户操作日志
+      description: 管理员查询用户操作日志
+      operationId: getOperationLogs
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: userId
+          in: query
+          schema:
+            type: integer
+          description: 用户ID
+        - name: operationType
+          in: query
+          schema:
+            type: string
+          description: 操作类型
+        - name: fromTime
+          in: query
+          schema:
+            type: string
+            format: date-time
+          description: 开始时间
+        - name: toTime
+          in: query
+          schema:
+            type: string
+            format: date-time
+          description: 结束时间
+        - name: page
+          in: query
+          schema:
+            type: integer
+            default: 1
+          description: 页码
+      responses:
+        '200':
+          description: 成功获取操作日志
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    example: 200
+                  data:
+                    type: object
+                    properties:
+                      total:
+                        type: integer
+                        example: 120
+                      records:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            logId:
+                              type: integer
+                              example: 3001
+                            userId:
+                              type: integer
+                              example: 1001
+                            username:
+                              type: string
+                              example: zhangsan
+                            operationType:
+                              type: string
+                              example: CREATE_JOB
+                            operationContent:
+                              type: string
+                              example: 创建任务 jobId=10001
+                            operationIp:
+                              type: string
+                              example: 192.168.1.100
+                            operationStatus:
+                              type: integer
+                              example: 1
+                            operationTime:
+                              type: string
+                              format: date-time
+
+  # ==================== 文件下载 ====================
+  /files/download:
+    get:
+      tags:
+        - files
+      summary: 通用文件下载（需要认证）
+      description: 下载指定路径的文件
+      operationId: downloadFile
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: path
+          in: query
+          required: true
+          schema:
+            type: string
+          description: 文件相对路径
+      responses:
+        '200':
+          description: 文件下载成功
+          content:
+            application/octet-stream:
+              schema:
+                type: string
+                format: binary
+
+  /simulation-jobs/{jobId}/output-files:
+    get:
+      tags:
+        - files
+      summary: 获取任务原始输出文件列表
+      description: 获取指定任务的原始输出文件列表
+      operationId: getOutputFiles
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: jobId
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: 任务ID
+      responses:
+        '200':
+          description: 成功获取文件列表
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    example: 200
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        name:
+                          type: string
+                          example: log.lammps
+                        sizeGb:
+                          type: number
+                          example: 0.02
+                        url:
+                          type: string
+                          example: /api/v1/files/download?path=...
+
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: JWT Token认证，格式：Bearer {token}
+
+  schemas:
+    ErrorResponse:
+      type: object
+      properties:
+        code:
+          type: integer
+          description: 错误码
+          example: 422
+        message:
+          type: string
+          description: 错误信息
+          example: 体系电荷不平衡，总电荷为 +0.5e
+        timestamp:
+          type: string
+          format: date-time
+          description: 时间戳
+          example: "2026-06-03T16:00:00"

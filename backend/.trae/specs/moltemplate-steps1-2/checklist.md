@@ -1,0 +1,20 @@
+- [x] FormulaRequest.java已创建，包含所有配方参数字段
+- [x] SolventInfo.java已创建，包含溶剂名称和摩尔分数
+- [x] SaltInfo.java已创建，包含阳离子、阴离子和浓度
+- [x] BoxSizeRequest.java已创建，支持固定尺寸和自动计算
+- [x] 参数校验注解已添加，校验规则正确
+- [x] MoleculeCountResult.java已创建，包含分子名称、ID、数量、电荷
+- [x] BoxSizeResult.java已创建，包含盒子尺寸和体积
+- [x] FormulaCalculationResult.java已创建，聚合所有计算结果
+- [x] MoltemplateService.java已创建，注入必要的Repository
+- [x] serializeFormulaToJSON()方法实现正确，写入JSON到任务目录
+- [x] executePythonModeling()方法实现正确，调用Python脚本
+- [x] MoltemplateController.java已创建，API接口正确
+- [x] Python modeling.py已创建，核心计算逻辑完整
+- [x] calculate_molecule_counts()函数实现正确
+- [x] calculate_box_size()函数实现正确，盒子尺寸适当放大
+- [x] validate_electrical_neutrality()函数实现正确
+- [x] adjust_ion_counts()函数实现正确
+- [x] 锂盐拆分为阳离子和阴离子分别计算数量
+- [x] Python单元测试覆盖所有核心计算逻辑（46个测试用例）
+- [x] 项目编译成功，无错误

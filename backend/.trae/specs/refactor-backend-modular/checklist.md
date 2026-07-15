@@ -1,0 +1,8 @@
+- [x] 新模块目录结构已创建（common, engine, management）
+- [x] Common模块代码已迁移，package声明正确
+- [x] Engine模块代码已迁移，package声明正确
+- [x] Management模块代码已迁移，package声明正确
+- [x] 所有import语句已更新为新的package路径
+- [x] 旧目录结构已清理
+- [x] 项目编译成功，无错误
+- [x] API功能正常，测试通过
