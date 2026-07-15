@@ -1,0 +1,49 @@
+{
+  "success": true,
+  "total_properties": 2,
+  "successful_properties": 1,
+  "failed_properties": 1,
+  "skipped_properties": 0,
+  "results": {
+    "density": {
+      "property_name": "density",
+      "property_value": 1.346324,
+      "property_unit": "g/cm³",
+      "calculation_method": "时间序列平均",
+      "convergence_status": "NOT_CONVERGED",
+      "property_detail": {
+        "mean": 1.346324,
+        "standard_deviation": 0.0,
+        "standard_error": 0.0,
+        "sample_size": 5,
+        "equilibration_fraction": 0.2
+      },
+      "sub_table_data": {
+        "density_tensor": {
+          "xx": 1.3463241,
+          "yy": 1.3463241,
+          "zz": 1.3463241
+        },
+        "component_density": {}
+      }
+    },
+    "conductivity": {
+      "property_name": "conductivity",
+      "property_value": null,
+      "error": "计算异常: type NoneType doesn't define __round__ method"
+    }
+  },
+  "status": "success",
+  "output_files": {
+    "density": {
+      "result": "/workspace/data/user_1/jobs/job_1320001/post_processing/density_result.json"
+    },
+    "conductivity": {
+      "result": "/workspace/data/user_1/jobs/job_1320001/post_processing/conductivity_result.json"
+    }
+  },
+  "job_id": "1320001",
+  "user_id": "1",
+  "mode": "post-processing",
+  "timestamp": "2026-06-29T14:59:23.924083"
+}

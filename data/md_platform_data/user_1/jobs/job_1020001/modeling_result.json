@@ -1,0 +1,47 @@
+{
+  "success": true,
+  "molecules": [
+    {
+      "name": "EC",
+      "count": 19,
+      "pdb_file": "EC.pdb"
+    },
+    {
+      "name": "DMC",
+      "count": 45,
+      "pdb_file": "DMC.pdb"
+    },
+    {
+      "name": "Li",
+      "count": 5,
+      "pdb_file": "Li.pdb"
+    },
+    {
+      "name": "PF6",
+      "count": 5,
+      "pdb_file": "PF6.pdb"
+    }
+  ],
+  "box_size": {
+    "x": 20.0,
+    "y": 20.0,
+    "z": 20.0
+  },
+  "final_box_size": {
+    "x": 20.0,
+    "y": 20.0,
+    "z": 20.0
+  },
+  "output_files": [
+    "/workspace/data/user_1/jobs/job_1020001/inputs/packmol.inp",
+    "/workspace/data/user_1/jobs/job_1020001/inputs/packed_system.pdb"
+  ],
+  "attempts": 0,
+  "tolerance": 2.0,
+  "errors": [],
+  "job_id": "1020001",
+  "user_id": "1",
+  "mode": "packmol",
+  "timestamp": "2026-06-29T07:02:00.256769",
+  "status": "success"
+}

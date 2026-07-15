@@ -1,0 +1,5 @@
+{
+  "property_name": "conductivity",
+  "property_value": null,
+  "error": "计算异常: type NoneType doesn't define __round__ method"
+}

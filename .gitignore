@@ -1,8 +1,10 @@
 # Project Root - Data and Docker files
-data/
-docker/
+# data/  # 已注释：需要上传测试数据和分子模板
+data/mysql/  # MySQL 数据文件不应上传
+data/redis/  # Redis 数据文件不应上传
+# docker/  # 已注释：需要上传 Docker 配置
 logs/
-scripts/
+# scripts/  # 已注释：需要上传 Python 脚本
 *.log
 *.tmp
 *.temp
@@ -17,8 +19,8 @@ Thumbs.db
 desktop.ini
 
 # IDE
-.vscode/
-.idea/
+# .vscode/  # 已注释：需要上传 IDE 配置
+# .idea/  # 已注释：需要上传 IDE 配置
 *.swp
 *.swo
 *~
@@ -62,3 +64,4 @@ env/
 *.swp
 *.swo
 *~
+*.sock  # 排除 socket 文件

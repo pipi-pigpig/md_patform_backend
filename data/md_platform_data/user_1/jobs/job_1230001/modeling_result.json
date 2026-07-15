@@ -1,0 +1,98 @@
+{
+  "success": true,
+  "step6_result": {
+    "success": true,
+    "return_code": 0,
+    "stdout": "copied atomic coordinates into system.data\n",
+    "stderr": "moltemplate.sh v2.22.5 2025-11-16\n\nlttree_check.py v0.81.2 2021-5-24\n\n    \"Data Atoms\" column format:\n    atom-ID molecule-ID atom-type q x y z\n\n\n    \"Data Atoms\" column format:\n    atom-ID molecule-ID atom-type q x y z\n\nlttree_check.py:    parsing the class definitions... done\nlttree_check.py:    looking up classes... done\nlttree_check.py:    looking up @variables... done\nlttree_check.py: -- No errors detected. --\nlttree.py v0.80.4 2022-6-05 \n(python version 3.10.12 (main, Mar  3 2026, 11:56:32) [GCC 11.4.0])\n\n    \"Data Atoms\" column format:\n    atom-ID molecule-ID atom-type q x y z\n\nparsing the class definitions... done\nlooking up classes... done\nlooking up @variables... done\nconstructing the tree of class definitions... done\n\nclass_def_tree = (OPLSAA, DMC, EC, Li(Li), PF6, opls_135, opls_136, opls_137, opls_138, opls_141, opls_142, opls_145, opls_146, opls_209, opls_212, opls_140, opls_139, opls_143, opls_148, opls_154, opls_160, opls_210, opls_154O, opls_156, opls_211, opls_213, opls_157, opls_158, opls_159, opls_236, opls_303, opls_901, opls_402, opls_180, opls_903, CC_single, CC_double, CC_aromatic, CH_sp3, CH_sp2, CH_arom, CO_single, CO_double, CO_carb, CN_single, CN_double, CN_amide, OH, NH, PF, SC, SO, CCC_sp3, CCC_sp2, CCC_arom, CCH_sp3, CCH_sp2, HCH_sp3, HCH_sp3m, HCH_sp2, COC_ether, COC_ester, OCO_carb, OCO_ester, CCO, COH, CNC, CNC_amide, FPF, FPF_180, CCCC_alkane, CCCC_alkene, CCCH, HCCCH, COCC, COCC_est, CCOC, OCOC, CCOCarb, CO_planar, arom_plan)\n\nconstructing the instance tree...\n  processing command \"InstantiateCommand(dmc1)\"\n  processing command \"InstantiateCommand(dmc2)\"\n  processing command \"InstantiateCommand(dmc3)\"\n  processing command \"InstantiateCommand(dmc4)\"\n  processing command \"InstantiateCommand(dmc5)\"\n  processing command \"InstantiateCommand(dmc6)\"\n  processing command \"InstantiateCommand(dmc7)\"\n  processing command \"InstantiateCommand(dmc8)\"\n  processing command \"InstantiateCommand(dmc9)\"\n  processing command \"InstantiateCommand(dmc10)\"\n  processing command \"InstantiateCommand(dmc11)\"\n  processing command \"InstantiateCommand(dmc12)\"\n  processing command \"InstantiateCommand(dmc13)\"\n  processing command \"InstantiateCommand(dmc14)\"\n  processing command \"InstantiateCommand(dmc15)\"\n  processing command \"InstantiateCommand(dmc16)\"\n  processing command \"InstantiateCommand(dmc17)\"\n  processing command \"InstantiateCommand(dmc18)\"\n  processing command \"InstantiateCommand(dmc19)\"\n  processing command \"InstantiateCommand(dmc20)\"\n  processing command \"InstantiateCommand(dmc21)\"\n  processing command \"InstantiateCommand(dmc22)\"\n  processing command \"InstantiateCommand(dmc23)\"\n  processing command \"InstantiateCommand(dmc24)\"\n  processing command \"InstantiateCommand(dmc25)\"\n  processing command \"InstantiateCommand(dmc26)\"\n  processing command \"InstantiateCommand(dmc27)\"\n  processing command \"InstantiateCommand(dmc28)\"\n  processing command \"InstantiateCommand(dmc29)\"\n  processing command \"InstantiateCommand(dmc30)\"\n  processing command \"InstantiateCommand(dmc31)\"\n  processing command \"InstantiateCommand(dmc32)\"\n  processing command \"InstantiateCommand(dmc33)\"\n  processing command \"InstantiateCommand(dmc34)\"\n  processing command \"InstantiateCommand(dmc35)\"\n  processing command \"InstantiateCommand(dmc36)\"\n  processing command \"InstantiateCommand(dmc37)\"\n  processing command \"InstantiateCommand(dmc38)\"\n  processing command \"InstantiateCommand(dmc39)\"\n  processing command \"InstantiateCommand(dmc40)\"\n  processing command \"InstantiateCommand(dmc41)\"\n  processing command \"InstantiateCommand(dmc42)\"\n  processing command \"InstantiateCommand(dmc43)\"\n  processing command \"InstantiateCommand(dmc44)\"\n  processing command \"InstantiateCommand(dmc45)\"\n  processing command \"InstantiateCommand(ec1)\"\n  processing command \"InstantiateCommand(ec2)\"\n  processing command \"InstantiateCommand(ec3)\"\n  processing command \"InstantiateCommand(ec4)\"\n  processing command \"InstantiateCommand(ec5)\"\n  processing command \"InstantiateCommand(ec6)\"\n  processing command \"InstantiateCommand(ec7)\"\n  processing command \"InstantiateCommand(ec8)\"\n  processing command \"InstantiateCommand(ec9)\"\n  processing command \"InstantiateCommand(ec10)\"\n  processing command \"InstantiateCommand(ec11)\"\n  processing command \"InstantiateCommand(ec12)\"\n  processing command \"InstantiateCommand(ec13)\"\n  processing command \"InstantiateCommand(ec14)\"\n  processing command \"InstantiateCommand(ec15)\"\n  processing command \"InstantiateCommand(ec16)\"\n  processing command \"InstantiateCommand(ec17)\"\n  processing command \"InstantiateCommand(ec18)\"\n  processing command \"InstantiateCommand(ec19)\"\n  processing command \"InstantiateCommand(li1)\"\n  processing command \"InstantiateCommand(li2)\"\n  processing command \"InstantiateCommand(li3)\"\n  processing command \"InstantiateCommand(li4)\"\n  processing command \"InstantiateCommand(li5)\"\n  processing command \"InstantiateCommand(pf61)\"\n  processing command \"InstantiateCommand(pf62)\"\n  processing command \"InstantiateCommand(pf63)\"\n  processing command \"InstantiateCommand(pf64)\"\n  processing command \"InstantiateCommand(pf65)\"\n done\nsorting variables...\n  sorting variables in category: @/atom:\n  sorting variables in category: @/bond:\n  sorting variables in category: @/angle:\n  sorting variables in category: @/dihedral:\n  sorting variables in category: @/improper:\n  sorting variables in category: $/atom:\n  sorting variables in category: $/mol:\n  sorting variables in category: $/bond:\n  sorting variables in category: $/angle:\n  sorting variables in category: $/dihedral:\n done\n done\nbuilding templates... done\nwriting templates... done\nbuilding and rendering templates... done\nwriting rendered templates...\n done\nwriting \"ttree_assignments.txt\" file... done\n\nexpanding wildcards in \"_coeff\" commands\n\nlttree_postprocess.py v0.6.2 2021-4-20\nlttree_postprocess.py: -- No errors detected. --\n\nraw2data.py v0.44.2 2022-1-06\n    \"Atoms\" column format:\n    atom-ID molecule-ID atom-type q x y z\npostprocessing file \"system.in.settings\"\n\n-------------------------------------------------------------\nIf this software is useful in your research, please cite\nJewett et al. J.Mol.Biol. (2021) (https://doi.org/10.1016/j.jmb.2021.166841)\n-------------------------------------------------------------\n",
+    "duration": 7.253710746765137,
+    "output_files": [
+      "/workspace/data/user_1/jobs/job_1230001/inputs/system.data",
+      "/workspace/data/user_1/jobs/job_1230001/inputs/system.in.init",
+      "/workspace/data/user_1/jobs/job_1230001/inputs/system.in.settings"
+    ],
+    "error": null,
+    "missing_files": []
+  },
+  "step7_result": {
+    "success": true,
+    "moved_files": [
+      {
+        "file_name": "system.lt",
+        "source_path": "/workspace/data/user_1/jobs/job_1230001/inputs/system.lt",
+        "target_path": "/workspace/data/user_1/jobs/job_1230001/inputs/system.lt",
+        "size": 1755
+      },
+      {
+        "file_name": "system.data",
+        "source_path": "/workspace/data/user_1/jobs/job_1230001/inputs/system.data",
+        "target_path": "/workspace/data/user_1/jobs/job_1230001/inputs/system.data",
+        "size": 66620
+      },
+      {
+        "file_name": "system.in.init",
+        "source_path": "/workspace/data/user_1/jobs/job_1230001/inputs/system.in.init",
+        "target_path": "/workspace/data/user_1/jobs/job_1230001/inputs/system.in.init",
+        "size": 540
+      },
+      {
+        "file_name": "system.in.settings",
+        "source_path": "/workspace/data/user_1/jobs/job_1230001/inputs/system.in.settings",
+        "target_path": "/workspace/data/user_1/jobs/job_1230001/inputs/system.in.settings",
+        "size": 3750
+      },
+      {
+        "file_name": "packmol.inp",
+        "source_path": "/workspace/data/user_1/jobs/job_1230001/inputs/packmol.inp",
+        "target_path": "/workspace/data/user_1/jobs/job_1230001/inputs/packmol.inp",
+        "size": 402
+      },
+      {
+        "file_name": "packed_system.pdb",
+        "source_path": "/workspace/data/user_1/jobs/job_1230001/inputs/packed_system.pdb",
+        "target_path": "/workspace/data/user_1/jobs/job_1230001/inputs/packed_system.pdb",
+        "size": 62554
+      }
+    ],
+    "missing_files": [],
+    "file_sizes": {
+      "system.lt": 1755,
+      "system.data": 66620,
+      "system.in.init": 540,
+      "system.in.settings": 3750,
+      "packmol.inp": 402,
+      "packed_system.pdb": 62554
+    },
+    "error": null,
+    "statistics": {
+      "total_files": 6,
+      "moved_files": 6,
+      "missing_files": 0,
+      "total_size": 135621,
+      "duration": 0.6659412384033203,
+      "input_dir": "/workspace/data/user_1/jobs/job_1230001/inputs"
+    },
+    "init_fix_result": {
+      "success": true,
+      "added_atom_style": true,
+      "added_kspace_style": true,
+      "removed_duplicates": true
+    }
+  },
+  "statistics": {
+    "total_duration": 7.976665735244751,
+    "step6_duration": 7.253710746765137,
+    "step7_duration": 0.6659412384033203,
+    "step6_success": true,
+    "step7_success": true,
+    "total_files": 6,
+    "total_size": 135621,
+    "input_dir": "/workspace/data/user_1/jobs/job_1230001/inputs"
+  },
+  "error": null,
+  "job_id": "1230001",
+  "user_id": "1",
+  "mode": "moltemplate-execution",
+  "timestamp": "2026-06-29T13:27:38.551176",
+  "status": "success"
+}

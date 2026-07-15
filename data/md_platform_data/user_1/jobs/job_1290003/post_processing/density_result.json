@@ -1,0 +1,22 @@
+{
+  "property_name": "density",
+  "property_value": 1.346324,
+  "property_unit": "g/cm³",
+  "calculation_method": "时间序列平均",
+  "convergence_status": "NOT_CONVERGED",
+  "property_detail": {
+    "mean": 1.346324,
+    "standard_deviation": 0.0,
+    "standard_error": 0.0,
+    "sample_size": 5,
+    "equilibration_fraction": 0.2
+  },
+  "sub_table_data": {
+    "density_tensor": {
+      "xx": 1.3463241,
+      "yy": 1.3463241,
+      "zz": 1.3463241
+    },
+    "component_density": {}
+  }
+}

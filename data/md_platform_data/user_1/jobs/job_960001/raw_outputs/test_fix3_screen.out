@@ -1,0 +1,96 @@
+LAMMPS (23 Jun 2022 - Update 4)
+Reading data file ...
+  orthogonal box = (0 0 0) to (20 20 20)
+  1 by 1 by 1 MPI processor grid
+  reading atoms ...
+  770 atoms
+  scanning bonds ...
+  6 = max bonds/atom
+  scanning angles ...
+  15 = max angles/atom
+  scanning dihedrals ...
+  3 = max dihedrals/atom
+  reading bonds ...
+  715 bonds
+  reading angles ...
+  1087 angles
+  reading dihedrals ...
+  455 dihedrals
+Finding 1-2 1-3 1-4 neighbors ...
+  special bond factors lj:    0        0        0.5     
+  special bond factors coul:  0        0        0.5     
+     6 = max # of 1-2 neighbors
+     5 = max # of 1-3 neighbors
+     9 = max # of 1-4 neighbors
+    11 = max # of special neighbors
+  special bonds CPU = 0.000 seconds
+  read_data CPU = 0.021 seconds
+Generated 0 of 465 mixed pair_coeff terms from geometric mixing rule
+WARNING: Dihedrals are defined but no dihedral style is set (../force.cpp:202)
+WARNING: Likewise 1-4 special neighbor interactions != 1.0 (../force.cpp:204)
+Neighbor list info ...
+  update every 1 steps, delay 0 steps, check yes
+  max neighbors/atom: 100000, page size: 1000000
+  master list distance cutoff = 2.1
+  ghost atom cutoff = 2.1
+  binsize = 1.05, bins = 20 20 20
+  1 neighbor lists, perpetual/occasional/extra = 1 0 0
+  (1) pair soft, perpetual
+      attributes: half, newton on
+      pair build: half/bin/newton
+      stencil: half/bin/3d
+      bin: standard
+Setting up cg style minimization ...
+  Unit style    : real
+  Current step  : 0
+WARNING: Communication cutoff 2.1 is shorter than a bond length based estimate of 2.815. This may lead to errors. (../comm.cpp:727)
+WARNING: Bond/angle/dihedral extent > half of periodic box length (../domain.cpp:940)
+Per MPI rank memory allocation (min/avg/max) = 17.11 | 17.11 | 17.11 Mbytes
+   Step          Temp          PotEng         KinEng         TotEng         Press          Volume    
+         0   0              7251557.5      0              7251557.5      31969254       8000         
+        11   0              4406789.7      0              4406789.7      8516064.6      8000         
+WARNING: Bond/angle/dihedral extent > half of periodic box length (../domain.cpp:940)
+Loop time of 0.0520917 on 1 procs for 11 steps with 770 atoms
+
+100.0% CPU use with 1 MPI tasks x no OpenMP threads
+
+Minimization stats:
+  Stopping criterion = energy tolerance
+  Energy initial, next-to-last, final = 
+       7251557.5317526   4406877.40713758   4406789.69491191
+  Force two-norm initial, final = 328162.85 74170.138
+  Force max component initial, final = 20051.757 6125.9152
+  Final line search alpha, max atom move = 1.5944184e-08 9.7672719e-05
+  Iterations, force evaluations = 11 22
+
+MPI task timing breakdown:
+Section |  min time  |  avg time  |  max time  |%varavg| %total
+---------------------------------------------------------------
+Pair    | 0.040668   | 0.040668   | 0.040668   |   0.0 | 78.07
+Bond    | 0.00096513 | 0.00096513 | 0.00096513 |   0.0 |  1.85
+Neigh   | 0.0091994  | 0.0091994  | 0.0091994  |   0.0 | 17.66
+Comm    | 0.00084891 | 0.00084891 | 0.00084891 |   0.0 |  1.63
+Output  | 0          | 0          | 0          |   0.0 |  0.00
+Modify  | 0          | 0          | 0          |   0.0 |  0.00
+Other   |            | 0.0004107  |            |       |  0.79
+
+Nlocal:            770 ave         770 max         770 min
+Histogram: 1 0 0 0 0 0 0 0 0 0
+Nghost:           3494 ave        3494 max        3494 min
+Histogram: 1 0 0 0 0 0 0 0 0 0
+Neighs:          72481 ave       72481 max       72481 min
+Histogram: 1 0 0 0 0 0 0 0 0 0
+
+Total # of neighbors = 72481
+Ave neighs/atom = 94.131169
+Ave special neighs/atom = 6.7376623
+Neighbor list builds = 14
+Dangerous builds = 13
+System init for write_data ...
+Generated 0 of 465 mixed pair_coeff terms from geometric mixing rule
+WARNING: Dihedrals are defined but no dihedral style is set (../force.cpp:202)
+WARNING: Likewise 1-4 special neighbor interactions != 1.0 (../force.cpp:204)
+WARNING: Communication cutoff 2.1 is shorter than a bond length based estimate of 2.815. This may lead to errors. (../comm.cpp:727)
+Reading data file ...
+  orthogonal box = (0 0 0) to (20 20 20)
+  1 by

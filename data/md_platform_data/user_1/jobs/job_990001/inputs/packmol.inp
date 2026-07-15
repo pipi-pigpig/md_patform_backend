@@ -1,0 +1,25 @@
+tolerance 2.0
+seed 1782715680
+maxit 100
+
+structure EC.pdb
+  number 19
+  inside box 0. 0. 0. 20.00 20.00 20.00
+end structure
+
+structure DMC.pdb
+  number 45
+  inside box 0. 0. 0. 20.00 20.00 20.00
+end structure
+
+structure Li.pdb
+  number 5
+  inside box 0. 0. 0. 20.00 20.00 20.00
+end structure
+
+structure PF6.pdb
+  number 5
+  inside box 0. 0. 0. 20.00 20.00 20.00
+end structure
+
+output packed_system.pdb

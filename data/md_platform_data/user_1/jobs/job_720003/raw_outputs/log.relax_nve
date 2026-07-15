@@ -1,0 +1,481 @@
+LAMMPS (23 Jun 2022 - Update 4)
+# =============================================================================
+# Relaxation: Soft potential + NVE/limit + gradual transition to real FF
+# =============================================================================
+units           real
+atom_style      full
+dimension       3
+boundary        p p p
+
+read_data       system.data
+Reading data file ...
+  orthogonal box = (0 0 0) to (50 50 50)
+  1 by 1 by 1 MPI processor grid
+  reading atoms ...
+  12114 atoms
+  scanning bonds ...
+  6 = max bonds/atom
+  scanning angles ...
+  15 = max angles/atom
+  scanning dihedrals ...
+  3 = max dihedrals/atom
+  reading bonds ...
+  11257 bonds
+  reading angles ...
+  17083 angles
+  reading dihedrals ...
+  7171 dihedrals
+Finding 1-2 1-3 1-4 neighbors ...
+  special bond factors lj:    0        0        0       
+  special bond factors coul:  0        0        0       
+     6 = max # of 1-2 neighbors
+     5 = max # of 1-3 neighbors
+     9 = max # of 1-4 neighbors
+    11 = max # of special neighbors
+  special bonds CPU = 0.003 seconds
+  read_data CPU = 0.218 seconds
+
+# Step 1: Soft potential with limited dynamics
+pair_style      soft 1.0
+pair_coeff      * * 10.0
+bond_style      harmonic
+angle_style     harmonic
+dihedral_style  none
+improper_style  none
+special_bonds   lj 1.0 1.0 1.0 coul 1.0 1.0 1.0
+Finding 1-2 1-3 1-4 neighbors ...
+  special bond factors lj:    1        1        1       
+  special bond factors coul:  1        1        1       
+     6 = max # of 1-2 neighbors
+    11 = max # of special neighbors
+  special bonds CPU = 0.001 seconds
+kspace_style    none
+
+include         system.in.bond_angle_only
+bond_coeff 1  268.0  1.529   # C-C   (sp3-sp3)
+bond_coeff 2  414.0  1.330   # C=C   (sp2-sp2)
+bond_coeff 3 320.0  1.400   #   C-C
+bond_coeff 4     340.0  1.090   # C-H  (sp3 )
+bond_coeff 5     340.0  1.080   # C-H  (sp2 )
+bond_coeff 6    340.0  1.080   # C-H  (   )
+bond_coeff 7  320.0  1.410   # C-O   (   )
+bond_coeff 8  570.0  1.229   # C=O   (  )
+bond_coeff 9    320.0  1.360   # C-O  (  )
+bond_coeff 10  300.0  1.470   # C-N   ( )
+bond_coeff 11  440.0  1.270   # C=N   (  )
+bond_coeff 12   350.0  1.340   # C-N  (  )
+bond_coeff 13         340.0  0.960   # O-H  (    )
+bond_coeff 14         340.0  1.010   # N-H  ( )
+bond_coeff 15         420.0  1.560   # P-F  (     )
+bond_coeff 16         200.0  1.810   # S-C  (  )
+bond_coeff 17         300.0  1.430   # S-O  (   )
+angle_coeff 1    50.0  109.5   # C-C-C (sp3)
+angle_coeff 2    80.0  120.0   # C-C-C (sp2)
+angle_coeff 3   60.0  120.0   # C-C-C (  )
+angle_coeff 4    37.5  110.7   # C-C-H (sp3)
+angle_coeff 5    40.0  120.0   # C-C-H (sp2)
+angle_coeff 6    33.0  106.4   # H-C-H (sp3   )
+angle_coeff 7   33.0  107.8   # H-C-H (sp3  )
+angle_coeff 8    35.0  120.0   # H-C-H (sp2)
+angle_coeff 9  60.0  109.5   # C-O-C ( )
+angle_coeff 10  60.0  124.0   # C-O-C ( )
+angle_coeff 11   80.0  123.0   # O-C=O (  )
+angle_coeff 12  80.0  120.4   # O-C-O ( )
+angle_coeff 13        50.0  109.5   # C-C-O
+angle_coeff 14        50.0  109.5   # C-O-H ( )
+angle_coeff 15        50.0  109.5   # C-N-C ( )
+angle_coeff 16  50.0  120.0   # C-N-C (  )
+angle_coeff 17        80.0   90.0   # F-P-F (     )
+angle_coeff 18    80.0  180.0   # F-P-F (  )
+
+neighbor        2.0 bin
+neigh_modify    every 1 delay 0 check yes one 100000 page 1000000
+thermo          100
+thermo_style    custom step temp pe ke etotal press vol
+
+# First, minimize with soft potential
+min_style       fire
+minimize        1.0e-4 1.0e-6 1000 10000
+Generated 0 of 465 mixed pair_coeff terms from geometric mixing rule
+WARNING: Dihedrals are defined but no dihedral style is set (../force.cpp:202)
+Neighbor list info ...
+  update every 1 steps, delay 0 steps, check yes
+  max neighbors/atom: 100000, page size: 1000000
+  master list distance cutoff = 3
+  ghost atom cutoff = 3
+  binsize = 1.5, bins = 34 34 34
+  1 neighbor lists, perpetual/occasional/extra = 1 0 0
+  (1) pair soft, perpetual
+      attributes: half, newton on
+      pair build: half/bin/newton
+      stencil: half/bin/3d
+      bin: standard
+  Parameters for fire: 
+    dmax delaystep dtgrow dtshrink alpha0 alphashrink tmax tmin    integrator halfstepback 
+     0.1        20    1.1      0.5   0.25        0.99   10 0.02 eulerimplicit          yes 
+WARNING: Communication cutoff 3 is shorter than a bond length based estimate of 4.715. This may lead to errors. (../comm.cpp:727)
+Per MPI rank memory allocation (min/avg/max) = 232.8 | 232.8 | 232.8 Mbytes
+   Step          Temp          PotEng         KinEng         TotEng         Press          Volume    
+         0   0              98963015       0              98963015       393891.94      125000       
+       100   333324.04      46941900       12035182       58977082       5591714.7      125000       
+       200   37331.033      17003486       1347894.9      18351381       312653.74      125000       
+       300   10989.42       15255319       396790.07      15652109       85060.312      125000       
+       400   5077010.5      4.2206487e+08  1.8331334e+08  6.0537821e+08 -86090931       125000       
+       500   20359649       3.6339226e+08  7.3511671e+08  1.098509e+09   1.358846e+08   125000       
+       600   33651273       2.5837867e+08  1.2150315e+09  1.4734101e+09  3.4970365e+08  125000       
+       700   35187654       2.1395044e+08  1.2705049e+09  1.4844553e+09  3.865387e+08   125000       
+       800   34574526       2.0172137e+08  1.2483669e+09  1.4500883e+09  3.8296252e+08  125000       
+       900   34047889       1.519725e+08   1.2293519e+09  1.3813244e+09  3.9491329e+08  125000       
+      1000   32915081       1.0242553e+08  1.1884501e+09  1.2908756e+09  3.9920024e+08  125000       
+WARNING: Bond/angle/dihedral extent > half of periodic box length (../domain.cpp:940)
+Loop time of 75.9574 on 1 procs for 1000 steps with 12114 atoms
+
+100.0% CPU use with 1 MPI tasks x no OpenMP threads
+
+Minimization stats:
+  Stopping criterion = max iterations
+  Energy initial, next-to-last, final = 
+      98963015.0128314   102696782.147503   102425529.003656
+  Force two-norm initial, final = 612218.65 451207.52
+  Force max component initial, final = 43415.779 25724.592
+  Final line search alpha, max atom move = 0 0
+  Iterations, force evaluations = 1000 1007
+
+MPI task timing breakdown:
+Section |  min time  |  avg time  |  max time  |%varavg| %total
+---------------------------------------------------------------
+Pair    | 65.03      | 65.03      | 65.03      |   0.0 | 85.61
+Bond    | 0.66811    | 0.66811    | 0.66811    |   0.0 |  0.88
+Neigh   | 9.6088     | 9.6088     | 9.6088     |   0.0 | 12.65
+Comm    | 0.39807    | 0.39807    | 0.39807    |   0.0 |  0.52
+Output  | 0.00062447 | 0.00062447 | 0.00062447 |   0.0 |  0.00
+Modify  | 0          | 0          | 0          |   0.0 |  0.00
+Other   |            | 0.2521     |            |       |  0.33
+
+Nlocal:          12114 ave       12114 max       12114 min
+Histogram: 1 0 0 0 0 0 0 0 0 0
+Nghost:          55316 ave       55316 max       55316 min
+Histogram: 1 0 0 0 0 0 0 0 0 0
+Neighs:     1.2978e+07 ave  1.2978e+07 max  1.2978e+07 min
+Histogram: 1 0 0 0 0 0 0 0 0 0
+
+Total # of neighbors = 12978020
+Ave neighs/atom = 1071.3241
+Ave special neighs/atom = 1.8585108
+Neighbor list builds = 104
+Dangerous builds = 0
+
+# Then run short NVE with limited displacement
+timestep        0.1
+velocity        all create 10.0 47562 dist gaussian
+fix             nve_limit all nve/limit 0.01
+run             1000
+Generated 0 of 465 mixed pair_coeff terms from geometric mixing rule
+WARNING: Dihedrals are defined but no dihedral style is set (../force.cpp:202)
+WARNING: Communication cutoff 3 is shorter than a bond length based estimate of 4.715. This may lead to errors. (../comm.cpp:727)
+WARNING: Inconsistent image flags (../domain.cpp:819)
+WARNING: Bond/angle/dihedral extent > half of periodic box length (../domain.cpp:940)
+Per MPI rank memory allocation (min/avg/max) = 248 | 248 | 248 Mbytes
+   Step          Temp          PotEng         KinEng         TotEng         Press          Volume    
+      1000   10             1.0242553e+08  361.06552      1.0242589e+08 -35413704       125000       
+      1100   26970.008      79197522       973794         80171316      -27886512       125000       
+      1200   27954.478      65321322       1009339.8      66330662      -24240203       125000       
+      1300   27405.863      72012311       989531.24      73001842      -27173929       125000       
+      1400   27342.112      61674763       987229.38      62661993      -23330556       125000       
+      1500   26489.746      52835987       956453.38      53792440      -20068035       125000       
+      1600   25081.97       45080828       905623.45      45986451      -17237700       125000       
+      1700   23881.262      38232671       862270.02      39094941      -14730622       125000       
+      1800   22971.914      32123049       829436.63      32952486      -12438265       125000       
+      1900   22389.298      26645016       808400.34      27453417      -10348380       125000       
+      2000   21278.254      21778923       768284.39      22547207      -8490645.8      125000       
+WARNING: Bond/angle/dihedral extent > half of periodic box length (../domain.cpp:940)
+Loop time of 22.0125 on 1 procs for 1000 steps with 12114 atoms
+
+Performance: 0.393 ns/day, 61.146 hours/ns, 45.429 timesteps/s
+100.0% CPU use with 1 MPI tasks x no OpenMP threads
+
+MPI task timing breakdown:
+Section |  min time  |  avg time  |  max time  |%varavg| %total
+---------------------------------------------------------------
+Pair    | 20.189     | 20.189     | 20.189     |   0.0 | 91.72
+Bond    | 0.81095    | 0.81095    | 0.81095    |   0.0 |  3.68
+Neigh   | 0.57384    | 0.57384    | 0.57384    |   0.0 |  2.61
+Comm    | 0.1856     | 0.1856     | 0.1856     |   0.0 |  0.84
+Output  | 0.00053234 | 0.00053234 | 0.00053234 |   0.0 |  0.00
+Modify  | 0.16805    | 0.16805    | 0.16805    |   0.0 |  0.76
+Other   |            | 0.08425    |            |       |  0.38
+
+Nlocal:          12114 ave       12114 max       12114 min
+Histogram: 1 0 0 0 0 0 0 0 0 0
+Nghost:          27619 ave       27619 max       27619 min
+Histogram: 1 0 0 0 0 0 0 0 0 0
+Neighs:    2.02385e+06 ave 2.02385e+06 max 2.02385e+06 min
+Histogram: 1 0 0 0 0 0 0 0 0 0
+
+Total # of neighbors = 2023854
+Ave neighs/atom = 167.06736
+Ave special neighs/atom = 1.8585108
+Neighbor list builds = 9
+Dangerous builds = 0
+unfix           nve_limit
+
+# Switch to real force field
+pair_style      lj/cut/coul/cut 8.0 8.0
+dihedral_style  opls
+improper_style  none
+special_bonds   lj 0.0 0.0 0.5 coul 0.0 0.0 0.5
+Finding 1-2 1-3 1-4 neighbors ...
+  special bond factors lj:    0        0        0.5     
+  special bond factors coul:  0        0        0.5     
+     6 = max # of 1-2 neighbors
+     5 = max # of 1-3 neighbors
+     9 = max # of 1-4 neighbors
+    11 = max # of special neighbors
+  special bonds CPU = 0.003 seconds
+include         system.in.settings.no_imp
+pair_coeff 1 1 0.066 3.50
+pair_coeff 2 2 0.066 3.50
+pair_coeff 3 3 0.066 3.50
+pair_coeff 4 4 0.066 3.50
+pair_coeff 5 5 0.070 3.55
+pair_coeff 6 6 0.070 3.55
+pair_coeff 7 7 0.070 3.55
+pair_coeff 8 8 0.070 3.55
+pair_coeff 9 9 0.105 3.75
+pair_coeff 10 10 0.105 3.75
+pair_coeff 11 11 0.030 2.50
+pair_coeff 12 12 0.030 2.50
+pair_coeff 13 13 0.030 2.50
+pair_coeff 14 14 0.030 2.42
+pair_coeff 15 15 0.030 2.50
+pair_coeff 16 16 0.030 2.50
+pair_coeff 17 17 0.030 2.50
+pair_coeff 18 18 0.170 3.00
+pair_coeff 19 19 0.170 3.00
+pair_coeff 20 20 0.170 2.96
+pair_coeff 21 21 0.170 3.00
+pair_coeff 22 22 0.170 3.25
+pair_coeff 23 23 0.170 3.25
+pair_coeff 24 24 0.170 3.25
+pair_coeff 25 25 0.170 3.25
+pair_coeff 26 26 0.255 2.95
+pair_coeff 27 27 0.200 3.70
+pair_coeff 28 28 0.0025 1.506
+pair_coeff 29 29 0.250 3.55
+pair_coeff 30 30 0.250 3.55
+#  -
+bond_coeff 1  268.0  1.529   # C-C   (sp3-sp3)
+bond_coeff 2  414.0  1.330   # C=C   (sp2-sp2)
+bond_coeff 3 320.0  1.400   #   C-C
+
+#  -
+bond_coeff 4     340.0  1.090   # C-H  (sp3 )
+bond_coeff 5     340.0  1.080   # C-H  (sp2 )
+bond_coeff 6    340.0  1.080   # C-H  (   )
+
+#  -
+bond_coeff 7  320.0  1.410   # C-O   (   )
+bond_coeff 8  570.0  1.229   # C=O   (  )
+bond_coeff 9    320.0  1.360   # C-O  (  )
+
+#  -
+bond_coeff 10  300.0  1.470   # C-N   ( )
+bond_coeff 11  440.0  1.270   # C=N   (  )
+bond_coeff 12   350.0  1.340   # C-N  (  )
+
+#  -
+bond_coeff 13         340.0  0.960   # O-H  (    )
+
+#  -
+bond_coeff 14         340.0  1.010   # N-H  ( )
+
+#  -   (PF6)
+bond_coeff 15         420.0  1.560   # P-F  (     )
+
+#  -
+bond_coeff 16         200.0  1.810   # S-C  (  )
+
+#  -
+bond_coeff 17         300.0  1.430   # S-O  (   )
+#  - -
+angle_coeff 1    50.0  109.5   # C-C-C (sp3)
+angle_coeff 2    80.0  120.0   # C-C-C (sp2)
+angle_coeff 3   60.0  120.0   # C-C-C (  )
+
+#  - -
+angle_coeff 4    37.5  110.7   # C-C-H (sp3)
+angle_coeff 5    40.0  120.0   # C-C-H (sp2)
+
+#  - -
+angle_coeff 6    33.0  106.4   # H-C-H (sp3   )
+angle_coeff 7   33.0  107.8   # H-C-H (sp3  )
+angle_coeff 8    35.0  120.0   # H-C-H (sp2)
+
+#  - -
+angle_coeff 9  60.0  109.5   # C-O-C ( )
+angle_coeff 10  60.0  124.0   # C-O-C ( )
+
+#  - -
+angle_coeff 11   80.0  123.0   # O-C=O (  )
+angle_coeff 12  80.0  120.4   # O-C-O ( )
+
+#  - -
+angle_coeff 13        50.0  109.5   # C-C-O
+
+#  - -
+angle_coeff 14        50.0  109.5   # C-O-H ( )
+
+#  - -
+angle_coeff 15        50.0  109.5   # C-N-C ( )
+angle_coeff 16  50.0  120.0   # C-N-C (  )
+
+#  - -    (PF6)
+angle_coeff 17        80.0   90.0   # F-P-F (     )
+angle_coeff 18    80.0  180.0   # F-P-F (  )
+#  - - -
+dihedral_coeff 1  0.0  0.0  0.278  0.0   # C-C-C-C (  )
+dihedral_coeff 2  0.0  0.0  0.0    0.0   # C-C-C-C (  )
+
+#  - - -
+dihedral_coeff 3  0.0  0.0  0.278  0.0   # C-C-C-H
+
+#  - - -
+dihedral_coeff 4 0.0  0.0  0.278  0.0   # H-C-C-H
+
+#  - - -
+dihedral_coeff 5  0.5 -0.5  0.5   0.0   # C-O-C-C ( )
+dihedral_coeff 6 0.0  0.0  0.0   0.0   # C-O-C-C ( )
+
+#  - - -
+dihedral_coeff 7  0.0  0.0  0.0   0.0   # C-C-O-C
+
+#  - - -
+dihedral_coeff 8  0.0  0.0  0.0   0.0   # O-C-O-C (   )
+
+#  - - =
+dihedral_coeff 9 0.0  0.0  0.0  0.0   # C-C-O=C (  )
+#
+
+#
+pair_coeff 31 31 0.00034 2.126
+
+neighbor        2.0 bin
+neigh_modify    every 1 delay 0 check yes one 100000 page 1000000
+
+# Run NVE with limited displacement again
+fix             nve_limit2 all nve/limit 0.01
+run             1000
+Generated 465 of 465 mixed pair_coeff terms from geometric mixing rule
+Neighbor list info ...
+  update every 1 steps, delay 0 steps, check yes
+  max neighbors/atom: 100000, page size: 1000000
+  master list distance cutoff = 10
+  ghost atom cutoff = 10
+  binsize = 5, bins = 10 10 10
+  1 neighbor lists, perpetual/occasional/extra = 1 0 0
+  (1) pair lj/cut/coul/cut, perpetual
+      attributes: half, newton on
+      pair build: half/bin/newton
+      stencil: half/bin/3d
+      bin: standard
+WARNING: Inconsistent image flags (../domain.cpp:819)
+WARNING: Bond/angle/dihedral extent > half of periodic box length (../domain.cpp:940)
+Per MPI rank memory allocation (min/avg/max) = 195.7 | 195.7 | 195.7 Mbytes
+   Step          Temp          PotEng         KinEng         TotEng         Press          Volume    
+      2000   21278.254      8.4945078e+37  768284.39      8.4945078e+37  1.8638558e+38  125000       
+      2100   33672.235      2.6571027e+11  1215788.3      2.6571149e+11  5.8302662e+11  125000       
+      2200   33423.321      3.1048445e+10  1206800.9      3.1049652e+10  6.8087262e+10  125000       
+      2300   33261.444      7.5867779e+09  1200956.1      7.5879788e+09  1.6591418e+10  125000       
+      2400   33126.303      2.2987345e+09  1196076.6      2.2999305e+09  4.9826082e+09  125000       
+      2500   31094.824      8.0220238e+08  1122726.9      8.033251e+08   1.6962831e+09  125000       
+      2600   27607.372      3.1981589e+08  996807.01      3.208127e+08   6.3527234e+08  125000       
+      2700   26686.29       1.4883891e+08  963549.91      1.4980246e+08  2.5738032e+08  125000       
+      2800   25740.453      82551354       929399.02      83480753       1.0912326e+08  125000       
+      2900   25143.565      55141582       907847.45      56049429       47376526       125000       
+      3000   24842.204      42750223       896966.32      43647190       21586170       125000       
+WARNING: Bond/angle/dihedral extent > half of periodic box length (../domain.cpp:940)
+Loop time of 102.114 on 1 procs for 1000 steps with 12114 atoms
+
+Performance: 0.085 ns/day, 283.651 hours/ns, 9.793 timesteps/s
+100.0% CPU use with 1 MPI tasks x no OpenMP threads
+
+MPI task timing breakdown:
+Section |  min time  |  avg time  |  max time  |%varavg| %total
+---------------------------------------------------------------
+Pair    | 98.167     | 98.167     | 98.167     |   0.0 | 96.13
+Bond    | 2.0122     | 2.0122     | 2.0122     |   0.0 |  1.97
+Neigh   | 1.3987     | 1.3987     | 1.3987     |   0.0 |  1.37
+Comm    | 0.27012    | 0.27012    | 0.27012    |   0.0 |  0.26
+Output  | 0.00054191 | 0.00054191 | 0.00054191 |   0.0 |  0.00
+Modify  | 0.15961    | 0.15961    | 0.15961    |   0.0 |  0.16
+Other   |            | 0.1059     |            |       |  0.10
+
+Nlocal:          12114 ave       12114 max       12114 min
+Histogram: 1 0 0 0 0 0 0 0 0 0
+Nghost:          45113 ave       45113 max       45113 min
+Histogram: 1 0 0 0 0 0 0 0 0 0
+Neighs:    6.40301e+06 ave 6.40301e+06 max 6.40301e+06 min
+Histogram: 1 0 0 0 0 0 0 0 0 0
+
+Total # of neighbors = 6403007
+Ave neighs/atom = 528.56257
+Ave special neighs/atom = 6.7465742
+Neighbor list builds = 9
+Dangerous builds = 0
+unfix           nve_limit2
+
+# Final minimization
+min_style       fire
+minimize        1.0e-2 1.0e-4 200 2000
+Generated 465 of 465 mixed pair_coeff terms from geometric mixing rule
+  Parameters for fire: 
+    dmax delaystep dtgrow dtshrink alpha0 alphashrink tmax tmin    integrator halfstepback 
+     0.1        20    1.1      0.5   0.25        0.99   10 0.02 eulerimplicit          yes 
+WARNING: Inconsistent image flags (../domain.cpp:819)
+WARNING: Bond/angle/dihedral extent > half of periodic box length (../domain.cpp:940)
+Per MPI rank memory allocation (min/avg/max) = 195.7 | 195.7 | 195.7 Mbytes
+   Step          Temp          PotEng         KinEng         TotEng         Press          Volume    
+      3000   0              42750223       0              42750223       21258151       125000       
+      3022   183432.1       39213638       6623100.7      45836739       18549101       125000       
+WARNING: Bond/angle/dihedral extent > half of periodic box length (../domain.cpp:940)
+Loop time of 1.4966 on 1 procs for 22 steps with 12114 atoms
+
+100.0% CPU use with 1 MPI tasks x no OpenMP threads
+
+Minimization stats:
+  Stopping criterion = energy tolerance
+  Energy initial, next-to-last, final = 
+      42750223.4571887   39439165.9421491   39213638.0019032
+  Force two-norm initial, final = 185105.45 95837.466
+  Force max component initial, final = 22205.397 5892.9226
+  Final line search alpha, max atom move = 0 0
+  Iterations, force evaluations = 22 23
+
+MPI task timing breakdown:
+Section |  min time  |  avg time  |  max time  |%varavg| %total
+---------------------------------------------------------------
+Pair    | 1.3515     | 1.3515     | 1.3515     |   0.0 | 90.31
+Bond    | 0.05637    | 0.05637    | 0.05637    |   0.0 |  3.77
+Neigh   | 0.077194   | 0.077194   | 0.077194   |   0.0 |  5.16
+Comm    | 0.0054499  | 0.0054499  | 0.0054499  |   0.0 |  0.36
+Output  | 0          | 0          | 0          |   0.0 |  0.00
+Modify  | 0          | 0          | 0          |   0.0 |  0.00
+Other   |            | 0.006055   |            |       |  0.40
+
+Nlocal:          12114 ave       12114 max       12114 min
+Histogram: 1 0 0 0 0 0 0 0 0 0
+Nghost:          42585 ave       42585 max       42585 min
+Histogram: 1 0 0 0 0 0 0 0 0 0
+Neighs:     5.6514e+06 ave  5.6514e+06 max  5.6514e+06 min
+Histogram: 1 0 0 0 0 0 0 0 0 0
+
+Total # of neighbors = 5651396
+Ave neighs/atom = 466.51775
+Ave special neighs/atom = 6.7465742
+Neighbor list builds = 1
+Dangerous builds = 0
+
+write_data      minimized.data
+System init for write_data ...
+Generated 465 of 465 mixed pair_coeff terms from geometric mixing rule
+Total wall time: 0:03:23

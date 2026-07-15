@@ -1,0 +1,116 @@
+pair_coeff 1 1 0.066 3.50
+pair_coeff 2 2 0.066 3.50
+pair_coeff 3 3 0.066 3.50
+pair_coeff 4 4 0.066 3.50
+pair_coeff 5 5 0.070 3.55
+pair_coeff 6 6 0.070 3.55
+pair_coeff 7 7 0.070 3.55
+pair_coeff 8 8 0.070 3.55
+pair_coeff 9 9 0.105 3.75
+pair_coeff 10 10 0.105 3.75
+pair_coeff 11 11 0.030 2.50
+pair_coeff 12 12 0.030 2.50
+pair_coeff 13 13 0.030 2.50
+pair_coeff 14 14 0.030 2.42
+pair_coeff 15 15 0.030 2.50
+pair_coeff 16 16 0.030 2.50
+pair_coeff 17 17 0.030 2.50
+pair_coeff 18 18 0.170 3.00
+pair_coeff 19 19 0.170 3.00
+pair_coeff 20 20 0.170 2.96
+pair_coeff 21 21 0.170 3.00
+pair_coeff 22 22 0.170 3.25
+pair_coeff 23 23 0.170 3.25
+pair_coeff 24 24 0.170 3.25
+pair_coeff 25 25 0.170 3.25
+pair_coeff 26 26 0.255 2.95
+pair_coeff 27 27 0.200 3.70
+pair_coeff 28 28 0.0025 1.506
+pair_coeff 29 29 0.250 3.55
+pair_coeff 30 30 0.250 3.55
+#  -  
+bond_coeff 1  268.0  1.529   # C-C   (sp3-sp3)
+bond_coeff 2  414.0  1.330   # C=C   (sp2-sp2)
+bond_coeff 3 320.0  1.400   #   C-C 
+
+#  -  
+bond_coeff 4     340.0  1.090   # C-H  (sp3 )
+bond_coeff 5     340.0  1.080   # C-H  (sp2 )
+bond_coeff 6    340.0  1.080   # C-H  (   )
+
+#  -  
+bond_coeff 7  320.0  1.410   # C-O   (   )
+bond_coeff 8  570.0  1.229   # C=O   (  )
+bond_coeff 9    320.0  1.360   # C-O  (  )
+
+#  -  
+bond_coeff 10  300.0  1.470   # C-N   ( )
+bond_coeff 11  440.0  1.270   # C=N   (  )
+bond_coeff 12   350.0  1.340   # C-N  (  )
+
+#  -  
+bond_coeff 13         340.0  0.960   # O-H  (    )
+
+#  -  
+bond_coeff 14         340.0  1.010   # N-H  ( )
+
+#  -   (PF6)
+bond_coeff 15         420.0  1.560   # P-F  (     )
+
+#  -  
+bond_coeff 16         200.0  1.810   # S-C  (  )
+
+#  -  
+bond_coeff 17         300.0  1.430   # S-O  (   )
+#  - -   
+angle_coeff 1    50.0  109.5   # C-C-C (sp3)
+angle_coeff 2    80.0  120.0   # C-C-C (sp2)
+angle_coeff 3   60.0  120.0   # C-C-C (  )
+
+#  - -   
+angle_coeff 4    37.5  110.7   # C-C-H (sp3)
+angle_coeff 5    40.0  120.0   # C-C-H (sp2)
+
+#  - -   
+angle_coeff 6    33.0  106.4   # H-C-H (sp3   )
+angle_coeff 7   33.0  107.8   # H-C-H (sp3  )
+angle_coeff 8    35.0  120.0   # H-C-H (sp2)
+
+#  - -   
+angle_coeff 9  60.0  109.5   # C-O-C ( )
+angle_coeff 10  60.0  124.0   # C-O-C ( )
+
+#  - -   
+angle_coeff 11   80.0  123.0   # O-C=O (  )
+angle_coeff 12  80.0  120.4   # O-C-O ( )
+
+#  - -   
+angle_coeff 13        50.0  109.5   # C-C-O
+
+#  - -   
+angle_coeff 14        50.0  109.5   # C-O-H ( )
+
+#  - -   
+angle_coeff 15        50.0  109.5   # C-N-C ( )
+angle_coeff 16  50.0  120.0   # C-N-C (  )
+
+#  - -    (PF6)
+angle_coeff 17        80.0   90.0   # F-P-F (     )
+angle_coeff 18    80.0  180.0   # F-P-F (  )
+#  - - -    
+
+#  - - -    
+
+#  - - -    
+
+#  - - -    
+
+#  - - -    
+
+#  - - -    
+
+#  - - =    
+#       
+
+#       
+pair_coeff 31 31 0.00034 2.126

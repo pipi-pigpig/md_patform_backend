@@ -1,0 +1,29 @@
+# Step 1: Soft potential with FIRE to resolve overlaps
+units           real
+atom_style      full
+dimension       3
+boundary        p p p
+
+read_data       system.data
+
+# Soft potential
+pair_style      soft 1.0
+pair_coeff      * * 10.0
+
+# Bonded interactions
+bond_style      harmonic
+angle_style     harmonic
+dihedral_style  none
+improper_style  none
+
+include         system.in.settings.minimal
+
+neighbor        2.0 bin
+neigh_modify    every 1 delay 0 check yes
+thermo          100
+thermo_style    custom step temp pe ke etotal press vol
+
+min_style       fire
+minimize 0.0 1.0e-4 100 1000
+
+write_restart   soft.restart

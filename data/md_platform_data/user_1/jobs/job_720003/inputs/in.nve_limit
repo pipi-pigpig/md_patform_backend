@@ -1,0 +1,34 @@
+# Use NVE with velocity limiting to gently push apart atoms
+units           real
+atom_style      full
+dimension       3
+boundary        p p p
+
+read_data       system.data
+
+# Use very weak LJ to avoid blowing up
+pair_style      lj/cut 12.0
+pair_coeff      * * 0.001 3.0
+
+# No bonded interactions initially
+bond_style      none
+angle_style     none
+dihedral_style  none
+improper_style  none
+special_bonds   lj 1.0 1.0 1.0 coul 1.0 1.0 1.0
+kspace_style    none
+
+neighbor        2.0 bin
+neigh_modify    every 1 delay 0 check yes
+
+# Velocity limiting to prevent explosions
+fix             nve all nve/limit 0.01
+thermo          100
+thermo_style    custom step temp pe ke etotal press vol
+
+timestep        0.1
+
+# Run a few steps to push apart atoms
+run             100
+
+write_restart   soft.restart

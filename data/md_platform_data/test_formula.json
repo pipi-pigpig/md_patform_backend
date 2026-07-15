@@ -1,0 +1,1 @@
+{"solvent_info":[{"name":"EC","mole_fraction":0.3,"molecular_weight":88.06},{"name":"DMC","mole_fraction":0.7,"molecular_weight":90.08}],"salt_info":{"name":"LiPF6","concentration":1.0,"cation":{"name":"Li","molecular_weight":6.94,"charge":1},"anion":{"name":"PF6","molecular_weight":144.96,"charge":-1}},"density":1.2}

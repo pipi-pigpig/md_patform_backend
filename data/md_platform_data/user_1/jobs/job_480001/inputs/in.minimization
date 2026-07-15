@@ -1,0 +1,52 @@
+# =============================================================================
+# LAMMPS能量最小化输入脚本
+# 由Jinja2模板引擎自动生成
+# 生成时间: 2026-06-25T23:35:12.332998300
+# 任务ID: 480001
+# =============================================================================
+
+# 初始化设置
+units           real
+atom_style      full
+dimension       3
+boundary        p p p
+
+# 力场样式设置
+bond_style      harmonic
+angle_style     harmonic
+dihedral_style  opls
+improper_style  harmonic
+pair_style      lj/cut/coul/long 12.0 12.0
+special_bonds   lj 0.0 0.0 0.5 coul 0.0 0.0 0.5
+kspace_style    pppm 1.0e-4
+kspace_modify   grid 64 64 64
+
+# 读取结构文件
+read_data       system.data
+
+# 力场参数
+include         system.in.settings
+
+# 邻居列表设置
+neighbor        2.0 bin
+neigh_modify    every 1 delay 0 check yes
+
+# 热力学输出
+thermo          100
+thermo_style    custom step temp pe ke etotal press vol
+
+# 最小化设置 - 两步最小化策略
+# 第一步：使用FIRE算法快速消除不良接触（原子重叠导致能量无穷大）
+# FIRE（Fast Inertial Relaxation Engine）专为处理高能初始构型设计，
+# 相比cg/sd在原子重叠时陷入极小步长的问题，FIRE通过惯性动力学
+# 快速将重叠原子推开，有效处理初始构型中的不良接触
+min_style       fire
+minimize        1.0e-4 1.0e-4 150000 20000
+
+# 第二步：使用共轭梯度法进行精细收敛
+# FIRE收敛精度有限，使用cg对已消除不良接触的构型进行精细优化
+min_style       cg
+minimize        1.0e-4 10.0 150000 20000
+
+# 输出最小化后的构型
+write_data      minimized.data

@@ -1,0 +1,108 @@
+# =============================================================================
+# system_test.lt - Moltemplate力场继承测试系统文件
+# =============================================================================
+# 目的: 验证分子模板正确继承OPLS-AA力场参数
+# =============================================================================
+
+# 首先导入力场文件（从力场目录）
+import "force_fields/opls-aa/ffnonbonded.lt"
+import "force_fields/opls-aa/ffbonded.lt"
+
+# 定义OPLSAA力场类
+OPLSAA {
+  # 力场全局设置
+  write_once("In Init") {
+    units real
+    bond_style harmonic
+    angle_style harmonic
+    dihedral_style opls
+    improper_style harmonic
+    pair_style lj/cut/coul/long 12.0 12.0
+    special_bonds lj 0.0 0.0 0.5 coul 0.0 0.0 0.5
+  }
+}
+
+# EC分子 - 碳酸乙烯酯（继承OPLSAA）
+EC inherits OPLSAA {
+  write('Data Atoms') {
+    $atom:C1   $mol:.   @atom:opls_209  +0.52    0.000   0.000   0.000
+    $atom:O1   $mol:.   @atom:opls_211  -0.50    1.229   0.000   0.000
+    $atom:O2   $mol:.   @atom:opls_156  -0.35   -0.680   1.200   0.000
+    $atom:O3   $mol:.   @atom:opls_156  -0.35    0.680   1.200   0.000
+    $atom:C2   $mol:.   @atom:opls_136  +0.22    1.800   1.800   0.000
+    $atom:C3   $mol:.   @atom:opls_136  +0.22   -1.800   1.800   0.000
+    $atom:H1   $mol:.   @atom:opls_140  +0.06   -2.300   1.200   0.890
+    $atom:H2   $mol:.   @atom:opls_140  +0.06   -2.300   1.200  -0.890
+    $atom:H3   $mol:.   @atom:opls_140  +0.06    2.300   1.200   0.890
+    $atom:H4   $mol:.   @atom:opls_140  +0.06    2.300   1.200  -0.890
+  }
+  
+  write('Data Bonds') {
+    $bond:b_C1_O1   @bond:CO_double    $atom:C1   $atom:O1
+    $bond:b_C1_O2   @bond:CO_single    $atom:C1   $atom:O2
+    $bond:b_C1_O3   @bond:CO_single    $atom:C1   $atom:O3
+    $bond:b_O2_C3   @bond:CO_single    $atom:O2   $atom:C3
+    $bond:b_O3_C2   @bond:CO_single    $atom:O3   $atom:C2
+    $bond:b_C2_C3   @bond:CC_single    $atom:C2   $atom:C3
+    $bond:b_C3_H1   @bond:CH_sp3       $atom:C3   $atom:H1
+    $bond:b_C3_H2   @bond:CH_sp3       $atom:C3   $atom:H2
+    $bond:b_C2_H3   @bond:CH_sp3       $atom:C2   $atom:H3
+    $bond:b_C2_H4   @bond:CH_sp3       $atom:C2   $atom:H4
+  }
+}
+
+# Li离子 - 使用独立参数（不继承OPLSAA）
+Li {
+  write_once("Data Masses") {
+    @atom:Li  6.941
+  }
+  
+  write('Data Atoms') {
+    $atom:Li1  $mol:.   @atom:Li  1.0  0.000  0.000  0.000
+  }
+  
+  write_once("In Settings") {
+    pair_coeff @atom:Li @atom:Li 0.00034 2.126
+  }
+}
+
+# PF6离子（继承OPLSAA）
+PF6 inherits OPLSAA {
+  write('Data Atoms') {
+    $atom:P1     $mol:.   @atom:opls_901   +1.34    0.000   0.000   0.000
+    $atom:F1     $mol:.   @atom:opls_303   -0.39    1.590   0.000   0.000
+    $atom:F2     $mol:.   @atom:opls_303   -0.39   -1.590   0.000   0.000
+    $atom:F3     $mol:.   @atom:opls_303   -0.39    0.000   1.590   0.000
+    $atom:F4     $mol:.   @atom:opls_303   -0.39    0.000  -1.590   0.000
+    $atom:F5     $mol:.   @atom:opls_303   -0.39    0.000   0.000   1.590
+    $atom:F6     $mol:.   @atom:opls_303   -0.39    0.000   0.000  -1.590
+  }
+  
+  write('Data Bonds') {
+    $bond:PF1    @bond:PF      $atom:P1   $atom:F1
+    $bond:PF2    @bond:PF      $atom:P1   $atom:F2
+    $bond:PF3    @bond:PF      $atom:P1   $atom:F3
+    $bond:PF4    @bond:PF      $atom:P1   $atom:F4
+    $bond:PF5    @bond:PF      $atom:P1   $atom:F5
+    $bond:PF6    @bond:PF      $atom:P1   $atom:F6
+  }
+}
+
+# 创建分子实例
+ec_molecules = new EC[2]
+li_ions = new Li[1]
+pf6_ions = new PF6[1]
+
+# 设置模拟盒子
+write_once("Data Boundary") {
+  0.0 50.0 xlo xhi
+  0.0 50.0 ylo yhi
+  0.0 50.0 zlo zhi
+}
+
+# LAMMPS设置
+write_once("In Settings") {
+  kspace_style pppm 1.0e-4
+  thermo 100
+  thermo_style custom step temp pe ke etotal press volume density
+}

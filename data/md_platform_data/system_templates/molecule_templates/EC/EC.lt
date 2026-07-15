@@ -1,0 +1,114 @@
+# =============================================================================
+# EC.lt - 碳酸乙烯酯分子模板 (Ethylene Carbonate)
+# =============================================================================
+# 功能: 定义EC分子的拓扑结构和力场参数
+# 力场: OPLS-AA (Optimized Potentials for Liquid Simulations - All Atom)
+#
+# 分子结构:
+#   - 环状碳酸酯，5元环
+#   - 两个CH2基团连接到碳酸酯基团
+#   - 羰基C=O和两个醚氧原子
+#
+# 原子类型 (OPLS-AA):
+#   - C1: opls_209 (羰基碳)
+#   - O1: opls_211 (羰基氧)
+#   - O2, O3: opls_156 (醚氧)
+#   - C2, C3: opls_136 (CH2碳)
+#   - H1-H4: opls_140 (CH2氢)
+#
+# 作者: Electrolyte MD Platform
+# 版本: 2.0 (使用正确的Moltemplate继承语法)
+# =============================================================================
+
+# 导入OPLS-AA力场定义
+# 力场文件路径相对于当前文件所在目录(EC/)
+import "../../force_fields/opls-aa/ffnonbonded.lt"
+import "../../force_fields/opls-aa/ffbonded.lt"
+
+# 定义OPLSAA力场基类
+OPLSAA {
+  write_once("In Init") {
+    units real
+    bond_style harmonic
+    angle_style harmonic
+    dihedral_style opls
+    improper_style harmonic
+    pair_style lj/cut/coul/long 12.0 12.0
+    special_bonds lj 0.0 0.0 0.5 coul 0.0 0.0 0.5
+  }
+}
+
+# EC分子定义 - 继承OPLSAA力场
+EC inherits OPLSAA {
+  # ========================================
+  # 原子定义 (Data Atoms)
+  # ========================================
+  # 格式: $atom:id $mol:id @atom:type charge x y z
+  # $mol:. 表示使用当前分子的分子ID
+  
+  write('Data Atoms') {
+    $atom:C1   $mol:.   @atom:opls_209  +0.52    0.000   0.000   0.000
+    $atom:O1   $mol:.   @atom:opls_211  -0.50    1.229   0.000   0.000
+    $atom:O2   $mol:.   @atom:opls_156  -0.35   -0.680   1.200   0.000
+    $atom:O3   $mol:.   @atom:opls_156  -0.35    0.680   1.200   0.000
+    $atom:C2   $mol:.   @atom:opls_136  +0.22    1.800   1.800   0.000
+    $atom:C3   $mol:.   @atom:opls_136  +0.22   -1.800   1.800   0.000
+    $atom:H1   $mol:.   @atom:opls_140  +0.06   -2.300   1.200   0.890
+    $atom:H2   $mol:.   @atom:opls_140  +0.06   -2.300   1.200  -0.890
+    $atom:H3   $mol:.   @atom:opls_140  +0.06    2.300   1.200   0.890
+    $atom:H4   $mol:.   @atom:opls_140  +0.06    2.300   1.200  -0.890
+  }
+  
+  # ========================================
+  # 键定义 (Data Bonds)
+  # ========================================
+  # 格式: $bond:id @bond:type $atom:id1 $atom:id2
+  
+  write('Data Bonds') {
+    $bond:b_C1_O1   @bond:CO_double    $atom:C1   $atom:O1
+    $bond:b_C1_O2   @bond:CO_single    $atom:C1   $atom:O2
+    $bond:b_C1_O3   @bond:CO_single    $atom:C1   $atom:O3
+    $bond:b_O2_C3   @bond:CO_single    $atom:O2   $atom:C3
+    $bond:b_O3_C2   @bond:CO_single    $atom:O3   $atom:C2
+    $bond:b_C2_C3   @bond:CC_single    $atom:C2   $atom:C3
+    $bond:b_C3_H1   @bond:CH_sp3       $atom:C3   $atom:H1
+    $bond:b_C3_H2   @bond:CH_sp3       $atom:C3   $atom:H2
+    $bond:b_C2_H3   @bond:CH_sp3       $atom:C2   $atom:H3
+    $bond:b_C2_H4   @bond:CH_sp3       $atom:C2   $atom:H4
+  }
+  
+  # ========================================
+  # 角度定义 (Data Angles)
+  # ========================================
+  # 格式: $angle:id @angle:type $atom:id1 $atom:id2 $atom:id3
+  
+  write('Data Angles') {
+    $angle:a_O1_C1_O2   @angle:OCO_carb    $atom:O1   $atom:C1   $atom:O2
+    $angle:a_O1_C1_O3   @angle:OCO_carb    $atom:O1   $atom:C1   $atom:O3
+    $angle:a_O2_C1_O3   @angle:OCO_ester   $atom:O2   $atom:C1   $atom:O3
+    $angle:a_C1_O2_C3   @angle:COC_ether   $atom:C1   $atom:O2   $atom:C3
+    $angle:a_C1_O3_C2   @angle:COC_ether   $atom:C1   $atom:O3   $atom:C2
+    $angle:a_O2_C3_C2   @angle:CCO         $atom:O2   $atom:C3   $atom:C2
+    $angle:a_O3_C2_C3   @angle:CCO         $atom:O3   $atom:C2   $atom:C3
+    $angle:a_C2_C3_H1   @angle:CCH_sp3     $atom:C2   $atom:C3   $atom:H1
+    $angle:a_C2_C3_H2   @angle:CCH_sp3     $atom:C2   $atom:C3   $atom:H2
+    $angle:a_C3_C2_H3   @angle:CCH_sp3     $atom:C3   $atom:C2   $atom:H3
+    $angle:a_C3_C2_H4   @angle:CCH_sp3     $atom:C3   $atom:C2   $atom:H4
+    $angle:a_H1_C3_H2   @angle:HCH_sp3     $atom:H1   $atom:C3   $atom:H2
+    $angle:a_H3_C2_H4   @angle:HCH_sp3     $atom:H3   $atom:C2   $atom:H4
+  }
+  
+  # ========================================
+  # 二面角定义 (Data Dihedrals)
+  # ========================================
+  # 格式: $dihedral:id @dihedral:type $atom:id1 $atom:id2 $atom:id3 $atom:id4
+  
+  write('Data Dihedrals') {
+    $dihedral:d_O1_C1_O2_C3   @dihedral:OCOC      $atom:O1   $atom:C1   $atom:O2   $atom:C3
+    $dihedral:d_O1_C1_O3_C2   @dihedral:OCOC      $atom:O1   $atom:C1   $atom:O3   $atom:C2
+    $dihedral:d_C1_O2_C3_C2   @dihedral:COCC      $atom:C1   $atom:O2   $atom:C3   $atom:C2
+    $dihedral:d_C1_O3_C2_C3   @dihedral:COCC      $atom:C1   $atom:O3   $atom:C2   $atom:C3
+    $dihedral:d_O2_C3_C2_O3   @dihedral:CCOC      $atom:O2   $atom:C3   $atom:C2   $atom:O3
+    $dihedral:d_C3_C2_O3_C1   @dihedral:CCOC      $atom:C3   $atom:C2   $atom:O3   $atom:C1
+  }
+}

@@ -1,0 +1,118 @@
+{
+  "success": true,
+  "total_properties": 2,
+  "successful_properties": 2,
+  "failed_properties": 0,
+  "skipped_properties": 0,
+  "results": {
+    "density": {
+      "property_name": "density",
+      "property_value": 1.346324,
+      "property_unit": "g/cm³",
+      "calculation_method": "时间序列平均",
+      "convergence_status": "NOT_CONVERGED",
+      "property_detail": {
+        "mean": 1.346324,
+        "standard_deviation": 0.0,
+        "standard_error": 0.0,
+        "sample_size": 5,
+        "equilibration_fraction": 0.2
+      },
+      "sub_table_data": {
+        "density_tensor": {
+          "xx": 1.3463241,
+          "yy": 1.3463241,
+          "zz": 1.3463241
+        },
+        "component_density": {}
+      }
+    },
+    "conductivity": {
+      "property_name": "conductivity",
+      "property_value": 0.0,
+      "property_unit": "S/m",
+      "calculation_method": "Green-Kubo",
+      "convergence_status": "NOT_CONVERGED",
+      "property_detail": {
+        "mean": 0.0,
+        "standard_error": 0.0,
+        "correlation_time": 21,
+        "integral_convergence": "NOT_CONVERGED"
+      },
+      "sub_table_data": {
+        "conductivity_tensor": {
+          "xx": 0.0,
+          "yy": 0.0,
+          "zz": 0.0
+        },
+        "ion_contribution": {},
+        "electric_field_strength": 0.0,
+        "resistivity": Infinity
+      },
+      "chart_data": {
+        "conductivity_curve": {
+          "time": [
+            0.0,
+            100.0,
+            200.0,
+            300.0,
+            400.0,
+            500.0,
+            600.0,
+            700.0,
+            800.0,
+            900.0,
+            1000.0,
+            1100.0,
+            1200.0,
+            1300.0,
+            1400.0,
+            1500.0,
+            1600.0,
+            1700.0,
+            1800.0,
+            1900.0,
+            2000.0
+          ],
+          "integral_value": [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ]
+        }
+      }
+    }
+  },
+  "status": "success",
+  "output_files": {
+    "density": {
+      "result": "/workspace/data/user_1/jobs/job_1290001/post_processing/density_result.json"
+    },
+    "conductivity": {
+      "result": "/workspace/data/user_1/jobs/job_1290001/post_processing/conductivity_result.json",
+      "chart": "/workspace/data/user_1/jobs/job_1290001/visualization/charts/conductivity_curve.json"
+    }
+  },
+  "job_id": "1290001",
+  "user_id": "1",
+  "mode": "post-processing",
+  "timestamp": "2026-06-29T14:39:26.305905"
+}

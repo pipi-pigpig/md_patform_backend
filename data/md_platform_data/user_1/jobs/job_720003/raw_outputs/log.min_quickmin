@@ -1,0 +1,222 @@
+LAMMPS (23 Jun 2022 - Update 4)
+units           real
+atom_style      full
+dimension       3
+boundary        p p p
+
+bond_style      harmonic
+angle_style     harmonic
+dihedral_style  none
+improper_style  none
+
+pair_style      lj/cut/coul/cut 12.0 12.0
+special_bonds   lj 0.0 0.0 0.5 coul 0.0 0.0 0.5
+kspace_style    none
+
+read_data       system.data
+Reading data file ...
+  orthogonal box = (0 0 0) to (50 50 50)
+  1 by 1 by 1 MPI processor grid
+  reading atoms ...
+  12114 atoms
+  scanning bonds ...
+  6 = max bonds/atom
+  scanning angles ...
+  15 = max angles/atom
+  scanning dihedrals ...
+  3 = max dihedrals/atom
+  reading bonds ...
+  11257 bonds
+  reading angles ...
+  17083 angles
+  reading dihedrals ...
+  7171 dihedrals
+Finding 1-2 1-3 1-4 neighbors ...
+  special bond factors lj:    0        0        0.5     
+  special bond factors coul:  0        0        0.5     
+     6 = max # of 1-2 neighbors
+     5 = max # of 1-3 neighbors
+     9 = max # of 1-4 neighbors
+    11 = max # of special neighbors
+  special bonds CPU = 0.004 seconds
+  read_data CPU = 0.198 seconds
+include         system.in.settings.minimal
+pair_coeff 1 1 0.066 3.50
+pair_coeff 2 2 0.066 3.50
+pair_coeff 3 3 0.066 3.50
+pair_coeff 4 4 0.066 3.50
+pair_coeff 5 5 0.070 3.55
+pair_coeff 6 6 0.070 3.55
+pair_coeff 7 7 0.070 3.55
+pair_coeff 8 8 0.070 3.55
+pair_coeff 9 9 0.105 3.75
+pair_coeff 10 10 0.105 3.75
+pair_coeff 11 11 0.030 2.50
+pair_coeff 12 12 0.030 2.50
+pair_coeff 13 13 0.030 2.50
+pair_coeff 14 14 0.030 2.42
+pair_coeff 15 15 0.030 2.50
+pair_coeff 16 16 0.030 2.50
+pair_coeff 17 17 0.030 2.50
+pair_coeff 18 18 0.170 3.00
+pair_coeff 19 19 0.170 3.00
+pair_coeff 20 20 0.170 2.96
+pair_coeff 21 21 0.170 3.00
+pair_coeff 22 22 0.170 3.25
+pair_coeff 23 23 0.170 3.25
+pair_coeff 24 24 0.170 3.25
+pair_coeff 25 25 0.170 3.25
+pair_coeff 26 26 0.255 2.95
+pair_coeff 27 27 0.200 3.70
+pair_coeff 28 28 0.0025 1.506
+pair_coeff 29 29 0.250 3.55
+pair_coeff 30 30 0.250 3.55
+#  -
+bond_coeff 1  268.0  1.529   # C-C   (sp3-sp3)
+bond_coeff 2  414.0  1.330   # C=C   (sp2-sp2)
+bond_coeff 3 320.0  1.400   #   C-C
+
+#  -
+bond_coeff 4     340.0  1.090   # C-H  (sp3 )
+bond_coeff 5     340.0  1.080   # C-H  (sp2 )
+bond_coeff 6    340.0  1.080   # C-H  (   )
+
+#  -
+bond_coeff 7  320.0  1.410   # C-O   (   )
+bond_coeff 8  570.0  1.229   # C=O   (  )
+bond_coeff 9    320.0  1.360   # C-O  (  )
+
+#  -
+bond_coeff 10  300.0  1.470   # C-N   ( )
+bond_coeff 11  440.0  1.270   # C=N   (  )
+bond_coeff 12   350.0  1.340   # C-N  (  )
+
+#  -
+bond_coeff 13         340.0  0.960   # O-H  (    )
+
+#  -
+bond_coeff 14         340.0  1.010   # N-H  ( )
+
+#  -   (PF6)
+bond_coeff 15         420.0  1.560   # P-F  (     )
+
+#  -
+bond_coeff 16         200.0  1.810   # S-C  (  )
+
+#  -
+bond_coeff 17         300.0  1.430   # S-O  (   )
+#  - -
+angle_coeff 1    50.0  109.5   # C-C-C (sp3)
+angle_coeff 2    80.0  120.0   # C-C-C (sp2)
+angle_coeff 3   60.0  120.0   # C-C-C (  )
+
+#  - -
+angle_coeff 4    37.5  110.7   # C-C-H (sp3)
+angle_coeff 5    40.0  120.0   # C-C-H (sp2)
+
+#  - -
+angle_coeff 6    33.0  106.4   # H-C-H (sp3   )
+angle_coeff 7   33.0  107.8   # H-C-H (sp3  )
+angle_coeff 8    35.0  120.0   # H-C-H (sp2)
+
+#  - -
+angle_coeff 9  60.0  109.5   # C-O-C ( )
+angle_coeff 10  60.0  124.0   # C-O-C ( )
+
+#  - -
+angle_coeff 11   80.0  123.0   # O-C=O (  )
+angle_coeff 12  80.0  120.4   # O-C-O ( )
+
+#  - -
+angle_coeff 13        50.0  109.5   # C-C-O
+
+#  - -
+angle_coeff 14        50.0  109.5   # C-O-H ( )
+
+#  - -
+angle_coeff 15        50.0  109.5   # C-N-C ( )
+angle_coeff 16  50.0  120.0   # C-N-C (  )
+
+#  - -    (PF6)
+angle_coeff 17        80.0   90.0   # F-P-F (     )
+angle_coeff 18    80.0  180.0   # F-P-F (  )
+#  - - -
+
+#  - - -
+
+#  - - -
+
+#  - - -
+
+#  - - -
+
+#  - - -
+
+#  - - =
+#
+
+#
+pair_coeff 31 31 0.00034 2.126
+
+neighbor        2.0 bin
+neigh_modify    every 1 delay 0 check yes one 100000 page 1000000
+thermo          100
+thermo_style    custom step temp pe ke etotal press vol
+
+min_style       quickmin
+minimize 0.0 1.0e-10 10 100
+Generated 465 of 465 mixed pair_coeff terms from geometric mixing rule
+WARNING: Dihedrals are defined but no dihedral style is set (../force.cpp:202)
+WARNING: Likewise 1-4 special neighbor interactions != 1.0 (../force.cpp:204)
+Neighbor list info ...
+  update every 1 steps, delay 0 steps, check yes
+  max neighbors/atom: 100000, page size: 1000000
+  master list distance cutoff = 14
+  ghost atom cutoff = 14
+  binsize = 7, bins = 8 8 8
+  1 neighbor lists, perpetual/occasional/extra = 1 0 0
+  (1) pair lj/cut/coul/cut, perpetual
+      attributes: half, newton on
+      pair build: half/bin/newton
+      stencil: half/bin/3d
+      bin: standard
+Per MPI rank memory allocation (min/avg/max) = 390.2 | 390.2 | 390.2 Mbytes
+   Step          Temp          PotEng         KinEng         TotEng         Press          Volume    
+         0   0              inf            0              inf           -nan            125000       
+        10  -nan           -nan           -nan           -nan           -nan            125000       
+Loop time of 1.08572 on 1 procs for 10 steps with 12114 atoms
+
+100.0% CPU use with 1 MPI tasks x no OpenMP threads
+
+Minimization stats:
+  Stopping criterion = max iterations
+  Energy initial, next-to-last, final = 
+    inf                -nan               -nan              
+  Force two-norm initial, final = -nan nan
+  Force max component initial, final = 0 0
+  Final line search alpha, max atom move = 0 0
+  Iterations, force evaluations = 10 10
+
+MPI task timing breakdown:
+Section |  min time  |  avg time  |  max time  |%varavg| %total
+---------------------------------------------------------------
+Pair    | 1.0749     | 1.0749     | 1.0749     |   0.0 | 99.00
+Bond    | 0.0043496  | 0.0043496  | 0.0043496  |   0.0 |  0.40
+Neigh   | 0          | 0          | 0          |   0.0 |  0.00
+Comm    | 0.0038966  | 0.0038966  | 0.0038966  |   0.0 |  0.36
+Output  | 8.6396e-05 | 8.6396e-05 | 8.6396e-05 |   0.0 |  0.01
+Modify  | 0          | 0          | 0          |   0.0 |  0.00
+Other   |            | 0.002523   |            |       |  0.23
+
+Nlocal:          12114 ave       12114 max       12114 min
+Histogram: 1 0 0 0 0 0 0 0 0 0
+Nghost:          84798 ave       84798 max       84798 min
+Histogram: 1 0 0 0 0 0 0 0 0 0
+Neighs:    7.33389e+07 ave 7.33389e+07 max 7.33389e+07 min
+Histogram: 1 0 0 0 0 0 0 0 0 0
+
+Total # of neighbors = 73338889
+Ave neighs/atom = 6054.0605
+Ave special neighs/atom = 6.7465742
+Neighbor list builds = 0
+Dangerous builds = 0

@@ -1,0 +1,27 @@
+# Step 1: Soft potential only, no bonded interactions
+units           real
+atom_style      full
+dimension       3
+boundary        p p p
+
+read_data       system.data
+
+# Soft potential only - no bonded interactions
+pair_style      soft 1.0
+pair_coeff      * * 10.0
+bond_style      none
+angle_style     none
+dihedral_style  none
+improper_style  none
+special_bonds   lj 1.0 1.0 1.0 coul 1.0 1.0 1.0
+kspace_style    none
+
+neighbor        2.0 bin
+neigh_modify    every 1 delay 0 check yes
+thermo          100
+thermo_style    custom step temp pe ke etotal press vol
+
+min_style       fire
+minimize 0.0 1.0e-4 100 1000
+
+write_restart   soft.restart

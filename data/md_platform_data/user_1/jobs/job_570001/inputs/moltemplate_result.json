@@ -1,0 +1,112 @@
+{
+  "success": true,
+  "system_lt_path": "/workspace/data/user_1/jobs/job_570001/inputs/system.lt",
+  "execution_summary": {
+    "total_steps": 5,
+    "successful_steps": 4,
+    "failed_steps": 1,
+    "total_duration": 0.360806941986084,
+    "start_time": "2026-06-25T17:07:12.005791",
+    "end_time": "2026-06-25T17:07:12.366598",
+    "packed_pdb_path": "/workspace/data/user_1/jobs/job_570001/inputs/packed_system.pdb",
+    "work_dir_path": "/workspace/data/user_1/jobs/job_570001",
+    "template_library_path": "/workspace/data/system_templates/molecule_templates",
+    "forcefield_type": "oplsaa"
+  },
+  "statistics": {
+    "total_atoms": 12518,
+    "total_molecules": 1160,
+    "molecule_types": 4,
+    "molecule_counts": {
+      "EC": 303,
+      "DMC": 707,
+      "Li": 75,
+      "PF6": 75
+    },
+    "molecule_instance_summary": {
+      "EC": 303,
+      "DMC": 707,
+      "Li": 75,
+      "PF6": 75
+    },
+    "box_size": {
+      "x": 50.0,
+      "y": 50.0,
+      "z": 50.0,
+      "auto": true
+    },
+    "box_volume": 125000.0,
+    "forcefield_type": "oplsaa",
+    "template_files": [
+      "../../../../system_templates/molecule_templates/DMC/DMC.lt",
+      "../../../../system_templates/molecule_templates/EC/EC.lt",
+      "../../../../system_templates/molecule_templates/LI/LI.lt",
+      "../../../../system_templates/molecule_templates/PF6/PF6.lt"
+    ],
+    "system_lt_file_size": 19186,
+    "execution_time": {
+      "total_duration": 0.36,
+      "step_durations": {
+        "parse_pdb_file": 0.1,
+        "load_molecule_templates": 0.12,
+        "create_molecule_instances": 0.02,
+        "generate_system_lt": 0.11,
+        "validate_system_lt": 0.01
+      }
+    },
+    "validation_status": {
+      "valid": false,
+      "errors_count": 1,
+      "warnings_count": 1
+    }
+  },
+  "step_results": [
+    {
+      "step_name": "parse_pdb_file",
+      "success": true,
+      "start_time": "2026-06-25T17:07:12.005881",
+      "end_time": "2026-06-25T17:07:12.104068",
+      "duration": 0.1,
+      "error_message": null
+    },
+    {
+      "step_name": "load_molecule_templates",
+      "success": true,
+      "start_time": "2026-06-25T17:07:12.104126",
+      "end_time": "2026-06-25T17:07:12.224421",
+      "duration": 0.12,
+      "error_message": null
+    },
+    {
+      "step_name": "create_molecule_instances",
+      "success": true,
+      "start_time": "2026-06-25T17:07:12.224539",
+      "end_time": "2026-06-25T17:07:12.243702",
+      "duration": 0.02,
+      "error_message": null
+    },
+    {
+      "step_name": "generate_system_lt",
+      "success": true,
+      "start_time": "2026-06-25T17:07:12.243759",
+      "end_time": "2026-06-25T17:07:12.351989",
+      "duration": 0.11,
+      "error_message": null
+    },
+    {
+      "step_name": "validate_system_lt",
+      "success": false,
+      "start_time": "2026-06-25T17:07:12.352096",
+      "end_time": "2026-06-25T17:07:12.366387",
+      "duration": 0.01,
+      "error_message": null
+    }
+  ],
+  "error": null,
+  "failed_step": null,
+  "job_id": "570001",
+  "user_id": "1",
+  "mode": "moltemplate-system",
+  "timestamp": "2026-06-25T17:07:12.370352",
+  "status": "success"
+}

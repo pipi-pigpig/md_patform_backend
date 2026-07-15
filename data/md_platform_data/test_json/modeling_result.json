@@ -1,0 +1,13 @@
+{
+  "x": 72.37,
+  "y": 72.37,
+  "z": 72.37,
+  "volume": 172494.50121897628,
+  "scaled_volume": 378970.4191780906,
+  "scale_factor": 1.3,
+  "job_id": "test_json",
+  "user_id": null,
+  "mode": "box-size",
+  "timestamp": "2026-06-25T10:11:48.729515",
+  "status": "success"
+}

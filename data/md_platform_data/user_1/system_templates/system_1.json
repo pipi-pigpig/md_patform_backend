@@ -1,0 +1,9 @@
+{
+  "system_id": 1,
+  "name": "LiPF6 in EC/DMC 1M",
+  "solvent": "EC/DMC",
+  "salt": "LiPF6",
+  "concentration": 1.0,
+  "temperature": 298.15,
+  "pressure": 1.0
+}

@@ -1,0 +1,6 @@
+# 粘度计算配置
+# 由Jinja2模板引擎自动生成
+
+# 压力张量输出
+compute         pTensor all pressure thermo_temp
+fix             pressure all ave/time {{ ave_freq | default(100) }} 1 {{ ave_freq | default(100) }} c_pTensor[*] file pressure.dat mode vector

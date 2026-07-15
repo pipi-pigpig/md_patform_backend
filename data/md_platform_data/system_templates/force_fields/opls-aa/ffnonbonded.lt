@@ -1,0 +1,74 @@
+# OPLS-AA力场非键参数文件
+# Optimized Potentials for Liquid Simulations - All Atom
+#
+# 功能说明：
+#   定义OPLS-AA力场的非键相互作用参数
+#
+# 作者: Electrolyte MD Platform
+# 版本: 2.0
+
+write_once("Data Masses") {
+@atom:opls_135 12.011
+@atom:opls_136 12.011
+@atom:opls_137 12.011
+@atom:opls_138 12.011
+@atom:opls_141 12.011
+@atom:opls_142 12.011
+@atom:opls_145 12.011
+@atom:opls_146 12.011
+@atom:opls_209 12.011
+@atom:opls_212 12.011
+@atom:opls_140 1.008
+@atom:opls_139 1.008
+@atom:opls_143 1.008
+@atom:opls_148 1.008
+@atom:opls_154 1.008
+@atom:opls_160 1.008
+@atom:opls_210 1.008
+@atom:opls_154O 15.999
+@atom:opls_156 15.999
+@atom:opls_211 15.999
+@atom:opls_213 15.999
+@atom:opls_157 14.007
+@atom:opls_158 14.007
+@atom:opls_159 14.007
+@atom:opls_236 14.007
+@atom:opls_303 18.998
+@atom:opls_901 30.974
+@atom:opls_402 6.941
+@atom:opls_180 32.065
+@atom:opls_903 32.065
+}
+
+write_once("In Settings") {
+pair_coeff @atom:opls_135 @atom:opls_135 0.066 3.50
+pair_coeff @atom:opls_136 @atom:opls_136 0.066 3.50
+pair_coeff @atom:opls_137 @atom:opls_137 0.066 3.50
+pair_coeff @atom:opls_138 @atom:opls_138 0.066 3.50
+pair_coeff @atom:opls_141 @atom:opls_141 0.070 3.55
+pair_coeff @atom:opls_142 @atom:opls_142 0.070 3.55
+pair_coeff @atom:opls_145 @atom:opls_145 0.070 3.55
+pair_coeff @atom:opls_146 @atom:opls_146 0.070 3.55
+pair_coeff @atom:opls_209 @atom:opls_209 0.105 3.75
+pair_coeff @atom:opls_212 @atom:opls_212 0.105 3.75
+pair_coeff @atom:opls_140 @atom:opls_140 0.030 2.50
+pair_coeff @atom:opls_139 @atom:opls_139 0.030 2.50
+pair_coeff @atom:opls_143 @atom:opls_143 0.030 2.50
+pair_coeff @atom:opls_148 @atom:opls_148 0.030 2.42
+pair_coeff @atom:opls_154 @atom:opls_154 0.030 2.50
+pair_coeff @atom:opls_160 @atom:opls_160 0.030 2.50
+pair_coeff @atom:opls_210 @atom:opls_210 0.030 2.50
+pair_coeff @atom:opls_154O @atom:opls_154O 0.170 3.00
+pair_coeff @atom:opls_156 @atom:opls_156 0.170 3.00
+pair_coeff @atom:opls_211 @atom:opls_211 0.170 2.96
+pair_coeff @atom:opls_213 @atom:opls_213 0.170 3.00
+pair_coeff @atom:opls_157 @atom:opls_157 0.170 3.25
+pair_coeff @atom:opls_158 @atom:opls_158 0.170 3.25
+pair_coeff @atom:opls_159 @atom:opls_159 0.170 3.25
+pair_coeff @atom:opls_236 @atom:opls_236 0.170 3.25
+pair_coeff @atom:opls_303 @atom:opls_303 0.255 2.95
+pair_coeff @atom:opls_901 @atom:opls_901 0.200 3.70
+pair_coeff @atom:opls_402 @atom:opls_402 0.0025 1.506
+pair_coeff @atom:opls_180 @atom:opls_180 0.250 3.55
+pair_coeff @atom:opls_903 @atom:opls_903 0.250 3.55
+}

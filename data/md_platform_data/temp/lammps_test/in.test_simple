@@ -1,0 +1,126 @@
+# LAMMPS简化测试脚本
+# 用于验证基本LJ势能计算（无分子拓扑）
+#
+# 功能说明：
+#   1. 创建简单的原子系统
+#   2. 设置LJ势能参数
+#   3. 执行能量最小化
+#   4. 输出能量验证结果
+#
+# 作者: Electrolyte MD Platform
+# 版本: 1.0
+
+# ========================================
+# 初始化设置
+# ========================================
+units           real
+atom_style      charge
+boundary        f f f
+
+# ========================================
+# 创建模拟盒子和原子
+# ========================================
+region          box block 0 50 0 50 0 50
+create_box      5 box
+
+# 创建原子（模拟EC分子的原子分布）
+# 原子类型：1=C(carbonyl), 2=O(carbonyl), 3=CH2, 4=O(ether), 5=H
+create_atoms    1 single 25.0 25.0 25.0
+create_atoms    2 single 26.2 25.0 25.0
+create_atoms    3 single 24.3 26.2 25.0
+create_atoms    4 single 23.0 26.0 25.0
+create_atoms    3 single 23.5 24.0 25.0
+create_atoms    5 single 24.5 27.2 25.0
+create_atoms    5 single 23.5 26.2 26.0
+create_atoms    5 single 22.5 24.5 25.0
+create_atoms    5 single 24.0 23.0 24.0
+create_atoms    5 single 24.0 23.0 26.0
+
+# ========================================
+# 设置原子质量和电荷
+# ========================================
+mass            1 12.011  # C (carbonyl)
+mass            2 16.000  # O (carbonyl)
+mass            3 14.027  # CH2
+mass            4 16.000  # O (ether)
+mass            5 1.008   # H
+
+# 设置原子电荷（OPLS-AA部分电荷）
+set atom 1 charge 0.480   # C1 (carbonyl carbon)
+set atom 2 charge -0.420  # O1 (carbonyl oxygen)
+set atom 3 charge 0.120   # C2 (methylene)
+set atom 4 charge -0.360  # O2 (ether oxygen)
+set atom 5 charge 0.120   # C3 (methylene)
+set atom 6 charge 0.060   # H1
+set atom 7 charge 0.060   # H2
+set atom 8 charge 0.060   # H3
+set atom 9 charge 0.060   # H4
+set atom 10 charge 0.060  # H5
+
+# ========================================
+# 力场设置 - LJ势能
+# ========================================
+pair_style      lj/cut/coul/cut 12.0 12.0
+pair_modify     mix geometric
+
+# ========================================
+# LJ参数 (OPLS-AA)
+# ========================================
+# 格式: pair_coeff type1 type2 epsilon(kcal/mol) sigma(Angstrom)
+
+# 碳原子 (羰基碳 opls_209)
+pair_coeff 1 1 0.066 3.75
+
+# 氧原子 (羰基氧 opls_211)
+pair_coeff 2 2 0.210 2.96
+
+# CH2基团 (opls_136)
+pair_coeff 3 3 0.056 3.98
+
+# 氧原子 (醚氧 opls_156)
+pair_coeff 4 4 0.170 3.00
+
+# 氢原子 (opls_140)
+pair_coeff 5 5 0.030 2.50
+
+# ========================================
+# 邻居列表设置
+# ========================================
+neighbor        2.0 bin
+neigh_modify    every 1 delay 0 check yes
+
+# ========================================
+# 输出设置
+# ========================================
+thermo          10
+thermo_style    custom step temp pe ke etotal press vol density
+
+# ========================================
+# 能量最小化
+# ========================================
+print "========================================"
+print "LAMMPS基本功能测试 - LJ势能计算"
+print "========================================"
+
+# 计算初始能量
+run 0
+
+print "========================================"
+print "初始能量计算完成"
+print "开始最小化..."
+print "========================================"
+
+# 能量最小化
+min_style       cg
+minimize        1.0e-4 1.0e-6 100 1000
+
+print "========================================"
+print "能量最小化完成"
+print "========================================"
+
+# 最终能量
+run 0
+
+print "========================================"
+print "测试完成!"
+print "========================================"

@@ -1,0 +1,10 @@
+# 电导率计算配置
+# 由Jinja2模板引擎自动生成
+
+# 输出带电荷的轨迹文件
+compute         charge all property/atom q
+dump            charge all custom {{ dump_freq | default(1000) }} dump.charge.lammpstrj id type x y z c_charge
+
+# 均方位移计算（用于Nernst-Einstein电导率）
+compute         msd all msd
+fix             msd all ave/time {{ ave_freq | default(100) }} 1 {{ ave_freq | default(100) }} c_msd[4] file msd.dat

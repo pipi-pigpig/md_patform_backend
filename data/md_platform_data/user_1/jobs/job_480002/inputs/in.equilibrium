@@ -1,0 +1,58 @@
+# =============================================================================
+# LAMMPS平衡模拟输入脚本（NVT + NPT）
+# 由Jinja2模板引擎自动生成
+# 生成时间: 2026-06-25T23:41:43.768579600
+# 任务ID: 480002
+# =============================================================================
+
+# 初始化设置
+units           real
+atom_style      full
+dimension       3
+boundary        p p p
+
+# 力场样式设置
+bond_style      harmonic
+angle_style     harmonic
+dihedral_style  opls
+improper_style  harmonic
+pair_style      lj/cut/coul/long 12.0 12.0
+special_bonds   lj 0.0 0.0 0.5 coul 0.0 0.0 0.5
+kspace_style    pppm 1.0e-4
+
+# 读取最小化后的构型
+read_data       minimized.data
+
+# 设置PPPM网格大小（必须在read_data之后，需要已知模拟盒子尺寸）
+kspace_modify   grid 64 64 64
+
+# 力场参数
+include         system.in.settings
+
+# 邻居列表设置
+neighbor        2.0 bin
+neigh_modify    every 1 delay 0 check yes
+
+# 速度初始化
+velocity        all create 353.0 57886 dist gaussian
+
+# 热力学输出
+thermo          100
+thermo_style    custom step temp pe ke etotal press vol density
+
+# 轨迹输出
+dump            1 all custom 1000 dump.equilibrium.lammpstrj id mol type x y z vx vy vz
+
+# NVT平衡阶段
+timestep        1.0
+fix             1 all nvt temp 353.0 353.0 100.0
+run             500
+unfix           1
+
+# NPT平衡阶段
+fix             2 all npt temp 353.0 353.0 100.0 iso 1.0 1.0 1000.0
+run             500
+unfix           2
+
+# 输出平衡后的构型
+write_data      equilibrated.data

@@ -1,0 +1,62 @@
+# =============================================================================
+# LAMMPS生产模拟输入脚本
+# 由Jinja2模板引擎自动生成
+# 生成时间: 2026-06-07
+# 任务ID: test_001
+# 目标性质: density, conductivity
+# =============================================================================
+
+# 初始化设置
+units           real
+atom_style      full
+dimension       3
+boundary        p p p
+
+# 力场样式设置
+bond_style      harmonic
+angle_style     harmonic
+dihedral_style  opls
+improper_style  harmonic
+pair_style      lj/cut/coul/long 12.0 12.0
+special_bonds   lj 0.0 0.0 0.5 coul 0.0 0.0 0.5
+kspace_style    pppm 1.0e-4
+
+# 读取平衡后的构型
+read_data       equilibrated.data
+
+# 力场参数
+include         system.in.settings
+
+# 邻居列表设置
+neighbor        2.0 bin
+neigh_modify    every 1 delay 0 check yes
+
+# 热力学输出
+thermo          100
+
+thermo_style    custom step temp pe ke etotal press vol density
+
+
+# 轨迹输出
+dump            1 all custom 1000 dump.trajectory.lammpstrj id mol type x y z vx vy vz
+
+
+# 电导率/介电常数计算：输出带电荷的轨迹
+compute         charge all property/atom q
+dump            2 all custom 1000 dump.charge.lammpstrj id type x y z c_charge
+
+
+
+
+
+
+
+
+# NPT生产模拟
+timestep        1.0
+fix             1 all npt temp 300.0 300.0 100.0 iso 1.0 1.0 1000.0
+run             100000
+unfix           1
+
+# 输出最终构型
+write_data      final.data

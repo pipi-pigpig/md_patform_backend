@@ -1,0 +1,157 @@
+# OPLS-AA力场键参数文件
+# Optimized Potentials for Liquid Simulations - All Atom
+#
+# 功能说明：
+#   定义OPLS-AA力场的键相互作用参数，包括：
+#   - 键伸缩参数（键长和力常数）
+#   - 键角弯曲参数（角度和力常数）
+#   - 二面角扭转参数（傅里叶系数）
+#   - 非正常二面角参数
+#
+# 参考文献：
+#   Jorgensen, W. L., et al. J. Am. Chem. Soc. 1996, 118, 11225-11236
+#   Price, M. L. P., et al. J. Comput. Chem. 2001, 22, 1340-1352
+#
+# 作者: Electrolyte MD Platform
+# 版本: 2.0 (使用正确的Moltemplate语法)
+
+# ========================================
+# 键参数定义
+# ========================================
+# 使用write_once("In Settings")定义键参数
+# 格式: bond_coeff @bond:TYPE K r0
+# K: 力常数 (kcal/mol/Angstrom^2)
+# r0: 平衡键长 (Angstrom)
+
+write_once("In Settings") {
+  # 碳-碳键
+  bond_coeff @bond:CC_single  268.0  1.529   # C-C单键 (sp3-sp3)
+  bond_coeff @bond:CC_double  414.0  1.330   # C=C双键 (sp2-sp2)
+  bond_coeff @bond:CC_aromatic 320.0  1.400   # 芳香C-C键
+  
+  # 碳-氢键
+  bond_coeff @bond:CH_sp3     340.0  1.090   # C-H键 (sp3碳)
+  bond_coeff @bond:CH_sp2     340.0  1.080   # C-H键 (sp2碳)
+  bond_coeff @bond:CH_arom    340.0  1.080   # C-H键 (芳香碳)
+  
+  # 碳-氧键
+  bond_coeff @bond:CO_single  320.0  1.410   # C-O单键 (醇、醚)
+  bond_coeff @bond:CO_double  570.0  1.229   # C=O双键 (羰基)
+  bond_coeff @bond:CO_carb    320.0  1.360   # C-O键 (羧酸)
+  
+  # 碳-氮键
+  bond_coeff @bond:CN_single  300.0  1.470   # C-N单键 (胺)
+  bond_coeff @bond:CN_double  440.0  1.270   # C=N双键 (亚胺)
+  bond_coeff @bond:CN_amide   350.0  1.340   # C-N键 (酰胺)
+  
+  # 氧-氢键
+  bond_coeff @bond:OH         340.0  0.960   # O-H键 (醇、羧酸)
+  
+  # 氮-氢键
+  bond_coeff @bond:NH         340.0  1.010   # N-H键 (胺)
+  
+  # 磷-氟键 (PF6)
+  bond_coeff @bond:PF         420.0  1.560   # P-F键 (六氟磷酸盐)
+  
+  # 硫-碳键
+  bond_coeff @bond:SC         200.0  1.810   # S-C键 (硫醚)
+  
+  # 硫-氧键
+  bond_coeff @bond:SO         300.0  1.430   # S-O键 (磺酰基)
+}
+
+# ========================================
+# 角度参数定义
+# ========================================
+# 格式: angle_coeff @angle:TYPE K theta0
+# K: 力常数 (kcal/mol/rad^2)
+# theta0: 平衡角度 (度)
+
+write_once("In Settings") {
+  # 碳-碳-碳角度
+  angle_coeff @angle:CCC_sp3    50.0  109.5   # C-C-C (sp3)
+  angle_coeff @angle:CCC_sp2    80.0  120.0   # C-C-C (sp2)
+  angle_coeff @angle:CCC_arom   60.0  120.0   # C-C-C (芳香)
+  
+  # 碳-碳-氢角度
+  angle_coeff @angle:CCH_sp3    37.5  110.7   # C-C-H (sp3)
+  angle_coeff @angle:CCH_sp2    40.0  120.0   # C-C-H (sp2)
+  
+  # 氢-碳-氢角度
+  angle_coeff @angle:HCH_sp3    33.0  106.4   # H-C-H (sp3亚甲基)
+  angle_coeff @angle:HCH_sp3m   33.0  107.8   # H-C-H (sp3甲基)
+  angle_coeff @angle:HCH_sp2    35.0  120.0   # H-C-H (sp2)
+  
+  # 碳-氧-碳角度
+  angle_coeff @angle:COC_ether  60.0  109.5   # C-O-C (醚)
+  angle_coeff @angle:COC_ester  60.0  124.0   # C-O-C (酯)
+  
+  # 氧-碳-氧角度
+  angle_coeff @angle:OCO_carb   80.0  123.0   # O-C=O (羰基)
+  angle_coeff @angle:OCO_ester  80.0  120.4   # O-C-O (酯)
+  
+  # 碳-碳-氧角度
+  angle_coeff @angle:CCO        50.0  109.5   # C-C-O
+  
+  # 碳-氧-氢角度
+  angle_coeff @angle:COH        50.0  109.5   # C-O-H (醇)
+  
+  # 碳-氮-碳角度
+  angle_coeff @angle:CNC        50.0  109.5   # C-N-C (胺)
+  angle_coeff @angle:CNC_amide  50.0  120.0   # C-N-C (酰胺)
+  
+  # 氟-磷-氟角度 (PF6)
+  angle_coeff @angle:FPF        80.0   90.0   # F-P-F (六氟磷酸盐)
+  angle_coeff @angle:FPF_180    80.0  180.0   # F-P-F (对角)
+}
+
+# ========================================
+# 二面角参数定义
+# ========================================
+# 格式: dihedral_coeff @dihedral:TYPE V1 V2 V3 V4
+# 傅里叶系数 (kcal/mol)
+# E = V1*(1+cos(phi)) + V2*(1-cos(2phi)) + V3*(1+cos(3phi)) + V4*(1-cos(4phi))
+
+write_once("In Settings") {
+  # 碳-碳-碳-碳二面角
+  dihedral_coeff @dihedral:CCCC_alkane  0.0  0.0  0.278  0.0   # C-C-C-C (烷烃)
+  dihedral_coeff @dihedral:CCCC_alkene  0.0  0.0  0.0    0.0   # C-C-C-C (烯烃)
+  
+  # 碳-碳-碳-氢二面角
+  dihedral_coeff @dihedral:CCCH  0.0  0.0  0.278  0.0   # C-C-C-H
+  
+  # 氢-碳-碳-氢二面角
+  dihedral_coeff @dihedral:HCCCH 0.0  0.0  0.278  0.0   # H-C-C-H
+  
+  # 碳-氧-碳-碳二面角
+  dihedral_coeff @dihedral:COCC  0.5 -0.5  0.5   0.0   # C-O-C-C (醚)
+  dihedral_coeff @dihedral:COCC_est 0.0  0.0  0.0   0.0   # C-O-C-C (酯)
+  
+  # 碳-碳-氧-碳二面角
+  dihedral_coeff @dihedral:CCOC  0.0  0.0  0.0   0.0   # C-C-O-C
+  
+  # 氧-碳-氧-碳二面角
+  dihedral_coeff @dihedral:OCOC  0.0  0.0  0.0   0.0   # O-C-O-C (碳酸酯)
+  
+  # 碳-碳-氧=碳二面角
+  dihedral_coeff @dihedral:CCOCarb 0.0  0.0  0.0  0.0   # C-C-O=C (羰基)
+}
+
+# ========================================
+# 非正常二面角参数定义
+# ========================================
+# 格式: improper_coeff @improper:TYPE K phi0
+# K: 力常数 (kcal/mol/rad^2)
+# phi0: 平衡角度 (度)
+
+write_once("In Settings") {
+  # 羰基平面构型
+  improper_coeff @improper:CO_planar  10.0  0.0   # C=O平面
+  
+  # 芳香平面构型
+  improper_coeff @improper:arom_plan  10.0  0.0   # 芳香平面
+}
+
+# ========================================
+# 文件结束
+# ========================================

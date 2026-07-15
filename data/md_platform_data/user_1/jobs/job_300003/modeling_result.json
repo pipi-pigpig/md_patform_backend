@@ -1,0 +1,31 @@
+{
+  "success": false,
+  "step6_result": {
+    "success": false,
+    "return_code": 1,
+    "stdout": "",
+    "stderr": "moltemplate.sh v2.22.5 2025-11-16\n\n/usr/local/bin/moltemplate.sh: line 693: bc: command not found\n/usr/local/bin/moltemplate.sh: line 693: [: -eq: unary operator expected\n/usr/local/bin/moltemplate.sh: line 693: bc: command not found\n/usr/local/bin/moltemplate.sh: line 693: [: -eq: unary operator expected\n/usr/local/bin/moltemplate.sh: line 693: bc: command not found\n/usr/local/bin/moltemplate.sh: line 693: [: -eq: unary operator expected\nlttree_check.py v0.81.2 2021-5-24\n\n    \"Data Atoms\" column format:\n    atom-ID molecule-ID atom-type q x y z\n\nWARNING: \"Data Atoms\" file not found\nWARNING: \"Data Masses\" file not found\n         (This is not necessarily a problem.  There are other ways to specify\n          the mass, and there are other ways to integrate the equations of\n          motion. ATB users, for example, can ignore this message.)\nWARNING: \"In Init\" file not found\nWARNING: \"In Settings\" file not found\n\n    \"Data Atoms\" column format:\n    atom-ID molecule-ID atom-type q x y z\n\nlttree_check.py:    parsing the class definitions...\nError(ttree.StaticObj.Parse()):\n       Syntax error at or before \"system.lt\", line 2: \n       \"{ \"success\"\".\n",
+    "duration": 0.5016114711761475,
+    "output_files": [],
+    "error": "缺失必需文件: system.data, system.in.init, system.in.settings",
+    "missing_files": [
+      "system.data",
+      "system.in.init",
+      "system.in.settings"
+    ]
+  },
+  "step7_result": null,
+  "statistics": {
+    "total_duration": 0.5253434181213379,
+    "step6_duration": 0.5016114711761475,
+    "step7_duration": 0.0,
+    "step6_success": false,
+    "step7_success": false
+  },
+  "error": "步骤6执行失败: 缺失必需文件: system.data, system.in.init, system.in.settings",
+  "job_id": "300003",
+  "user_id": "1",
+  "mode": "moltemplate-execution",
+  "timestamp": "2026-06-25T11:26:47.254976",
+  "status": "failed"
+}

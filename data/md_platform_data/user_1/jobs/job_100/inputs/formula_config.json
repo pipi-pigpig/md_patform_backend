@@ -1,0 +1,28 @@
+{
+  "solventInfo": [
+    {
+      "name": "EC",
+      "moleFraction": 0.3,
+      "molecularWeight": 88.06,
+      "formula": "C3H4O3"
+    },
+    {
+      "name": "DMC",
+      "moleFraction": 0.7,
+      "molecularWeight": 90.08,
+      "formula": "C3H6O3"
+    }
+  ],
+  "saltInfo": {
+    "name": "LiPF6",
+    "concentration": 1.0,
+    "cation": "Li",
+    "anion": "PF6"
+  },
+  "boxSize": {
+    "x": 50.0,
+    "y": 50.0,
+    "z": 50.0
+  },
+  "density": 1.2
+}

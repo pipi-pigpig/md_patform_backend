@@ -1,0 +1,89 @@
+# =============================================================================
+# PF6.lt - 六氟磷酸阴离子分子模板 (Hexafluorophosphate Anion)
+# =============================================================================
+# 功能: 定义PF6阴离子的拓扑结构和力场参数
+# 力场: OPLS-AA (Optimized Potentials for Liquid Simulations - All Atom)
+#
+# 分子结构:
+#   - 正八面体构型
+#   - 磷原子为中心，6个氟原子对称分布
+#   - 总电荷: -1.0
+#
+# 原子类型 (OPLS-AA):
+#   - P: opls_901 (磷原子)
+#   - F: opls_303 (氟原子)
+#
+# 作者: Electrolyte MD Platform
+# 版本: 2.0 (使用正确的Moltemplate继承语法)
+# =============================================================================
+
+# 导入OPLS-AA力场定义
+import "../../force_fields/opls-aa/ffnonbonded.lt"
+import "../../force_fields/opls-aa/ffbonded.lt"
+
+# 定义OPLSAA力场基类
+OPLSAA {
+  write_once("In Init") {
+    units real
+    bond_style harmonic
+    angle_style harmonic
+    dihedral_style opls
+    improper_style harmonic
+    pair_style lj/cut/coul/long 12.0 12.0
+    special_bonds lj 0.0 0.0 0.5 coul 0.0 0.0 0.5
+  }
+}
+
+# PF6阴离子定义 - 继承OPLSAA力场
+PF6 inherits OPLSAA {
+  # ========================================
+  # 原子定义 (Data Atoms)
+  # ========================================
+  # 总电荷: +1.34 (P) + 6*(-0.39) (F) = -1.0
+  
+  write('Data Atoms') {
+    $atom:P1     $mol:.   @atom:opls_901   +1.34    0.000   0.000   0.000
+    $atom:F1     $mol:.   @atom:opls_303   -0.39    1.590   0.000   0.000
+    $atom:F2     $mol:.   @atom:opls_303   -0.39   -1.590   0.000   0.000
+    $atom:F3     $mol:.   @atom:opls_303   -0.39    0.000   1.590   0.000
+    $atom:F4     $mol:.   @atom:opls_303   -0.39    0.000  -1.590   0.000
+    $atom:F5     $mol:.   @atom:opls_303   -0.39    0.000   0.000   1.590
+    $atom:F6     $mol:.   @atom:opls_303   -0.39    0.000   0.000  -1.590
+  }
+  
+  # ========================================
+  # 键定义 (Data Bonds)
+  # ========================================
+  
+  write('Data Bonds') {
+    $bond:PF1    @bond:PF      $atom:P1   $atom:F1
+    $bond:PF2    @bond:PF      $atom:P1   $atom:F2
+    $bond:PF3    @bond:PF      $atom:P1   $atom:F3
+    $bond:PF4    @bond:PF      $atom:P1   $atom:F4
+    $bond:PF5    @bond:PF      $atom:P1   $atom:F5
+    $bond:PF6    @bond:PF      $atom:P1   $atom:F6
+  }
+  
+  # ========================================
+  # 角度定义 (Data Angles)
+  # ========================================
+  # 正八面体构型，所有F-P-F角度为90度或180度
+  
+  write('Data Angles') {
+    $angle:a_F1_P1_F2   @angle:FPF_180    $atom:F1   $atom:P1   $atom:F2
+    $angle:a_F3_P1_F4   @angle:FPF_180    $atom:F3   $atom:P1   $atom:F4
+    $angle:a_F5_P1_F6   @angle:FPF_180    $atom:F5   $atom:P1   $atom:F6
+    $angle:a_F1_P1_F3   @angle:FPF        $atom:F1   $atom:P1   $atom:F3
+    $angle:a_F1_P1_F4   @angle:FPF        $atom:F1   $atom:P1   $atom:F4
+    $angle:a_F1_P1_F5   @angle:FPF        $atom:F1   $atom:P1   $atom:F5
+    $angle:a_F1_P1_F6   @angle:FPF        $atom:F1   $atom:P1   $atom:F6
+    $angle:a_F2_P1_F3   @angle:FPF        $atom:F2   $atom:P1   $atom:F3
+    $angle:a_F2_P1_F4   @angle:FPF        $atom:F2   $atom:P1   $atom:F4
+    $angle:a_F2_P1_F5   @angle:FPF        $atom:F2   $atom:P1   $atom:F5
+    $angle:a_F2_P1_F6   @angle:FPF        $atom:F2   $atom:P1   $atom:F6
+    $angle:a_F3_P1_F5   @angle:FPF        $atom:F3   $atom:P1   $atom:F5
+    $angle:a_F3_P1_F6   @angle:FPF        $atom:F3   $atom:P1   $atom:F6
+    $angle:a_F4_P1_F5   @angle:FPF        $atom:F4   $atom:P1   $atom:F5
+    $angle:a_F4_P1_F6   @angle:FPF        $atom:F4   $atom:P1   $atom:F6
+  }
+}

@@ -1,0 +1,54 @@
+# =============================================================================
+# LAMMPS Equilibrium Test (NVT + NPT)
+# Uses soft-minimized structure, improper_style none to avoid hang
+# =============================================================================
+units           real
+atom_style      full
+dimension       3
+boundary        p p p
+
+# Read data with matching pair style (soft), then switch to real FF
+pair_style      soft 1.0
+bond_style      harmonic
+angle_style     harmonic
+dihedral_style  none
+improper_style  none
+read_data       minimized_soft.data
+
+# Switch to real force field
+pair_style      lj/cut/coul/cut 8.0 8.0
+dihedral_style  opls
+improper_style  none
+special_bonds   lj 0.0 0.0 0.5 coul 0.0 0.0 0.5
+kspace_style    none
+
+# Force field parameters (no improper coeffs)
+include         system.in.settings.no_imp
+
+# Neighbor list settings
+neighbor        2.0 bin
+neigh_modify    every 1 delay 0 check yes one 100000 page 1000000
+
+# Velocity initialization
+velocity        all create 353.0 47562 dist gaussian
+
+# Thermodynamic output
+thermo          100
+thermo_style    custom step temp pe ke etotal press vol density
+
+# Trajectory output
+dump            1 all custom 50 dump.equilibrium.lammpstrj id mol type x y z vx vy vz
+
+# NVT equilibration
+timestep        1.0
+fix             1 all nvt temp 353.0 353.0 100.0
+run             500
+unfix           1
+
+# NPT equilibration
+fix             2 all npt temp 353.0 353.0 100.0 iso 1.0 1.0 1000.0
+run             500
+unfix           2
+
+# Output equilibrated configuration
+write_data      equilibrated.data

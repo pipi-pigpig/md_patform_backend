@@ -1,0 +1,127 @@
+pair_coeff @/atom:opls_135 @/atom:opls_135 0.066 3.50
+pair_coeff @/atom:opls_136 @/atom:opls_136 0.066 3.50
+pair_coeff @/atom:opls_137 @/atom:opls_137 0.066 3.50
+pair_coeff @/atom:opls_138 @/atom:opls_138 0.066 3.50
+pair_coeff @/atom:opls_141 @/atom:opls_141 0.070 3.55
+pair_coeff @/atom:opls_142 @/atom:opls_142 0.070 3.55
+pair_coeff @/atom:opls_145 @/atom:opls_145 0.070 3.55
+pair_coeff @/atom:opls_146 @/atom:opls_146 0.070 3.55
+pair_coeff @/atom:opls_209 @/atom:opls_209 0.105 3.75
+pair_coeff @/atom:opls_212 @/atom:opls_212 0.105 3.75
+pair_coeff @/atom:opls_140 @/atom:opls_140 0.030 2.50
+pair_coeff @/atom:opls_139 @/atom:opls_139 0.030 2.50
+pair_coeff @/atom:opls_143 @/atom:opls_143 0.030 2.50
+pair_coeff @/atom:opls_148 @/atom:opls_148 0.030 2.42
+pair_coeff @/atom:opls_154 @/atom:opls_154 0.030 2.50
+pair_coeff @/atom:opls_160 @/atom:opls_160 0.030 2.50
+pair_coeff @/atom:opls_210 @/atom:opls_210 0.030 2.50
+pair_coeff @/atom:opls_154O @/atom:opls_154O 0.170 3.00
+pair_coeff @/atom:opls_156 @/atom:opls_156 0.170 3.00
+pair_coeff @/atom:opls_211 @/atom:opls_211 0.170 2.96
+pair_coeff @/atom:opls_213 @/atom:opls_213 0.170 3.00
+pair_coeff @/atom:opls_157 @/atom:opls_157 0.170 3.25
+pair_coeff @/atom:opls_158 @/atom:opls_158 0.170 3.25
+pair_coeff @/atom:opls_159 @/atom:opls_159 0.170 3.25
+pair_coeff @/atom:opls_236 @/atom:opls_236 0.170 3.25
+pair_coeff @/atom:opls_303 @/atom:opls_303 0.255 2.95
+pair_coeff @/atom:opls_901 @/atom:opls_901 0.200 3.70
+pair_coeff @/atom:opls_402 @/atom:opls_402 0.0025 1.506
+pair_coeff @/atom:opls_180 @/atom:opls_180 0.250 3.55
+pair_coeff @/atom:opls_903 @/atom:opls_903 0.250 3.55
+  # 碳-碳键
+  bond_coeff @/bond:CC_single  268.0  1.529   # C-C单键 (sp3-sp3)
+  bond_coeff @/bond:CC_double  414.0  1.330   # C=C双键 (sp2-sp2)
+  bond_coeff @/bond:CC_aromatic 320.0  1.400   # 芳香C-C键
+  
+  # 碳-氢键
+  bond_coeff @/bond:CH_sp3     340.0  1.090   # C-H键 (sp3碳)
+  bond_coeff @/bond:CH_sp2     340.0  1.080   # C-H键 (sp2碳)
+  bond_coeff @/bond:CH_arom    340.0  1.080   # C-H键 (芳香碳)
+  
+  # 碳-氧键
+  bond_coeff @/bond:CO_single  320.0  1.410   # C-O单键 (醇、醚)
+  bond_coeff @/bond:CO_double  570.0  1.229   # C=O双键 (羰基)
+  bond_coeff @/bond:CO_carb    320.0  1.360   # C-O键 (羧酸)
+  
+  # 碳-氮键
+  bond_coeff @/bond:CN_single  300.0  1.470   # C-N单键 (胺)
+  bond_coeff @/bond:CN_double  440.0  1.270   # C=N双键 (亚胺)
+  bond_coeff @/bond:CN_amide   350.0  1.340   # C-N键 (酰胺)
+  
+  # 氧-氢键
+  bond_coeff @/bond:OH         340.0  0.960   # O-H键 (醇、羧酸)
+  
+  # 氮-氢键
+  bond_coeff @/bond:NH         340.0  1.010   # N-H键 (胺)
+  
+  # 磷-氟键 (PF6)
+  bond_coeff @/bond:PF         420.0  1.560   # P-F键 (六氟磷酸盐)
+  
+  # 硫-碳键
+  bond_coeff @/bond:SC         200.0  1.810   # S-C键 (硫醚)
+  
+  # 硫-氧键
+  bond_coeff @/bond:SO         300.0  1.430   # S-O键 (磺酰基)
+  # 碳-碳-碳角度
+  angle_coeff @/angle:CCC_sp3    50.0  109.5   # C-C-C (sp3)
+  angle_coeff @/angle:CCC_sp2    80.0  120.0   # C-C-C (sp2)
+  angle_coeff @/angle:CCC_arom   60.0  120.0   # C-C-C (芳香)
+  
+  # 碳-碳-氢角度
+  angle_coeff @/angle:CCH_sp3    37.5  110.7   # C-C-H (sp3)
+  angle_coeff @/angle:CCH_sp2    40.0  120.0   # C-C-H (sp2)
+  
+  # 氢-碳-氢角度
+  angle_coeff @/angle:HCH_sp3    33.0  106.4   # H-C-H (sp3亚甲基)
+  angle_coeff @/angle:HCH_sp3m   33.0  107.8   # H-C-H (sp3甲基)
+  angle_coeff @/angle:HCH_sp2    35.0  120.0   # H-C-H (sp2)
+  
+  # 碳-氧-碳角度
+  angle_coeff @/angle:COC_ether  60.0  109.5   # C-O-C (醚)
+  angle_coeff @/angle:COC_ester  60.0  124.0   # C-O-C (酯)
+  
+  # 氧-碳-氧角度
+  angle_coeff @/angle:OCO_carb   80.0  123.0   # O-C=O (羰基)
+  angle_coeff @/angle:OCO_ester  80.0  120.4   # O-C-O (酯)
+  
+  # 碳-碳-氧角度
+  angle_coeff @/angle:CCO        50.0  109.5   # C-C-O
+  
+  # 碳-氧-氢角度
+  angle_coeff @/angle:COH        50.0  109.5   # C-O-H (醇)
+  
+  # 碳-氮-碳角度
+  angle_coeff @/angle:CNC        50.0  109.5   # C-N-C (胺)
+  angle_coeff @/angle:CNC_amide  50.0  120.0   # C-N-C (酰胺)
+  
+  # 氟-磷-氟角度 (PF6)
+  angle_coeff @/angle:FPF        80.0   90.0   # F-P-F (六氟磷酸盐)
+  angle_coeff @/angle:FPF_180    80.0  180.0   # F-P-F (对角)
+  # 碳-碳-碳-碳二面角
+  dihedral_coeff @/dihedral:CCCC_alkane  0.0  0.0  0.278  0.0   # C-C-C-C (烷烃)
+  dihedral_coeff @/dihedral:CCCC_alkene  0.0  0.0  0.0    0.0   # C-C-C-C (烯烃)
+  
+  # 碳-碳-碳-氢二面角
+  dihedral_coeff @/dihedral:CCCH  0.0  0.0  0.278  0.0   # C-C-C-H
+  
+  # 氢-碳-碳-氢二面角
+  dihedral_coeff @/dihedral:HCCCH 0.0  0.0  0.278  0.0   # H-C-C-H
+  
+  # 碳-氧-碳-碳二面角
+  dihedral_coeff @/dihedral:COCC  0.5 -0.5  0.5   0.0   # C-O-C-C (醚)
+  dihedral_coeff @/dihedral:COCC_est 0.0  0.0  0.0   0.0   # C-O-C-C (酯)
+  
+  # 碳-碳-氧-碳二面角
+  dihedral_coeff @/dihedral:CCOC  0.0  0.0  0.0   0.0   # C-C-O-C
+  
+  # 氧-碳-氧-碳二面角
+  dihedral_coeff @/dihedral:OCOC  0.0  0.0  0.0   0.0   # O-C-O-C (碳酸酯)
+  
+  # 碳-碳-氧=碳二面角
+  dihedral_coeff @/dihedral:CCOCarb 0.0  0.0  0.0  0.0   # C-C-O=C (羰基)
+  # 羰基平面构型
+  improper_coeff @/improper:CO_planar  10.0  0.0   # C=O平面
+  
+  # 芳香平面构型
+  improper_coeff @/improper:arom_plan  10.0  0.0   # 芳香平面
+    pair_coeff @/atom:Li/Li @/atom:Li/Li 0.00034 2.126

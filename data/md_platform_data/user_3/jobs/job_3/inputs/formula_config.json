@@ -1,0 +1,1 @@
+{"solvent_info": [{"name": "EC", "mole_fraction": 0.5}, {"name": "DMC", "mole_fraction": 0.5}], "salt_info": {"cation": {"name": "Li"}, "anion": {"name": "PF6"}, "concentration": 1.0}, "density": 1.2, "temperature": 298.15}

@@ -1,0 +1,42 @@
+# =============================================================================
+# LAMMPS能量最小化输入脚本
+# 由Jinja2模板引擎自动生成
+# 生成时间: 2026-06-25T20:26:15.202775200
+# 任务ID: 360002
+# =============================================================================
+
+# 初始化设置
+units           real
+atom_style      full
+dimension       3
+boundary        p p p
+
+# 力场样式设置
+bond_style      harmonic
+angle_style     harmonic
+dihedral_style  opls
+improper_style  harmonic
+pair_style      lj/cut/coul/long 12.0 12.0
+special_bonds   lj 0.0 0.0 0.5 coul 0.0 0.0 0.5
+kspace_style    pppm 1.0e-4
+
+# 读取结构文件
+read_data       system.data
+
+# 力场参数
+include         system.in.settings
+
+# 邻居列表设置
+neighbor        2.0 bin
+neigh_modify    every 1 delay 0 check yes
+
+# 热力学输出
+thermo          100
+thermo_style    custom step temp pe ke etotal press vol
+
+# 最小化设置
+min_style       cg
+minimize        0.0001 10.0 150000 10000
+
+# 输出最小化后的构型
+write_data      minimized.data

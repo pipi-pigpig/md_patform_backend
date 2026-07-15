@@ -1,0 +1,4 @@
+HEADER    Equilibrium structure
+ATOM      1  C   MOL     1       0.000   0.000   0.000  1.00  0.00           C
+ATOM      2  H   MOL     1       1.000   0.000   0.000  1.00  0.00           H
+END

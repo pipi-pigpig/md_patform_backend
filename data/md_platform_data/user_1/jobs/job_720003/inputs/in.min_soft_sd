@@ -1,0 +1,28 @@
+# Soft potential minimization with steepest descent
+units           real
+atom_style      full
+dimension       3
+boundary        p p p
+
+read_data       system.data
+
+pair_style      soft 1.0
+pair_coeff      * * 1.0
+bond_style      harmonic
+angle_style     harmonic
+dihedral_style  none
+improper_style  none
+special_bonds   lj 1.0 1.0 1.0 coul 1.0 1.0 1.0
+kspace_style    none
+
+include         system.in.bond_angle_only
+
+neighbor        2.0 bin
+neigh_modify    every 1 delay 0 check yes
+thermo          100
+thermo_style    custom step temp pe ke etotal press vol
+
+min_style       sd
+minimize        1.0e-2 1.0e-4 100 1000
+
+write_data      minimized_soft.data

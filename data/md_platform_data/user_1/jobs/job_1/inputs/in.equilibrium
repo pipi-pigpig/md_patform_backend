@@ -1,0 +1,66 @@
+# =============================================================================
+# LAMMPS平衡模拟输入脚本（NVT + NPT）
+# 由Jinja2模板引擎自动生成
+# 生成时间: 2026-06-07
+# 任务ID: test_001
+# =============================================================================
+
+# 初始化设置
+units           real
+atom_style      full
+dimension       3
+boundary        p p p
+
+# 力场样式设置
+bond_style      harmonic
+angle_style     harmonic
+dihedral_style  opls
+improper_style  harmonic
+pair_style      lj/cut/coul/long 12.0 12.0
+special_bonds   lj 0.0 0.0 0.5 coul 0.0 0.0 0.5
+kspace_style    pppm 1.0e-4
+
+# 读取最小化后的构型
+read_data       minimized.data
+
+# 力场参数
+include         system.in.settings
+
+# 邻居列表设置
+neighbor        2.0 bin
+neigh_modify    every 1 delay 0 check yes
+
+# 速度初始化
+velocity        all create 300.0 12345 dist gaussian
+
+# 热力学输出
+thermo          100
+thermo_style    custom step temp pe ke etotal press vol density
+
+# 轨迹输出
+dump            1 all custom 1000 dump.equilibrium.lammpstrj id mol type x y z vx vy vz
+
+# NVT平衡阶段
+timestep        1.0
+fix             1 all nvt temp 300.0 300.0 100.0
+run             25000
+unfix           1
+
+# 压缩盒子到合理密度（从48³压缩到30³，约1.0 g/cm³）
+# EC液体密度约1.3 g/cm³，先压缩到稍低密度再NPT平衡
+change_box      all x final 0 30.0 y final 0 30.0 z final 0 30.0 remap units box
+
+# 压缩后短暂最小化修复重叠
+min_style       cg
+minimize        0.0001 1e-06 500 5000
+
+# 重新初始化速度
+velocity        all create 300.0 54321 dist gaussian
+
+# NPT平衡阶段（在合理密度下平衡）
+fix             2 all npt temp 300.0 300.0 100.0 iso 1.0 1.0 5000.0
+run             50000
+unfix           2
+
+# 输出平衡后的构型
+write_data      equilibrated.data

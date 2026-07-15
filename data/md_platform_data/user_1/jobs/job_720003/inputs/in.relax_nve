@@ -1,0 +1,58 @@
+# =============================================================================
+# Relaxation: Soft potential + NVE/limit + gradual transition to real FF
+# =============================================================================
+units           real
+atom_style      full
+dimension       3
+boundary        p p p
+
+read_data       system.data
+
+# Step 1: Soft potential with limited dynamics
+pair_style      soft 1.0
+pair_coeff      * * 10.0
+bond_style      harmonic
+angle_style     harmonic
+dihedral_style  none
+improper_style  none
+special_bonds   lj 1.0 1.0 1.0 coul 1.0 1.0 1.0
+kspace_style    none
+
+include         system.in.bond_angle_only
+
+neighbor        2.0 bin
+neigh_modify    every 1 delay 0 check yes one 100000 page 1000000
+thermo          100
+thermo_style    custom step temp pe ke etotal press vol
+
+# First, minimize with soft potential
+min_style       fire
+minimize        1.0e-4 1.0e-6 1000 10000
+
+# Then run short NVE with limited displacement
+timestep        0.1
+velocity        all create 10.0 47562 dist gaussian
+fix             nve_limit all nve/limit 0.01
+run             1000
+unfix           nve_limit
+
+# Switch to real force field
+pair_style      lj/cut/coul/cut 8.0 8.0
+dihedral_style  opls
+improper_style  none
+special_bonds   lj 0.0 0.0 0.5 coul 0.0 0.0 0.5
+include         system.in.settings.no_imp
+
+neighbor        2.0 bin
+neigh_modify    every 1 delay 0 check yes one 100000 page 1000000
+
+# Run NVE with limited displacement again
+fix             nve_limit2 all nve/limit 0.01
+run             1000
+unfix           nve_limit2
+
+# Final minimization
+min_style       fire
+minimize        1.0e-2 1.0e-4 200 2000
+
+write_data      minimized.data

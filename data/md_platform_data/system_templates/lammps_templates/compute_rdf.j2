@@ -1,0 +1,6 @@
+# RDF（径向分布函数）计算配置
+# 由Jinja2模板引擎自动生成
+
+# RDF计算
+compute         rdf all rdf {{ rdf_nbin | default(100) }}
+fix             rdf all ave/time {{ ave_freq | default(1000) }} 1 {{ ave_freq | default(1000) }} c_rdf[*] file rdf.dat mode vector

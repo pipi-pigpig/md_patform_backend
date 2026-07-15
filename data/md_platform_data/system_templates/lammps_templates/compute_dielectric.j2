@@ -1,0 +1,11 @@
+# 介电常数计算配置
+# 由Jinja2模板引擎自动生成
+
+# 偶极矩计算
+compute         dipole all dipole/atom
+fix             dipole all ave/time {{ ave_freq | default(100) }} 1 {{ ave_freq | default(100) }} c_dipole[*] file dipole.dat
+
+# 总偶极矩输出
+compute         totalMomentum all momentum
+variable        totalDipole equal c_dipole[1]*c_dipole[1]+c_dipole[2]*c_dipole[2]+c_dipole[3]*c_dipole[3]
+fix             totalDipole all ave/time {{ ave_freq | default(100) }} 1 {{ ave_freq | default(100) }} v_totalDipole file total_dipole.dat

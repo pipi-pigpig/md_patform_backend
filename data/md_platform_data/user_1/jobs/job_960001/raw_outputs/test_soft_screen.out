@@ -1,0 +1,3 @@
+LAMMPS (23 Jun 2022 - Update 4)
+ERROR: Pair_coeff command before simulation box is defined (../input.cpp:1675)
+Last command: pair_coeff      * * 100.0

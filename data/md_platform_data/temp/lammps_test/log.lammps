@@ -1,0 +1,314 @@
+LAMMPS (23 Jun 2022 - Update 4)
+# LAMMPS简化测试脚本
+# 用于验证基本LJ势能计算（无分子拓扑）
+#
+# 功能说明：
+#   1. 创建简单的原子系统
+#   2. 设置LJ势能参数
+#   3. 执行能量最小化
+#   4. 输出能量验证结果
+#
+# 作者: Electrolyte MD Platform
+# 版本: 1.0
+
+# ========================================
+# 初始化设置
+# ========================================
+units           real
+atom_style      charge
+boundary        f f f
+
+# ========================================
+# 创建模拟盒子和原子
+# ========================================
+region          box block 0 50 0 50 0 50
+create_box      5 box
+Created orthogonal box = (0 0 0) to (50 50 50)
+  1 by 1 by 1 MPI processor grid
+
+# 创建原子（模拟EC分子的原子分布）
+# 原子类型：1=C(carbonyl), 2=O(carbonyl), 3=CH2, 4=O(ether), 5=H
+create_atoms    1 single 25.0 25.0 25.0
+Created 1 atoms
+  using lattice units in orthogonal box = (0 0 0) to (50 50 50)
+  create_atoms CPU = 0.000 seconds
+create_atoms    2 single 26.2 25.0 25.0
+Created 1 atoms
+  using lattice units in orthogonal box = (0 0 0) to (50 50 50)
+  create_atoms CPU = 0.000 seconds
+create_atoms    3 single 24.3 26.2 25.0
+Created 1 atoms
+  using lattice units in orthogonal box = (0 0 0) to (50 50 50)
+  create_atoms CPU = 0.000 seconds
+create_atoms    4 single 23.0 26.0 25.0
+Created 1 atoms
+  using lattice units in orthogonal box = (0 0 0) to (50 50 50)
+  create_atoms CPU = 0.000 seconds
+create_atoms    3 single 23.5 24.0 25.0
+Created 1 atoms
+  using lattice units in orthogonal box = (0 0 0) to (50 50 50)
+  create_atoms CPU = 0.000 seconds
+create_atoms    5 single 24.5 27.2 25.0
+Created 1 atoms
+  using lattice units in orthogonal box = (0 0 0) to (50 50 50)
+  create_atoms CPU = 0.000 seconds
+create_atoms    5 single 23.5 26.2 26.0
+Created 1 atoms
+  using lattice units in orthogonal box = (0 0 0) to (50 50 50)
+  create_atoms CPU = 0.000 seconds
+create_atoms    5 single 22.5 24.5 25.0
+Created 1 atoms
+  using lattice units in orthogonal box = (0 0 0) to (50 50 50)
+  create_atoms CPU = 0.000 seconds
+create_atoms    5 single 24.0 23.0 24.0
+Created 1 atoms
+  using lattice units in orthogonal box = (0 0 0) to (50 50 50)
+  create_atoms CPU = 0.000 seconds
+create_atoms    5 single 24.0 23.0 26.0
+Created 1 atoms
+  using lattice units in orthogonal box = (0 0 0) to (50 50 50)
+  create_atoms CPU = 0.000 seconds
+
+# ========================================
+# 设置原子质量和电荷
+# ========================================
+mass            1 12.011  # C (carbonyl)
+mass            2 16.000  # O (carbonyl)
+mass            3 14.027  # CH2
+mass            4 16.000  # O (ether)
+mass            5 1.008   # H
+
+# 设置原子电荷（OPLS-AA部分电荷）
+set atom 1 charge 0.480   # C1 (carbonyl carbon)
+Setting atom values ...
+  1 settings made for charge
+set atom 2 charge -0.420  # O1 (carbonyl oxygen)
+Setting atom values ...
+  1 settings made for charge
+set atom 3 charge 0.120   # C2 (methylene)
+Setting atom values ...
+  1 settings made for charge
+set atom 4 charge -0.360  # O2 (ether oxygen)
+Setting atom values ...
+  1 settings made for charge
+set atom 5 charge 0.120   # C3 (methylene)
+Setting atom values ...
+  1 settings made for charge
+set atom 6 charge 0.060   # H1
+Setting atom values ...
+  1 settings made for charge
+set atom 7 charge 0.060   # H2
+Setting atom values ...
+  1 settings made for charge
+set atom 8 charge 0.060   # H3
+Setting atom values ...
+  1 settings made for charge
+set atom 9 charge 0.060   # H4
+Setting atom values ...
+  1 settings made for charge
+set atom 10 charge 0.060  # H5
+Setting atom values ...
+  1 settings made for charge
+
+# ========================================
+# 力场设置 - LJ势能
+# ========================================
+pair_style      lj/cut/coul/cut 12.0 12.0
+pair_modify     mix geometric
+
+# ========================================
+# LJ参数 (OPLS-AA)
+# ========================================
+# 格式: pair_coeff type1 type2 epsilon(kcal/mol) sigma(Angstrom)
+
+# 碳原子 (羰基碳 opls_209)
+pair_coeff 1 1 0.066 3.75
+
+# 氧原子 (羰基氧 opls_211)
+pair_coeff 2 2 0.210 2.96
+
+# CH2基团 (opls_136)
+pair_coeff 3 3 0.056 3.98
+
+# 氧原子 (醚氧 opls_156)
+pair_coeff 4 4 0.170 3.00
+
+# 氢原子 (opls_140)
+pair_coeff 5 5 0.030 2.50
+
+# ========================================
+# 邻居列表设置
+# ========================================
+neighbor        2.0 bin
+neigh_modify    every 1 delay 0 check yes
+
+# ========================================
+# 输出设置
+# ========================================
+thermo          10
+thermo_style    custom step temp pe ke etotal press vol density
+
+# ========================================
+# 能量最小化
+# ========================================
+print "========================================"
+========================================
+print "LAMMPS基本功能测试 - LJ势能计算"
+WARNING: Detected non-ASCII characters in input. Will try to continue by replacing with ASCII equivalents where known. (../input.cpp:436)
+LAMMPS������������ - LJ��������
+print "========================================"
+========================================
+
+# 计算初始能量
+run 0
+WARNING: No fixes with time integration, atoms won't move (../verlet.cpp:60)
+Generated 10 of 10 mixed pair_coeff terms from geometric mixing rule
+Neighbor list info ...
+  update every 1 steps, delay 0 steps, check yes
+  max neighbors/atom: 2000, page size: 100000
+  master list distance cutoff = 14
+  ghost atom cutoff = 14
+  binsize = 7, bins = 8 8 8
+  1 neighbor lists, perpetual/occasional/extra = 1 0 0
+  (1) pair lj/cut/coul/cut, perpetual
+      attributes: half, newton on
+      pair build: half/bin/atomonly/newton
+      stencil: half/bin/3d
+      bin: standard
+Per MPI rank memory allocation (min/avg/max) = 3.166 | 3.166 | 3.166 Mbytes
+   Step          Temp          PotEng         KinEng         TotEng         Press          Volume        Density    
+         0   0              384147.24      0              384147.24      843980.32      125000         0.0010242868 
+Loop time of 3.94e-07 on 1 procs for 0 steps with 10 atoms
+
+0.0% CPU use with 1 MPI tasks x no OpenMP threads
+
+MPI task timing breakdown:
+Section |  min time  |  avg time  |  max time  |%varavg| %total
+---------------------------------------------------------------
+Pair    | 0          | 0          | 0          |   0.0 |  0.00
+Neigh   | 0          | 0          | 0          |   0.0 |  0.00
+Comm    | 0          | 0          | 0          |   0.0 |  0.00
+Output  | 0          | 0          | 0          |   0.0 |  0.00
+Modify  | 0          | 0          | 0          |   0.0 |  0.00
+Other   |            | 3.94e-07   |            |       |100.00
+
+Nlocal:             10 ave          10 max          10 min
+Histogram: 1 0 0 0 0 0 0 0 0 0
+Nghost:              0 ave           0 max           0 min
+Histogram: 1 0 0 0 0 0 0 0 0 0
+Neighs:             45 ave          45 max          45 min
+Histogram: 1 0 0 0 0 0 0 0 0 0
+
+Total # of neighbors = 45
+Ave neighs/atom = 4.5
+Neighbor list builds = 0
+Dangerous builds = 0
+
+print "========================================"
+========================================
+print "初始能量计算完成"
+����������������
+print "开始最小化..."
+����������...
+print "========================================"
+========================================
+
+# 能量最小化
+min_style       cg
+minimize        1.0e-4 1.0e-6 100 1000
+Generated 10 of 10 mixed pair_coeff terms from geometric mixing rule
+Per MPI rank memory allocation (min/avg/max) = 4.291 | 4.291 | 4.291 Mbytes
+   Step          Temp          PotEng         KinEng         TotEng         Press          Volume        Density    
+         0   0              384147.24      0              384147.24      843980.32      125000         0.0010242868 
+        10   0              2287.418       0              2287.418       5192.4883      125000         0.0010242868 
+        20   0              8.4418877      0              8.4418877      90.861992      125000         0.0010242868 
+        30   0             -28.658405      0             -28.658405      2.9154652      125000         0.0010242868 
+        40   0             -31.752366      0             -31.752366      0.4749531      125000         0.0010242868 
+        50   0             -33.294284      0             -33.294284     -1.3244878      125000         0.0010242868 
+        60   0             -35.380032      0             -35.380032     -2.6922025      125000         0.0010242868 
+        70   0             -37.605589      0             -37.605589      0.51721033     125000         0.0010242868 
+        80   0             -38.92407       0             -38.92407       0.46751227     125000         0.0010242868 
+        90   0             -39.586075      0             -39.586075      0.059642908    125000         0.0010242868 
+       100   0             -39.813061      0             -39.813061      0.90479397     125000         0.0010242868 
+Loop time of 0.00018846 on 1 procs for 100 steps with 10 atoms
+
+30.8% CPU use with 1 MPI tasks x no OpenMP threads
+
+Minimization stats:
+  Stopping criterion = max iterations
+  Energy initial, next-to-last, final = 
+      384147.240166859  -39.7841831191012  -39.8130614146915
+  Force two-norm initial, final = 2344079.5 1.042914
+  Force max component initial, final = 1450097 0.54627002
+  Final line search alpha, max atom move = 0.10818653 0.059099056
+  Iterations, force evaluations = 100 137
+
+MPI task timing breakdown:
+Section |  min time  |  avg time  |  max time  |%varavg| %total
+---------------------------------------------------------------
+Pair    | 0.0001144  | 0.0001144  | 0.0001144  |   0.0 | 60.70
+Neigh   | 8.99e-06   | 8.99e-06   | 8.99e-06   |   0.0 |  4.77
+Comm    | 7.586e-06  | 7.586e-06  | 7.586e-06  |   0.0 |  4.03
+Output  | 1.9132e-05 | 1.9132e-05 | 1.9132e-05 |   0.0 | 10.15
+Modify  | 0          | 0          | 0          |   0.0 |  0.00
+Other   |            | 3.835e-05  |            |       | 20.35
+
+Nlocal:             10 ave          10 max          10 min
+Histogram: 1 0 0 0 0 0 0 0 0 0
+Nghost:              0 ave           0 max           0 min
+Histogram: 1 0 0 0 0 0 0 0 0 0
+Neighs:             45 ave          45 max          45 min
+Histogram: 1 0 0 0 0 0 0 0 0 0
+
+Total # of neighbors = 45
+Ave neighs/atom = 4.5
+Neighbor list builds = 6
+Dangerous builds = 0
+
+print "========================================"
+========================================
+print "能量最小化完成"
+��������������
+print "========================================"
+========================================
+
+# 最终能量
+run 0
+WARNING: No fixes with time integration, atoms won't move (../verlet.cpp:60)
+Generated 10 of 10 mixed pair_coeff terms from geometric mixing rule
+Per MPI rank memory allocation (min/avg/max) = 3.166 | 3.166 | 3.166 Mbytes
+   Step          Temp          PotEng         KinEng         TotEng         Press          Volume        Density    
+       100   0             -39.813061      0             -39.813061      0.90479397     125000         0.0010242868 
+Loop time of 3.65e-07 on 1 procs for 0 steps with 10 atoms
+
+0.0% CPU use with 1 MPI tasks x no OpenMP threads
+
+MPI task timing breakdown:
+Section |  min time  |  avg time  |  max time  |%varavg| %total
+---------------------------------------------------------------
+Pair    | 0          | 0          | 0          |   0.0 |  0.00
+Neigh   | 0          | 0          | 0          |   0.0 |  0.00
+Comm    | 0          | 0          | 0          |   0.0 |  0.00
+Output  | 0          | 0          | 0          |   0.0 |  0.00
+Modify  | 0          | 0          | 0          |   0.0 |  0.00
+Other   |            | 3.65e-07   |            |       |100.00
+
+Nlocal:             10 ave          10 max          10 min
+Histogram: 1 0 0 0 0 0 0 0 0 0
+Nghost:              0 ave           0 max           0 min
+Histogram: 1 0 0 0 0 0 0 0 0 0
+Neighs:             45 ave          45 max          45 min
+Histogram: 1 0 0 0 0 0 0 0 0 0
+
+Total # of neighbors = 45
+Ave neighs/atom = 4.5
+Neighbor list builds = 0
+Dangerous builds = 0
+
+print "========================================"
+========================================
+print "测试完成!"
+��������!
+print "========================================"
+========================================
+Total wall time: 0:00:00

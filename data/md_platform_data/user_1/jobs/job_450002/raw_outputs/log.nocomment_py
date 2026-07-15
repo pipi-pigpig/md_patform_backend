@@ -1,0 +1,192 @@
+LAMMPS (23 Jun 2022 - Update 4)
+# =============================================================================
+# LAMMPS能量最小化输入脚本
+# 由Jinja2模板引擎自动生成
+# 生成时间: 2026-06-25T22:54:35.750935100
+# 任务ID: 450002
+# =============================================================================
+
+# 初始化设置
+units           real
+atom_style      full
+dimension       3
+boundary        p p p
+
+# 力场样式设置
+bond_style      harmonic
+angle_style     harmonic
+dihedral_style  opls
+improper_style  harmonic
+pair_style      lj/cut/coul/long 12.0 12.0
+special_bonds   lj 0.0 0.0 0.5 coul 0.0 0.0 0.5
+kspace_style    pppm 1.0e-4
+
+# 读取结构文件
+read_data       system.data
+Reading data file ...
+  orthogonal box = (0 0 0) to (50 50 50)
+  1 by 1 by 1 MPI processor grid
+  reading atoms ...
+  12114 atoms
+  scanning bonds ...
+  6 = max bonds/atom
+  scanning angles ...
+  15 = max angles/atom
+  scanning dihedrals ...
+  3 = max dihedrals/atom
+  reading bonds ...
+  11257 bonds
+  reading angles ...
+  17083 angles
+  reading dihedrals ...
+  7171 dihedrals
+Finding 1-2 1-3 1-4 neighbors ...
+  special bond factors lj:    0        0        0.5     
+  special bond factors coul:  0        0        0.5     
+     6 = max # of 1-2 neighbors
+     5 = max # of 1-3 neighbors
+     9 = max # of 1-4 neighbors
+    11 = max # of special neighbors
+  special bonds CPU = 0.004 seconds
+  read_data CPU = 0.213 seconds
+
+# 力场参数
+include         system.in.settings
+pair_coeff 1 1 0.066 3.50
+pair_coeff 2 2 0.066 3.50
+pair_coeff 3 3 0.066 3.50
+pair_coeff 4 4 0.066 3.50
+pair_coeff 5 5 0.070 3.55
+pair_coeff 6 6 0.070 3.55
+pair_coeff 7 7 0.070 3.55
+pair_coeff 8 8 0.070 3.55
+pair_coeff 9 9 0.105 3.75
+pair_coeff 10 10 0.105 3.75
+pair_coeff 11 11 0.030 2.50
+pair_coeff 12 12 0.030 2.50
+pair_coeff 13 13 0.030 2.50
+pair_coeff 14 14 0.030 2.42
+pair_coeff 15 15 0.030 2.50
+pair_coeff 16 16 0.030 2.50
+pair_coeff 17 17 0.030 2.50
+pair_coeff 18 18 0.170 3.00
+pair_coeff 19 19 0.170 3.00
+pair_coeff 20 20 0.170 2.96
+pair_coeff 21 21 0.170 3.00
+pair_coeff 22 22 0.170 3.25
+pair_coeff 23 23 0.170 3.25
+pair_coeff 24 24 0.170 3.25
+pair_coeff 25 25 0.170 3.25
+pair_coeff 26 26 0.255 2.95
+pair_coeff 27 27 0.200 3.70
+pair_coeff 28 28 0.0025 1.506
+pair_coeff 29 29 0.250 3.55
+pair_coeff 30 30 0.250 3.55
+
+bond_coeff 1  268.0  1.529
+bond_coeff 2  414.0  1.330
+bond_coeff 3 320.0  1.400
+
+
+bond_coeff 4     340.0  1.090
+bond_coeff 5     340.0  1.080
+bond_coeff 6    340.0  1.080
+
+
+bond_coeff 7  320.0  1.410
+bond_coeff 8  570.0  1.229
+bond_coeff 9    320.0  1.360
+
+
+bond_coeff 10  300.0  1.470
+bond_coeff 11  440.0  1.270
+bond_coeff 12   350.0  1.340
+
+
+bond_coeff 13         340.0  0.960
+
+
+bond_coeff 14         340.0  1.010
+
+
+bond_coeff 15         420.0  1.560
+
+
+bond_coeff 16         200.0  1.810
+
+
+bond_coeff 17         300.0  1.430
+
+angle_coeff 1    50.0  109.5
+angle_coeff 2    80.0  120.0
+angle_coeff 3   60.0  120.0
+
+
+angle_coeff 4    37.5  110.7
+angle_coeff 5    40.0  120.0
+
+
+angle_coeff 6    33.0  106.4
+angle_coeff 7   33.0  107.8
+angle_coeff 8    35.0  120.0
+
+
+angle_coeff 9  60.0  109.5
+angle_coeff 10  60.0  124.0
+
+
+angle_coeff 11   80.0  123.0
+angle_coeff 12  80.0  120.4
+
+
+angle_coeff 13        50.0  109.5
+
+
+angle_coeff 14        50.0  109.5
+
+
+angle_coeff 15        50.0  109.5
+angle_coeff 16  50.0  120.0
+
+
+angle_coeff 17        80.0   90.0
+angle_coeff 18    80.0  180.0
+
+dihedral_coeff 1  0.0  0.0  0.278  0.0
+dihedral_coeff 2  0.0  0.0  0.0    0.0
+
+
+dihedral_coeff 3  0.0  0.0  0.278  0.0
+
+
+dihedral_coeff 4 0.0  0.0  0.278  0.0
+
+
+dihedral_coeff 5  0.5 -0.5  0.5   0.0
+dihedral_coeff 6 0.0  0.0  0.0   0.0
+
+
+dihedral_coeff 7  0.0  0.0  0.0   0.0
+
+
+dihedral_coeff 8  0.0  0.0  0.0   0.0
+
+
+dihedral_coeff 9 0.0  0.0  0.0  0.0
+
+improper_coeff 1  10.0  0.0
+
+
+improper_coeff 2  10.0  0.0
+pair_coeff 31 31 0.00034 2.126
+
+# 邻居列表设置
+neighbor        2.0 bin
+neigh_modify    every 1 delay 0 check yes
+
+# 热力学输出
+thermo          100
+thermo_style    custom step temp pe ke etotal press vol
+
+# 最小化设置 - 两步最小化策略
+# 第一步：使用FIRE算法快速消除不良接触（

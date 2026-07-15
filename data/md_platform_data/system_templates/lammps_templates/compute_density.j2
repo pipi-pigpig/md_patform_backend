@@ -1,0 +1,8 @@
+# 密度计算配置
+# 由Jinja2模板引擎自动生成
+
+# 密度输出（已包含在thermo_style中）
+thermo_style    custom step temp pe ke etotal press vol density
+
+# 密度时间序列输出
+fix             density all ave/time {{ ave_freq | default(100) }} 1 {{ ave_freq | default(100) }} v_density file density.dat

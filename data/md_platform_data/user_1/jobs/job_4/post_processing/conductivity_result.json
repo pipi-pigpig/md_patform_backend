@@ -1,0 +1,17 @@
+{
+  "property_name": "conductivity",
+  "property_value": 0.85,
+  "property_unit": "S/m",
+  "calculation_method": "Green-Kubo",
+  "convergence_status": "NOT_CONVERGED",
+  "temperature_k": 353.0,
+  "pressure_bar": 1.0,
+  "sampling_time_ps": 1000.0,
+  "property_detail": "{\"mean\":0.85,\"standard_deviation\":0.12}",
+  "sub_table_data": {
+    "conductivity_tensor": "{\"xx\":0.82,\"yy\":0.87,\"zz\":0.86}",
+    "ion_contribution": "{\"Li\":0.42,\"PF6\":0.43}",
+    "electric_field_strength": 0.0,
+    "resistivity": 1.176
+  }
+}

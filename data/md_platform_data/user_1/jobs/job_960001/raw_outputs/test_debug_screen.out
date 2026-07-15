@@ -1,0 +1,89 @@
+LAMMPS (23 Jun 2022 - Update 4)
+Reading data file ...
+  orthogonal box = (0 0 0) to (20 20 20)
+  1 by 1 by 1 MPI processor grid
+  reading atoms ...
+  770 atoms
+  scanning bonds ...
+  6 = max bonds/atom
+  scanning angles ...
+  15 = max angles/atom
+  scanning dihedrals ...
+  3 = max dihedrals/atom
+  reading bonds ...
+  715 bonds
+  reading angles ...
+  1087 angles
+  reading dihedrals ...
+  455 dihedrals
+Finding 1-2 1-3 1-4 neighbors ...
+  special bond factors lj:    0        0        0.5     
+  special bond factors coul:  0        0        0.5     
+     6 = max # of 1-2 neighbors
+     5 = max # of 1-3 neighbors
+     9 = max # of 1-4 neighbors
+    11 = max # of special neighbors
+  special bonds CPU = 0.000 seconds
+  read_data CPU = 0.022 seconds
+Generated 0 of 465 mixed pair_coeff terms from geometric mixing rule
+WARNING: Dihedrals are defined but no dihedral style is set (../force.cpp:202)
+WARNING: Likewise 1-4 special neighbor interactions != 1.0 (../force.cpp:204)
+Neighbor list info ...
+  update every 1 steps, delay 0 steps, check yes
+  max neighbors/atom: 2000, page size: 100000
+  master list distance cutoff = 4
+  ghost atom cutoff = 4
+  binsize = 2, bins = 10 10 10
+  1 neighbor lists, perpetual/occasional/extra = 1 0 0
+  (1) pair soft, perpetual
+      attributes: half, newton on
+      pair build: half/bin/newton
+      stencil: half/bin/3d
+      bin: standard
+Setting up cg style minimization ...
+  Unit style    : real
+  Current step  : 0
+WARNING: Communication cutoff 4 is shorter than a bond length based estimate of 4.715. This may lead to errors. (../comm.cpp:727)
+WARNING: Bond/angle/dihedral extent > half of periodic box length (../domain.cpp:940)
+Per MPI rank memory allocation (min/avg/max) = 14.54 | 14.54 | 14.54 Mbytes
+   Step          Temp          PotEng         KinEng         TotEng         Press          Volume    
+         0   0              7251557.5      0              7251557.5      31969254       8000         
+         1   0              6744014.7      0              6744014.7      30312046       8000         
+WARNING: Bond/angle/dihedral extent > half of periodic box length (../domain.cpp:940)
+Loop time of 0.00498281 on 1 procs for 1 steps with 770 atoms
+
+86.0% CPU use with 1 MPI tasks x no OpenMP threads
+
+Minimization stats:
+  Stopping criterion = max force evaluations
+  Energy initial, next-to-last, final = 
+      7251557.53175248   7251557.53175248   6744014.72503355
+  Force two-norm initial, final = 328162.85 291215.04
+  Force max component initial, final = 20051.757 17255.216
+  Final line search alpha, max atom move = 4.9870943e-06 0.08605339
+  Iterations, force evaluations = 1 1
+
+MPI task timing breakdown:
+Section |  min time  |  avg time  |  max time  |%varavg| %total
+---------------------------------------------------------------
+Pair    | 0.0048487  | 0.0048487  | 0.0048487  |   0.0 | 97.31
+Bond    | 8.1691e-05 | 8.1691e-05 | 8.1691e-05 |   0.0 |  1.64
+Neigh   | 0          | 0          | 0          |   0.0 |  0.00
+Comm    | 2.295e-05  | 2.295e-05  | 2.295e-05  |   0.0 |  0.46
+Output  | 0          | 0          | 0          |   0.0 |  0.00
+Modify  | 0          | 0          | 0          |   0.0 |  0.00
+Other   |            | 2.948e-05  |            |       |  0.59
+
+Nlocal:            770 ave         770 max         770 min
+Histogram: 1 0 0 0 0 0 0 0 0 0
+Nghost:           5390 ave        5390 max        5390 min
+Histogram: 1 0 0 0 0 0 0 0 0 0
+Neighs:         202930 ave      202930 max      202930 min
+Histogram: 1 0 0 0 0 0 0 0 0 0
+
+Total # of neighbors = 202930
+Ave neighs/atom = 263.54545
+Ave special neighs/atom = 6.7376623
+Neighbor list builds = 0
+Dangerous builds = 0
+Total wall time: 0:00:00

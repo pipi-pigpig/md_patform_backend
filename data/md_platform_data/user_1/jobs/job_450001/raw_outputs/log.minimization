@@ -1,0 +1,145 @@
+LAMMPS (23 Jun 2022 - Update 4)
+# =============================================================================
+# LAMMPS能量最小化输入脚本
+# 由Jinja2模板引擎自动生成
+# 生成时间: 2026-06-25T22:49:41.279242
+# 任务ID: 450001
+# =============================================================================
+
+# 初始化设置
+units           real
+atom_style      full
+dimension       3
+boundary        p p p
+
+# 力场样式设置
+bond_style      harmonic
+angle_style     harmonic
+dihedral_style  opls
+improper_style  harmonic
+pair_style      lj/cut/coul/long 12.0 12.0
+special_bonds   lj 0.0 0.0 0.5 coul 0.0 0.0 0.5
+kspace_style    pppm 1.0e-4
+
+# 读取结构文件
+read_data       system.data
+Reading data file ...
+  orthogonal box = (0 0 0) to (50 50 50)
+  1 by 1 by 1 MPI processor grid
+  reading atoms ...
+  12114 atoms
+  scanning bonds ...
+  6 = max bonds/atom
+  scanning angles ...
+  15 = max angles/atom
+  scanning dihedrals ...
+  3 = max dihedrals/atom
+  reading bonds ...
+  11257 bonds
+  reading angles ...
+  17083 angles
+  reading dihedrals ...
+  7171 dihedrals
+Finding 1-2 1-3 1-4 neighbors ...
+  special bond factors lj:    0        0        0.5     
+  special bond factors coul:  0        0        0.5     
+     6 = max # of 1-2 neighbors
+     5 = max # of 1-3 neighbors
+     9 = max # of 1-4 neighbors
+    11 = max # of special neighbors
+  special bonds CPU = 0.003 seconds
+  read_data CPU = 0.190 seconds
+
+# 力场参数
+include         system.in.settings
+pair_coeff 1 1 0.066 3.50
+pair_coeff 2 2 0.066 3.50
+pair_coeff 3 3 0.066 3.50
+pair_coeff 4 4 0.066 3.50
+pair_coeff 5 5 0.070 3.55
+pair_coeff 6 6 0.070 3.55
+pair_coeff 7 7 0.070 3.55
+pair_coeff 8 8 0.070 3.55
+pair_coeff 9 9 0.105 3.75
+pair_coeff 10 10 0.105 3.75
+pair_coeff 11 11 0.030 2.50
+pair_coeff 12 12 0.030 2.50
+pair_coeff 13 13 0.030 2.50
+pair_coeff 14 14 0.030 2.42
+pair_coeff 15 15 0.030 2.50
+pair_coeff 16 16 0.030 2.50
+pair_coeff 17 17 0.030 2.50
+pair_coeff 18 18 0.170 3.00
+pair_coeff 19 19 0.170 3.00
+pair_coeff 20 20 0.170 2.96
+pair_coeff 21 21 0.170 3.00
+pair_coeff 22 22 0.170 3.25
+pair_coeff 23 23 0.170 3.25
+pair_coeff 24 24 0.170 3.25
+pair_coeff 25 25 0.170 3.25
+pair_coeff 26 26 0.255 2.95
+pair_coeff 27 27 0.200 3.70
+pair_coeff 28 28 0.0025 1.506
+pair_coeff 29 29 0.250 3.55
+pair_coeff 30 30 0.250 3.55
+# 碳-碳键
+bond_coeff 1  268.0  1.529   # C-C单键 (sp3-sp3)
+bond_coeff 2  414.0  1.330   # C=C双键 (sp2-sp2)
+bond_coeff 3 320.0  1.400   # 芳香C-C键
+
+# 碳-氢键
+bond_coeff 4     340.0  1.090   # C-H键 (sp3碳)
+bond_coeff 5     340.0  1.080   # C-H键 (sp2碳)
+bond_coeff 6    340.0  1.080   # C-H键 (芳香碳)
+
+# 碳-氧键
+bond_coeff 7  320.0  1.410   # C-O单键 (醇、醚)
+bond_coeff 8  570.0  1.229   # C=O双键 (羰基)
+bond_coeff 9    320.0  1.360   # C-O键 (羧酸)
+
+# 碳-氮键
+bond_coeff 10  300.0  1.470   # C-N单键 (胺)
+bond_coeff 11  440.0  1.270   # C=N双键 (亚胺)
+bond_coeff 12   350.0  1.340   # C-N键 (酰胺)
+
+# 氧-氢键
+bond_coeff 13         340.0  0.960   # O-H键 (醇、羧酸)
+
+# 氮-氢键
+bond_coeff 14         340.0  1.010   # N-H键 (胺)
+
+# 磷-氟键 (PF6)
+bond_coeff 15         420.0  1.560   # P-F键 (六氟磷酸盐)
+
+# 硫-碳键
+bond_coeff 16         200.0  1.810   # S-C键 (硫醚)
+
+# 硫-氧键
+bond_coeff 17         300.0  1.430   # S-O键 (磺酰基)
+# 碳-碳-碳角度
+angle_coeff 1    50.0  109.5   # C-C-C (sp3)
+angle_coeff 2    80.0  120.0   # C-C-C (sp2)
+angle_coeff 3   60.0  120.0   # C-C-C (芳香)
+
+# 碳-碳-氢角度
+angle_coeff 4    37.5  110.7   # C-C-H (sp3)
+angle_coeff 5    40.0  120.0   # C-C-H (sp2)
+
+# 氢-碳-氢角度
+angle_coeff 6    33.0  106.4   # H-C-H (sp3亚甲基)
+angle_coeff 7   33.0  107.8   # H-C-H (sp3甲基)
+angle_coeff 8    35.0  120.0   # H-C-H (sp2)
+
+# 碳-氧-碳角度
+angle_coeff 9  60.0  109.5   # C-O-C (醚)
+angle_coeff 10  60.0  124.0   # C-O-C (酯)
+
+# 氧-碳-氧角度
+angle_coeff 11   80.0  123.0   # O-C=O (羰基)
+angle_coeff 12  80.0  120.4   # O-C-O (酯)
+
+# 碳-碳-氧角度
+angle_coeff 13        50.0  109.5   # C-C-O
+
+# 碳-氧-氢角度
+angle_coeff 14        50.0  109.5   # C-O-H (醇)

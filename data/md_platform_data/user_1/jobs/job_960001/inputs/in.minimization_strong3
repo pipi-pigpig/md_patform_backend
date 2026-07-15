@@ -1,0 +1,76 @@
+# =============================================================================
+# Step 1: Soft potential with very small cutoff
+# =============================================================================
+units           real
+atom_style      full
+dimension       3
+boundary        p p p
+bond_style      harmonic
+angle_style     harmonic
+dihedral_style  none
+improper_style  none
+pair_style      lj/cut/coul/cut 8.0 8.0
+special_bonds   lj 0.0 0.0 0.5 coul 0.0 0.0 0.5
+kspace_style    none
+read_data       system.data
+include         system.in.settings
+pair_style      soft 1.5
+pair_coeff      * * 100000.0
+neighbor        2.0 bin
+neigh_modify    every 1 delay 0 check yes
+thermo          100
+min_style       cg
+minimize        1.0e-6 1.0e-6 500 500
+write_data      minimized_s1.data nocoeff
+
+# =============================================================================
+# Step 2: Soft potential with larger cutoff
+# =============================================================================
+clear
+units           real
+atom_style      full
+dimension       3
+boundary        p p p
+bond_style      harmonic
+angle_style     harmonic
+dihedral_style  none
+improper_style  none
+pair_style      lj/cut/coul/cut 8.0 8.0
+special_bonds   lj 0.0 0.0 0.5 coul 0.0 0.0 0.5
+kspace_style    none
+read_data       minimized_s1.data
+include         system.in.settings
+pair_style      soft 3.0
+pair_coeff      * * 100000.0
+neighbor        2.0 bin
+neigh_modify    every 1 delay 0 check yes
+thermo          100
+min_style       cg
+minimize        1.0e-6 1.0e-6 1000 1000
+write_data      minimized_s2.data nocoeff
+
+# =============================================================================
+# Step 3: Soft potential with even larger cutoff
+# =============================================================================
+clear
+units           real
+atom_style      full
+dimension       3
+boundary        p p p
+bond_style      harmonic
+angle_style     harmonic
+dihedral_style  none
+improper_style  none
+pair_style      lj/cut/coul/cut 8.0 8.0
+special_bonds   lj 0.0 0.0 0.5 coul 0.0 0.0 0.5
+kspace_style    none
+read_data       minimized_s2.data
+include         system.in.settings
+pair_style      soft 6.0
+pair_coeff      * * 100000.0
+neighbor        2.0 bin
+neigh_modify    every 1 delay 0 check yes
+thermo          100
+min_style       cg
+minimize        1.0e-6 1.0e-6 2000 2000
+write_data      minimized.data nocoeff

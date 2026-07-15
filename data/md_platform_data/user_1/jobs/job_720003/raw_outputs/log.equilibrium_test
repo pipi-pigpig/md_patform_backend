@@ -1,0 +1,256 @@
+LAMMPS (23 Jun 2022 - Update 4)
+# =============================================================================
+# LAMMPS Equilibrium Test (NVT + NPT)
+# Uses soft-minimized structure, improper_style none to avoid hang
+# =============================================================================
+units           real
+atom_style      full
+dimension       3
+boundary        p p p
+
+# Read data with matching pair style (soft), then switch to real FF
+pair_style      soft 1.0
+bond_style      harmonic
+angle_style     harmonic
+dihedral_style  none
+improper_style  none
+read_data       minimized_soft.data
+Reading data file ...
+  orthogonal box = (0 0 0) to (50 50 50)
+  1 by 1 by 1 MPI processor grid
+  reading atoms ...
+  12114 atoms
+  reading velocities ...
+  12114 velocities
+  scanning bonds ...
+  6 = max bonds/atom
+  scanning angles ...
+  15 = max angles/atom
+  scanning dihedrals ...
+  3 = max dihedrals/atom
+  reading bonds ...
+  11257 bonds
+  reading angles ...
+  17083 angles
+  reading dihedrals ...
+  7171 dihedrals
+Finding 1-2 1-3 1-4 neighbors ...
+  special bond factors lj:    0        0        0       
+  special bond factors coul:  0        0        0       
+     6 = max # of 1-2 neighbors
+     5 = max # of 1-3 neighbors
+     9 = max # of 1-4 neighbors
+    11 = max # of special neighbors
+  special bonds CPU = 0.003 seconds
+  read_data CPU = 0.387 seconds
+
+# Switch to real force field
+pair_style      lj/cut/coul/cut 8.0 8.0
+dihedral_style  opls
+improper_style  none
+special_bonds   lj 0.0 0.0 0.5 coul 0.0 0.0 0.5
+Finding 1-2 1-3 1-4 neighbors ...
+  special bond factors lj:    0        0        0.5     
+  special bond factors coul:  0        0        0.5     
+     6 = max # of 1-2 neighbors
+     5 = max # of 1-3 neighbors
+     9 = max # of 1-4 neighbors
+    11 = max # of special neighbors
+  special bonds CPU = 0.002 seconds
+kspace_style    none
+
+# Force field parameters (no improper coeffs)
+include         system.in.settings.no_imp
+pair_coeff 1 1 0.066 3.50
+pair_coeff 2 2 0.066 3.50
+pair_coeff 3 3 0.066 3.50
+pair_coeff 4 4 0.066 3.50
+pair_coeff 5 5 0.070 3.55
+pair_coeff 6 6 0.070 3.55
+pair_coeff 7 7 0.070 3.55
+pair_coeff 8 8 0.070 3.55
+pair_coeff 9 9 0.105 3.75
+pair_coeff 10 10 0.105 3.75
+pair_coeff 11 11 0.030 2.50
+pair_coeff 12 12 0.030 2.50
+pair_coeff 13 13 0.030 2.50
+pair_coeff 14 14 0.030 2.42
+pair_coeff 15 15 0.030 2.50
+pair_coeff 16 16 0.030 2.50
+pair_coeff 17 17 0.030 2.50
+pair_coeff 18 18 0.170 3.00
+pair_coeff 19 19 0.170 3.00
+pair_coeff 20 20 0.170 2.96
+pair_coeff 21 21 0.170 3.00
+pair_coeff 22 22 0.170 3.25
+pair_coeff 23 23 0.170 3.25
+pair_coeff 24 24 0.170 3.25
+pair_coeff 25 25 0.170 3.25
+pair_coeff 26 26 0.255 2.95
+pair_coeff 27 27 0.200 3.70
+pair_coeff 28 28 0.0025 1.506
+pair_coeff 29 29 0.250 3.55
+pair_coeff 30 30 0.250 3.55
+#  -
+bond_coeff 1  268.0  1.529   # C-C   (sp3-sp3)
+bond_coeff 2  414.0  1.330   # C=C   (sp2-sp2)
+bond_coeff 3 320.0  1.400   #   C-C
+
+#  -
+bond_coeff 4     340.0  1.090   # C-H  (sp3 )
+bond_coeff 5     340.0  1.080   # C-H  (sp2 )
+bond_coeff 6    340.0  1.080   # C-H  (   )
+
+#  -
+bond_coeff 7  320.0  1.410   # C-O   (   )
+bond_coeff 8  570.0  1.229   # C=O   (  )
+bond_coeff 9    320.0  1.360   # C-O  (  )
+
+#  -
+bond_coeff 10  300.0  1.470   # C-N   ( )
+bond_coeff 11  440.0  1.270   # C=N   (  )
+bond_coeff 12   350.0  1.340   # C-N  (  )
+
+#  -
+bond_coeff 13         340.0  0.960   # O-H  (    )
+
+#  -
+bond_coeff 14         340.0  1.010   # N-H  ( )
+
+#  -   (PF6)
+bond_coeff 15         420.0  1.560   # P-F  (     )
+
+#  -
+bond_coeff 16         200.0  1.810   # S-C  (  )
+
+#  -
+bond_coeff 17         300.0  1.430   # S-O  (   )
+#  - -
+angle_coeff 1    50.0  109.5   # C-C-C (sp3)
+angle_coeff 2    80.0  120.0   # C-C-C (sp2)
+angle_coeff 3   60.0  120.0   # C-C-C (  )
+
+#  - -
+angle_coeff 4    37.5  110.7   # C-C-H (sp3)
+angle_coeff 5    40.0  120.0   # C-C-H (sp2)
+
+#  - -
+angle_coeff 6    33.0  106.4   # H-C-H (sp3   )
+angle_coeff 7   33.0  107.8   # H-C-H (sp3  )
+angle_coeff 8    35.0  120.0   # H-C-H (sp2)
+
+#  - -
+angle_coeff 9  60.0  109.5   # C-O-C ( )
+angle_coeff 10  60.0  124.0   # C-O-C ( )
+
+#  - -
+angle_coeff 11   80.0  123.0   # O-C=O (  )
+angle_coeff 12  80.0  120.4   # O-C-O ( )
+
+#  - -
+angle_coeff 13        50.0  109.5   # C-C-O
+
+#  - -
+angle_coeff 14        50.0  109.5   # C-O-H ( )
+
+#  - -
+angle_coeff 15        50.0  109.5   # C-N-C ( )
+angle_coeff 16  50.0  120.0   # C-N-C (  )
+
+#  - -    (PF6)
+angle_coeff 17        80.0   90.0   # F-P-F (     )
+angle_coeff 18    80.0  180.0   # F-P-F (  )
+#  - - -
+dihedral_coeff 1  0.0  0.0  0.278  0.0   # C-C-C-C (  )
+dihedral_coeff 2  0.0  0.0  0.0    0.0   # C-C-C-C (  )
+
+#  - - -
+dihedral_coeff 3  0.0  0.0  0.278  0.0   # C-C-C-H
+
+#  - - -
+dihedral_coeff 4 0.0  0.0  0.278  0.0   # H-C-C-H
+
+#  - - -
+dihedral_coeff 5  0.5 -0.5  0.5   0.0   # C-O-C-C ( )
+dihedral_coeff 6 0.0  0.0  0.0   0.0   # C-O-C-C ( )
+
+#  - - -
+dihedral_coeff 7  0.0  0.0  0.0   0.0   # C-C-O-C
+
+#  - - -
+dihedral_coeff 8  0.0  0.0  0.0   0.0   # O-C-O-C (   )
+
+#  - - =
+dihedral_coeff 9 0.0  0.0  0.0  0.0   # C-C-O=C (  )
+#
+
+#
+pair_coeff 31 31 0.00034 2.126
+
+# Neighbor list settings
+neighbor        2.0 bin
+neigh_modify    every 1 delay 0 check yes one 100000 page 1000000
+
+# Velocity initialization
+velocity        all create 353.0 47562 dist gaussian
+
+# Thermodynamic output
+thermo          100
+thermo_style    custom step temp pe ke etotal press vol density
+
+# Trajectory output
+dump            1 all custom 50 dump.equilibrium.lammpstrj id mol type x y z vx vy vz
+
+# NVT equilibration
+timestep        1.0
+fix             1 all nvt temp 353.0 353.0 100.0
+run             500
+Generated 465 of 465 mixed pair_coeff terms from geometric mixing rule
+Neighbor list info ...
+  update every 1 steps, delay 0 steps, check yes
+  max neighbors/atom: 100000, page size: 1000000
+  master list distance cutoff = 10
+  ghost atom cutoff = 10
+  binsize = 5, bins = 10 10 10
+  1 neighbor lists, perpetual/occasional/extra = 1 0 0
+  (1) pair lj/cut/coul/cut, perpetual
+      attributes: half, newton on
+      pair build: half/bin/newton
+      stencil: half/bin/3d
+      bin: standard
+Per MPI rank memory allocation (min/avg/max) = 391.3 | 391.3 | 391.3 Mbytes
+   Step          Temp          PotEng         KinEng         TotEng         Press          Volume        Density    
+         0   353            inf            12745.613      inf           -nan            125000         1.3518203    
+       100  -nan           -nan           -nan           -nan           -nan            125000         1.3518203    
+       200  -nan           -nan           -nan           -nan           -nan            125000         1.3518203    
+       300  -nan           -nan           -nan           -nan           -nan            125000         1.3518203    
+       400  -nan           -nan           -nan           -nan           -nan            125000         1.3518203    
+       500  -nan           -nan           -nan           -nan           -nan            125000         1.3518203    
+Loop time of 56.6199 on 1 procs for 500 steps with 12114 atoms
+
+Performance: 0.763 ns/day, 31.455 hours/ns, 8.831 timesteps/s
+99.9% CPU use with 1 MPI tasks x no OpenMP threads
+
+MPI task timing breakdown:
+Section |  min time  |  avg time  |  max time  |%varavg| %total
+---------------------------------------------------------------
+Pair    | 55.767     | 55.767     | 55.767     |   0.0 | 98.49
+Bond    | 0.39654    | 0.39654    | 0.39654    |   0.0 |  0.70
+Neigh   | 0          | 0          | 0          |   0.0 |  0.00
+Comm    | 0.2036     | 0.2036     | 0.2036     |   0.0 |  0.36
+Output  | 0.1082     | 0.1082     | 0.1082     |   0.0 |  0.19
+Modify  | 0.078276   | 0.078276   | 0.078276   |   0.0 |  0.14
+Other   |            | 0.06593    |            |       |  0.12
+
+Nlocal:          12114 ave       12114 max       12114 min
+Histogram: 1 0 0 0 0 0 0 0 0 0
+Nghost:          84798 ave       84798 max       84798 min
+Histogram: 1 0 0 0 0 0 0 0 0 0
+Neighs:    7.33389e+07 ave 7.33389e+07 max 7.33389e+07 min
+Histogram: 1 0 0 0 0 0 0 0 0 0
+
+Total # of neighbors = 73338889
+Ave neighs/atom = 6054.0605
+Ave special neighs/atom = 6.7465742
+Neighbor list builds = 0
+Dangerous builds = 0

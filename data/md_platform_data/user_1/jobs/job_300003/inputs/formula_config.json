@@ -1,0 +1,23 @@
+{
+  "solventInfo" : [ {
+    "name" : "EC",
+    "moleFraction" : 0.3
+  }, {
+    "name" : "DMC",
+    "moleFraction" : 0.7
+  } ],
+  "saltInfo" : {
+    "cation" : "Li",
+    "anion" : "PF6",
+    "concentration" : 1.0
+  },
+  "additiveInfo" : null,
+  "boxSize" : {
+    "x" : 50.0,
+    "y" : 50.0,
+    "z" : 50.0,
+    "auto" : false
+  },
+  "temperature" : 353.0,
+  "targetProperties" : null
+}

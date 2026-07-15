@@ -1,0 +1,116 @@
+# =============================================================================
+# DMC.lt - 碳酸二甲酯分子模板 (Dimethyl Carbonate)
+# =============================================================================
+# 功能: 定义DMC分子的拓扑结构和力场参数
+# 力场: OPLS-AA (Optimized Potentials for Liquid Simulations - All Atom)
+#
+# 分子结构:
+#   - 碳酸酯，两个甲基连接到碳酸酯基团
+#   - 羰基C=O和两个醚氧原子
+#
+# 原子类型 (OPLS-AA):
+#   - C1: opls_209 (羰基碳)
+#   - O1: opls_211 (羰基氧)
+#   - O2, O3: opls_156 (醚氧)
+#   - C2, C3: opls_135 (CH3碳)
+#   - H: opls_140 (CH3氢)
+#
+# 作者: Electrolyte MD Platform
+# 版本: 2.0 (使用正确的Moltemplate继承语法)
+# =============================================================================
+
+# 导入OPLS-AA力场定义
+import "../../force_fields/opls-aa/ffnonbonded.lt"
+import "../../force_fields/opls-aa/ffbonded.lt"
+
+# 定义OPLSAA力场基类
+OPLSAA {
+  write_once("In Init") {
+    units real
+    bond_style harmonic
+    angle_style harmonic
+    dihedral_style opls
+    improper_style harmonic
+    pair_style lj/cut/coul/long 12.0 12.0
+    special_bonds lj 0.0 0.0 0.5 coul 0.0 0.0 0.5
+  }
+}
+
+# DMC分子定义 - 继承OPLSAA力场
+DMC inherits OPLSAA {
+  # ========================================
+  # 原子定义 (Data Atoms)
+  # ========================================
+  
+  write('Data Atoms') {
+    $atom:C1   $mol:.   @atom:opls_209  +0.52    0.000   0.000   0.000
+    $atom:O1   $mol:.   @atom:opls_211  -0.50    1.229   0.000   0.000
+    $atom:O2   $mol:.   @atom:opls_156  -0.35    1.360   0.000   0.000
+    $atom:O3   $mol:.   @atom:opls_156  -0.35   -1.360   0.000   0.000
+    $atom:C2   $mol:.   @atom:opls_135  +0.22    2.800   0.000   0.000
+    $atom:C3   $mol:.   @atom:opls_135  +0.22   -2.800   0.000   0.000
+    $atom:H1   $mol:.   @atom:opls_140  +0.06    3.300   0.000   0.890
+    $atom:H2   $mol:.   @atom:opls_140  +0.06    3.300   0.000  -0.890
+    $atom:H3   $mol:.   @atom:opls_140  +0.06    3.300   0.890   0.000
+    $atom:H4   $mol:.   @atom:opls_140  +0.06   -3.300   0.000   0.890
+    $atom:H5   $mol:.   @atom:opls_140  +0.06   -3.300   0.000  -0.890
+    $atom:H6   $mol:.   @atom:opls_140  +0.06   -3.300  -0.890   0.000
+  }
+  
+  # ========================================
+  # 键定义 (Data Bonds)
+  # ========================================
+  
+  write('Data Bonds') {
+    $bond:b_C1_O1   @bond:CO_double    $atom:C1   $atom:O1
+    $bond:b_C1_O2   @bond:CO_single    $atom:C1   $atom:O2
+    $bond:b_C1_O3   @bond:CO_single    $atom:C1   $atom:O3
+    $bond:b_O2_C2   @bond:CO_single    $atom:O2   $atom:C2
+    $bond:b_O3_C3   @bond:CO_single    $atom:O3   $atom:C3
+    $bond:b_C2_H1   @bond:CH_sp3       $atom:C2   $atom:H1
+    $bond:b_C2_H2   @bond:CH_sp3       $atom:C2   $atom:H2
+    $bond:b_C2_H3   @bond:CH_sp3       $atom:C2   $atom:H3
+    $bond:b_C3_H4   @bond:CH_sp3       $atom:C3   $atom:H4
+    $bond:b_C3_H5   @bond:CH_sp3       $atom:C3   $atom:H5
+    $bond:b_C3_H6   @bond:CH_sp3       $atom:C3   $atom:H6
+  }
+  
+  # ========================================
+  # 角度定义 (Data Angles)
+  # ========================================
+  
+  write('Data Angles') {
+    $angle:a_O1_C1_O2   @angle:OCO_carb    $atom:O1   $atom:C1   $atom:O2
+    $angle:a_O1_C1_O3   @angle:OCO_carb    $atom:O1   $atom:C1   $atom:O3
+    $angle:a_O2_C1_O3   @angle:OCO_ester   $atom:O2   $atom:C1   $atom:O3
+    $angle:a_C1_O2_C2   @angle:COC_ether   $atom:C1   $atom:O2   $atom:C2
+    $angle:a_C1_O3_C3   @angle:COC_ether   $atom:C1   $atom:O3   $atom:C3
+    $angle:a_O2_C2_H1   @angle:CCH_sp3     $atom:O2   $atom:C2   $atom:H1
+    $angle:a_O2_C2_H2   @angle:CCH_sp3     $atom:O2   $atom:C2   $atom:H2
+    $angle:a_O2_C2_H3   @angle:CCH_sp3     $atom:O2   $atom:C2   $atom:H3
+    $angle:a_O3_C3_H4   @angle:CCH_sp3     $atom:O3   $atom:C3   $atom:H4
+    $angle:a_O3_C3_H5   @angle:CCH_sp3     $atom:O3   $atom:C3   $atom:H5
+    $angle:a_O3_C3_H6   @angle:CCH_sp3     $atom:O3   $atom:C3   $atom:H6
+    $angle:a_H1_C2_H2   @angle:HCH_sp3m    $atom:H1   $atom:C2   $atom:H2
+    $angle:a_H1_C2_H3   @angle:HCH_sp3m    $atom:H1   $atom:C2   $atom:H3
+    $angle:a_H2_C2_H3   @angle:HCH_sp3m    $atom:H2   $atom:C2   $atom:H3
+    $angle:a_H4_C3_H5   @angle:HCH_sp3m    $atom:H4   $atom:C3   $atom:H5
+    $angle:a_H4_C3_H6   @angle:HCH_sp3m    $atom:H4   $atom:C3   $atom:H6
+    $angle:a_H5_C3_H6   @angle:HCH_sp3m    $atom:H5   $atom:C3   $atom:H6
+  }
+  
+  # ========================================
+  # 二面角定义 (Data Dihedrals)
+  # ========================================
+  
+  write('Data Dihedrals') {
+    $dihedral:d_O1_C1_O2_C2   @dihedral:OCOC      $atom:O1   $atom:C1   $atom:O2   $atom:C2
+    $dihedral:d_O1_C1_O3_C3   @dihedral:OCOC      $atom:O1   $atom:C1   $atom:O3   $atom:C3
+    $dihedral:d_C1_O2_C2_H1   @dihedral:COCC_est  $atom:C1   $atom:O2   $atom:C2   $atom:H1
+    $dihedral:d_C1_O2_C2_H2   @dihedral:COCC_est  $atom:C1   $atom:O2   $atom:C2   $atom:H2
+    $dihedral:d_C1_O2_C2_H3   @dihedral:COCC_est  $atom:C1   $atom:O2   $atom:C2   $atom:H3
+    $dihedral:d_C1_O3_C3_H4   @dihedral:COCC_est  $atom:C1   $atom:O3   $atom:C3   $atom:H4
+    $dihedral:d_C1_O3_C3_H5   @dihedral:COCC_est  $atom:C1   $atom:O3   $atom:C3   $atom:H5
+    $dihedral:d_C1_O3_C3_H6   @dihedral:COCC_est  $atom:C1   $atom:O3   $atom:C3   $atom:H6
+  }
+}

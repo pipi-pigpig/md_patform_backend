@@ -1,0 +1,63 @@
+# =============================================================================
+# Fresh approach: start from original system.data, use soft potential
+# Then switch to real force field with proper pair coeffs
+# =============================================================================
+units           real
+atom_style      full
+dimension       3
+boundary        p p p
+
+# Read original data file
+read_data       system.data
+
+# Soft potential
+pair_style      soft 1.0
+pair_coeff      * * 1.0
+bond_style      harmonic
+angle_style     harmonic
+dihedral_style  none
+improper_style  none
+special_bonds   lj 1.0 1.0 1.0 coul 1.0 1.0 1.0
+kspace_style    none
+
+include         system.in.bond_angle_only
+
+neighbor        2.0 bin
+neigh_modify    every 1 delay 0 check yes one 100000 page 1000000
+
+min_style       fire
+minimize        1.0e-4 1.0e-6 1000 10000
+
+# Save coordinates only (no force field data)
+write_restart   soft.restart
+
+# Clear all settings and re-read with real force field
+clear
+units           real
+atom_style      full
+dimension       3
+boundary        p p p
+
+# Read restart (only has coordinates, velocities)
+read_restart    soft.restart
+
+# Now set up real force field
+pair_style      lj/cut/coul/cut 8.0 8.0
+bond_style      harmonic
+angle_style     harmonic
+dihedral_style  opls
+improper_style  none
+special_bonds   lj 0.0 0.0 0.5 coul 0.0 0.0 0.5
+kspace_style    none
+
+# Include all force field parameters
+include         system.in.settings.no_imp
+
+neighbor        2.0 bin
+neigh_modify    every 1 delay 0 check yes one 100000 page 1000000
+
+# Quick refinement
+min_style       fire
+minimize        1.0e-2 1.0e-4 100 1000
+
+write_data      minimized.data

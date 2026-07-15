@@ -1,0 +1,4 @@
+[
+  {"step": 0, "temp": 300.0, "pressure": 1.0, "density": 1.02},
+  {"step": 10000, "temp": 298.5, "pressure": 1.0, "density": 1.03}
+]
