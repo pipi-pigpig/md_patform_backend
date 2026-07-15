@@ -191,8 +191,9 @@ public class SimulationJobService {
         }
 
         if (request.getTargetPropertiesJson() == null || request.getTargetPropertiesJson().isBlank()) {
-            throw new IllegalArgumentException("目标属性不能为空");
+            throw new IllegalArgumentException("目标计算性质不能为空");
         }
+        TargetPropertiesValidator.parseAndValidate(request.getTargetPropertiesJson());
     }
 
     private SimulationJob findAndCheckOwnership(Long userId, Long jobId) {

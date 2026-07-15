@@ -15,6 +15,7 @@ public class SimulationJobListResponse {
     private String systemName;
     private String softwareName;
     private String hardwareUsed;
+    private String targetProperties;
     private LocalDateTime startTime;
     private LocalDateTime endTime;
     private Long executionTimeS;
@@ -28,6 +29,7 @@ public class SimulationJobListResponse {
         dto.setSystemId(entity.getSystemId());
         dto.setSoftwareName(entity.getSoftwareName());
         dto.setHardwareUsed(entity.getHardwareUsed());
+        dto.setTargetProperties(entity.getTargetProperties());
         dto.setStartTime(entity.getStartTime());
         dto.setEndTime(entity.getEndTime());
         dto.setExecutionTimeS(entity.getExecutionTimeS());

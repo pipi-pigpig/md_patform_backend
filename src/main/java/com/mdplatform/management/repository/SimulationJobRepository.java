@@ -8,10 +8,33 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Repository
 public interface SimulationJobRepository extends JpaRepository<SimulationJob, Long> {
+
+    long countByStatus(String status);
+
+    long countByCreateTimeAfter(LocalDateTime since);
+
+    @Query("SELECT j.status, COUNT(j) FROM MgmtSimulationJob j WHERE j.createTime >= :since GROUP BY j.status")
+    List<Object[]> countByStatusSince(@Param("since") LocalDateTime since);
+
+    @Query("SELECT FUNCTION('DATE', j.createTime) AS d, COUNT(j) FROM MgmtSimulationJob j " +
+           "WHERE j.createTime >= :since GROUP BY FUNCTION('DATE', j.createTime) ORDER BY d ASC")
+    List<Object[]> countDailySince(@Param("since") LocalDateTime since);
+
+    @Query("SELECT j.status, COUNT(j) FROM MgmtSimulationJob j " +
+           "WHERE j.userId = :userId AND j.createTime >= :since GROUP BY j.status")
+    List<Object[]> countByUserIdAndStatusSince(@Param("userId") Long userId,
+                                               @Param("since") LocalDateTime since);
+
+    @Query("SELECT FUNCTION('DATE', j.createTime) AS d, COUNT(j) FROM MgmtSimulationJob j " +
+           "WHERE j.userId = :userId AND j.createTime >= :since " +
+           "GROUP BY FUNCTION('DATE', j.createTime) ORDER BY d ASC")
+    List<Object[]> countDailyByUserIdSince(@Param("userId") Long userId,
+                                           @Param("since") LocalDateTime since);
 
     Page<SimulationJob> findByUserIdOrderByCreateTimeDesc(Long userId, Pageable pageable);
 

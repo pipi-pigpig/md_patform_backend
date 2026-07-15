@@ -60,6 +60,9 @@ Thumbs.db
 ### Trae ###
 .trae/
 
+### Claude Code ###
+.claude/
+
 ### Database ###
 data/
 mysql/
