@@ -1,0 +1,14 @@
+- [x] StorageConfig配置类已创建，正确读取application.yml配置
+- [x] PathUtil工具类已创建，所有路径生成方法实现正确
+- [x] PathUtil路径格式符合规范：`user_{userId}/jobs/job_{jobId}/`
+- [x] PathUtil文件名格式符合规范（LAMMPS脚本、轨迹文件、结果文件、临时文件）
+- [x] AtomicFileService原子写入方法实现正确（临时文件→重命名）
+- [x] AtomicFileService异常处理完善，日志记录完整
+- [x] FileCleanupScheduler定时任务配置正确（每天凌晨2点）
+- [x] FileCleanupScheduler清理逻辑正确（超过24小时的临时文件）
+- [x] application.yml配置已更新，包含md-platform.file-storage配置
+- [x] FileService已重构，使用PathUtil替代硬编码路径
+- [x] FileService方法签名已更新，包含userId参数
+- [x] FileService使用AtomicFileService进行原子写入
+- [x] 单元测试覆盖所有路径生成逻辑
+- [x] 项目编译成功，无错误

@@ -1,0 +1,22 @@
+- [x] MoltemplateSystemService脚本路径已修复为run_modeling.py --mode moltemplate-system
+- [x] moltemplate_utils.py中coords_result未定义变量已修复，原子总数从instances_result计算
+- [x] validate_system_lt()已兼容无system={ }包裹的新格式
+- [x] PackmolService不再传递--output参数，改用--job-dir
+- [x] calculate_molecule_counts()无box_size时基于密度估算体积而非抛异常
+- [x] Dockerfile已添加MDAnalysis、CuPy、Jinja2依赖
+- [x] ConductivityCalculator和ViscosityCalculator运行积分改用O(n)的cumulative_trapezoid
+- [x] MoltemplateExecutionService --job-dir传递任务根目录而非inputs子目录
+- [x] mergeLammpsLogFiles路径已添加引号防止命令注入
+- [x] markJobAsFailed通过findById重新获取托管实体
+- [x] PipelineService hardwareUsed在LAMMPS执行后根据GPU检测结果更新
+- [x] PipelineService状态更新使用乐观锁或UPDATE语句避免竞态
+- [x] DockerService nvidia-smi使用完整路径/usr/bin/nvidia-smi
+- [x] packmol_utils.py文件句柄使用try/finally确保关闭
+- [x] stage5_post_processing.py默认体积从config.py读取
+- [x] convertToDockerPath()已统一到PathUtil
+- [x] extractJsonFromOutput()已统一解析逻辑并增加JSON有效性验证
+- [x] mvn compile编译通过
+- [x] run_modeling.py已添加--user-id参数定义，与Java端3个Service对齐
+- [x] MoltemplateSystemService --output已改为--output-file
+- [x] MoltemplateSystemService --pdb-file已改为--packed-pdb-file
+- [x] MoltemplateSystemService已添加--template-library-path、--forcefield-type、--forcefield-library-path参数
